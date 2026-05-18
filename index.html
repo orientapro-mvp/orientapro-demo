@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OrientaPro — Démo MVP · Powered by Mistral AI</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<style>
+:root {
+  --navy: #0E2A47; --navy-dark: #071A2D;
+  --orange: #F39200; --orange-dark: #C67500;
+  --bg: #F7F8FA; --surface: #FFFFFF; --muted: #6B7280;
+  --border: #E5E7EB; --text: #111827; --success: #1F7A35;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif; background: var(--bg); color: var(--text); }
+button { font-family: inherit; cursor: pointer; }
+*:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; flex-wrap:wrap; gap:10px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--orange); }
+.brand-name { font-size: 18px; font-weight: 700; color: var(--navy); }
+.brand-sub { font-size: 11px; color: var(--muted); margin-left: 8px; padding: 3px 8px; background: #F3F4F6; border-radius: 10px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs button { background: transparent; border: 1px solid transparent; padding: 7px 12px; font-size: 13px; color: var(--muted); border-radius: 8px; }
+.tabs button:hover { background: #F3F4F6; color: var(--navy); }
+.tabs button.active { background: var(--navy); color: white; }
+.tabs button.lock { opacity: 0.5; }
+.tabs button.lock::after { content: " 🔒"; font-size: 11px; }
+.app { max-width: 1080px; margin: 0 auto; padding: 24px; }
+.screen { display: none; animation: fade .25s ease; }
+.screen.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+.eyebrow { font-size: 11px; font-weight: 600; color: var(--orange); letter-spacing: 1.2px; text-transform: uppercase; margin: 0 0 8px; }
+.h1 { font-size: 30px; font-weight: 700; color: var(--navy); margin: 0 0 12px; line-height: 1.2; }
+.h2 { font-size: 22px; font-weight: 700; color: var(--navy); margin: 0 0 8px; }
+.h3 { font-size: 16px; font-weight: 600; color: var(--navy); margin: 0 0 6px; }
+.lead { font-size: 16px; color: var(--muted); line-height: 1.6; margin: 0 0 18px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 11px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; text-decoration: none; transition: all .15s; }
+.btn-primary { background: var(--orange); color: white; }
+.btn-primary:hover { background: var(--orange-dark); }
+.btn-outline { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
+.btn-outline:hover { background: var(--navy); color: white; }
+.btn-ghost { background: #F3F4F6; color: var(--navy); }
+.btn-sm { padding: 7px 12px; font-size: 12px; border-radius: 8px; font-weight: 500; }
+.btn-danger { background: transparent; color: #B91C1C; border: 1px solid #FCA5A5; }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.mistral-logo { display: inline-block; vertical-align: middle; }
+.mistral-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: #FFF8EC; border: 1px solid #FFD800; border-radius: 24px; font-size: 12px; color: #6B3300; font-weight: 500; }
+.mistral-badge .mistral-logo { width: 16px; height: 16px; }
+.mistral-panel { background: linear-gradient(135deg, #FFF8EC 0%, #FFE7C2 100%); border: 1px solid #FFAF00; border-radius: 14px; padding: 20px 24px; margin: 14px 0; }
+.mistral-panel-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.mistral-panel .mistral-logo { width: 24px; height: 24px; }
+.mistral-panel-title { font-size: 13px; font-weight: 700; color: #6B3300; letter-spacing: .3px; text-transform: uppercase; }
+.mistral-panel-sub { font-size: 11px; color: #92571A; }
+.mistral-suggestion { font-size: 14px; color: #1A1410; line-height: 1.7; font-style: italic; padding: 12px 0; border-top: 1px dashed rgba(133,79,11,.3); margin-top: 8px; }
+.mistral-suggestion::before { content: '« '; font-size: 24px; color: #FA500F; font-weight: 700; font-style: normal; }
+.mistral-suggestion::after { content: ' »'; font-size: 24px; color: #FA500F; font-weight: 700; font-style: normal; }
+.mistral-footer-row { display: flex; align-items: center; gap: 10px; justify-content: center; padding: 14px 0; margin-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.mistral-footer-row strong { color: var(--navy); font-weight: 600; }
+.hero { background: linear-gradient(180deg, #FFFFFF 0%, #F4F6F9 100%); padding: 50px 24px; text-align: center; border-radius: 16px; border: 1px solid var(--border); }
+.hero .h1 { font-size: 40px; max-width: 720px; margin: 12px auto; line-height: 1.15; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; }
+.hero .accent { color: var(--orange); display: inline-block; }
+.hero .lead { font-size: 17px; max-width: 600px; margin: 0 auto 28px; }
+@media (max-width: 640px) {
+  .hero { padding: 36px 18px; }
+  .hero .h1 { font-size: 28px; line-height: 1.2; }
+  .hero .lead { font-size: 15px; }
+  .h1 { font-size: 24px !important; }
+  .h2 { font-size: 18px !important; }
+  .app { padding: 16px !important; }
+  .topbar { padding: 12px 16px !important; }
+  .tabs button { padding: 6px 8px !important; font-size: 12px !important; }
+  .mistral-badge { font-size: 11px !important; padding: 5px 10px !important; }
+  .trust-line { font-size: 11px !important; gap: 8px !important; }
+  .impact-num { font-size: 22px !important; }
+  .pc-score { font-size: 26px !important; }
+}
+.hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.trust-line { margin-top: 20px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); align-items: center; }
+.trust-line span { display: flex; align-items: center; gap: 6px; }
+.trust-line .ck { color: var(--success); font-weight: 700; }
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 24px; }
+@media(max-width:760px) { .pillars { grid-template-columns: 1fr; } }
+.pillar { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 14px; padding: 20px; }
+.pillar-num { font-size: 24px; font-weight: 700; color: var(--orange); }
+.pillar h3 { margin: 8px 0 6px; }
+.pillar p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
+.impact-strip { background: var(--navy); color: white; padding: 24px 28px; border-radius: 14px; margin-top: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+@media(max-width:760px) { .impact-strip { grid-template-columns: repeat(2, 1fr); } }
+.impact-num { font-size: 28px; font-weight: 700; color: var(--orange); }
+.impact-lbl { font-size: 12px; color: rgba(255,255,255,.8); margin-top: 2px; }
+.steps-progress { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.bar { width: 100%; height: 6px; background: #E5E7EB; border-radius: 3px; overflow: hidden; margin-bottom: 24px; }
+.bar > div { height: 100%; background: var(--orange); transition: width .3s; }
+.field { margin-bottom: 18px; }
+.label { display: block; font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+.help { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.input, .select, .textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; background: white; }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(243,146,0,.15); }
+.radio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.radio { padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; text-align: center; font-size: 13px; background: white; cursor: pointer; }
+.radio.sel { border-color: var(--orange); background: rgba(243,146,0,.08); color: var(--navy); font-weight: 600; }
+.check { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; cursor: pointer; font-size: 14px; color: var(--navy); }
+.check input { margin-top: 2px; accent-color: var(--orange); width: 16px; height: 16px; }
+.err { background: #FEF2F2; border: 1px solid #FCA5A5; color: #B91C1C; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin: 12px 0; display: none; }
+.err.show { display: block; }
+.step-nav { display: flex; justify-content: space-between; margin-top: 24px; gap: 10px; }
+.result-head { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 28px; margin-bottom: 14px; }
+.profile-line { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+.chip-orange { background: rgba(243,146,0,.12); color: var(--orange-dark); }
+.chip-navy { background: rgba(14,42,71,.08); color: var(--navy); }
+.export-row { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+.section-title { display: flex; align-items: center; gap: 10px; margin: 22px 0 12px; flex-wrap:wrap; }
+.section-title .h2 { font-size: 18px; margin: 0; }
+.count-pill { background: rgba(14,42,71,.08); color: var(--navy); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 10px; }
+.programme-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 12px; }
+.pc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 10px; flex-wrap:wrap; }
+.pc-rank { font-size: 13px; font-weight: 700; color: var(--orange); }
+.pc-org { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+.pc-title { font-size: 18px; font-weight: 600; color: var(--navy); margin: 4px 0; }
+.pc-score-wrap { text-align: right; min-width: 80px; }
+.pc-score { font-size: 32px; font-weight: 700; color: var(--orange); line-height: 1; }
+.pc-score small { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+.pc-score-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-top: 4px; font-weight: 600; }
+.pc-desc { font-size: 14px; line-height: 1.6; color: #4B5563; margin: 0 0 14px; }
+.pc-tags { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+@media(max-width:600px){.pc-tags{grid-template-columns:repeat(2,1fr);}}
+.pc-tag-box { background: #F9FAFB; border-radius: 8px; padding: 8px 10px; }
+.pc-tag-box span { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); font-weight: 500; }
+.pc-tag-box strong { display: block; font-size: 13px; color: var(--navy); font-weight: 600; margin-top: 2px; }
+.reasons { background: rgba(243,146,0,.06); border-left: 4px solid var(--orange); padding: 12px 16px; }
+.reasons-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--orange-dark); font-weight: 600; margin-bottom: 6px; }
+.reasons ul { margin: 0; padding-left: 18px; }
+.reasons li { font-size: 13px; color: var(--navy); line-height: 1.7; }
+.pc-contact { margin-top: 12px; font-size: 13px; color: #4B5563; }
+.aides-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(max-width:600px){.aides-grid{grid-template-columns:1fr;}}
+.aide-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+.aide-card-head { display: flex; justify-content: space-between; gap: 10px; }
+.aide-card-name { font-size: 14px; font-weight: 700; color: var(--navy); margin: 0; }
+.aide-card-amount { font-size: 14px; font-weight: 700; color: var(--orange); white-space: nowrap; }
+.aide-card-source { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); font-weight: 600; display:block; margin-top:4px; }
+.aide-card-desc { font-size: 13px; color: #4B5563; line-height: 1.5; margin: 6px 0 0; }
+.aide-card-eligible { display: inline-block; margin-top: 6px; font-size: 11px; color: var(--success); font-weight: 600; }
+.aide-card-eligible::before { content: '✓ '; }
+.aides-disclaimer { font-size: 11px; color: var(--muted); font-style: italic; line-height: 1.6; padding: 10px 14px; background: #F9FAFB; border-radius: 8px; margin-top: 10px; }
+.cta-end { background: var(--navy); color: white; padding: 28px; border-radius: 14px; text-align: center; margin-top: 16px; }
+.cta-end h3 { color: white; font-size: 20px; margin: 0 0 10px; }
+.cta-end p { color: rgba(255,255,255,.85); font-size: 14px; margin: 0 0 18px; max-width: 540px; margin-inline: auto; }
+.rgpd-note { font-size: 12px; color: var(--muted); text-align: center; padding: 16px 20px; line-height: 1.6; max-width: 640px; margin: 16px auto; }
+.login-wrap { max-width: 440px; margin: 24px auto; }
+.demo-accounts { background: #F9FAFB; border: 1px dashed var(--border); border-radius: 8px; padding: 12px 14px; font-size: 12px; color: var(--muted); margin-top: 18px; }
+.demo-accounts strong { color: var(--navy); display: block; margin-bottom: 6px; }
+.demo-accounts code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--navy); }
+.demo-accounts li { margin: 3px 0; cursor: pointer; list-style: none; }
+.demo-fastlogin { background: rgba(243,146,0,.1); border: 1px dashed var(--orange); border-radius: 8px; padding: 10px 14px; margin-top: 14px; font-size: 12px; color: var(--navy); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap:wrap; }
+.dash-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 18px; flex-wrap:wrap; gap:10px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+.kpi-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+@media(max-width:760px){.kpi-grid,.kpi-grid-3{grid-template-columns:repeat(2,1fr);}}
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+.kpi-lbl { font-size: 12px; color: var(--muted); margin: 0; }
+.kpi-val { font-size: 28px; font-weight: 700; color: var(--navy); margin-top: 4px; }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.kpi-accent .kpi-val { color: var(--orange); }
+.cards-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+@media(max-width:760px){.cards-grid-2{grid-template-columns:1fr;}}
+.action-card { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 12px; padding: 18px 20px; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+.action-card.alt { border-left-color: var(--navy); }
+.action-card h3 { margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--navy); }
+.action-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.table-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.table-head h3 { margin: 0; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { background: #F9FAFB; font-size: 10px; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+tbody td { padding: 12px 14px; border-bottom: 1px solid #F3F4F6; color: var(--navy); }
+.badge { display: inline-block; font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+.badge-rqth { background: rgba(243,146,0,.15); color: var(--orange-dark); }
+.badge-qpv { background: rgba(14,42,71,.12); color: var(--navy); }
+.badge-std { background: #F3F4F6; color: var(--muted); }
+.badge-yes { background: rgba(31,122,53,.12); color: var(--success); }
+.badge-no { background: #F3F4F6; color: var(--muted); }
+.badge-active { background: rgba(31,122,53,.12); color: var(--success); }
+.badge-off { background: #F3F4F6; color: var(--muted); }
+.link { color: var(--navy); text-decoration: underline; cursor: pointer; font-weight: 500; }
+.empty-state { padding: 40px; text-align: center; color: var(--muted); }
+.cat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap:wrap; gap:10px; }
+.programme-row { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 12px; }
+.pr-top { display: flex; justify-content: space-between; gap: 12px; }
+.pr-title { margin: 0; font-size: 16px; font-weight: 700; color: var(--navy); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.footer { background: var(--navy); color: rgba(255,255,255,.85); padding: 28px; margin-top: 32px; border-radius: 14px; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media(max-width:600px){.footer-grid{grid-template-columns:1fr;}}
+.footer h4 { color: white; margin: 0 0 8px; font-size: 15px; }
+.footer p { font-size: 13px; margin: 4px 0; }
+.partners { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.partner { background: rgba(255,255,255,.08); padding: 6px 12px; border-radius: 6px; font-size: 12px; }
+.badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.badges span { background: rgba(243,146,0,.2); color: #FBD38D; font-size: 11px; padding: 3px 10px; border-radius: 4px; }
+.footer-mistral { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.15); display: flex; align-items: center; gap: 10px; font-size: 11px; color: rgba(255,255,255,.7); flex-wrap:wrap; }
+.footer-mistral .mistral-logo { width: 18px; height: 18px; }
+.footer-mistral strong { color: #FFD800; }
+.demo-banner { background: linear-gradient(90deg, #FFE7C2, #FED7AA); color: #92400E; padding: 8px 16px; font-size: 12px; font-weight: 500; text-align: center; }
+.toast { position: fixed; bottom: 20px; right: 20px; background: var(--navy); color: white; padding: 12px 18px; border-radius: 8px; font-size: 13px; transform: translateY(80px); opacity: 0; transition: all .25s; z-index: 100; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.ai-typing::after { content: '▊'; animation: blink 1s step-end infinite; color: #FA500F; }
+@keyframes blink { 50% { opacity: 0; } }
+.btn-ghost { background: transparent; border: 2px solid var(--navy); color: var(--navy); padding: 9px 18px; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all .15s; }
+.btn-ghost:hover { background: var(--navy); color: #fff; }
+.btn-sm { padding: 7px 14px; font-size: 13px; }
+.hero-proof { margin-top: 18px; font-size: 14px; color: var(--ink); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.dot-live { width: 9px; height: 9px; border-radius: 50%; background: #16a34a; display: inline-block; box-shadow: 0 0 0 0 rgba(22,163,74,.6); animation: pulseLive 2s infinite; }
+@keyframes pulseLive { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.6); } 70% { box-shadow: 0 0 0 10px rgba(22,163,74,0); } 100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); } }
+.hero-trust { margin-top: 14px; font-size: 12.5px; color: var(--muted); }
+.hero-trust a { color: var(--navy); text-decoration: underline; font-weight: 600; }
+.pillar-pro { border: 2px solid var(--orange); background: linear-gradient(180deg, #FFF8F0 0%, #ffffff 100%); }
+.pillar-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--orange-dark); margin: 6px 0 8px; font-weight: 700; }
+.pillar-bullets { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 8px; }
+.pillar-bullets li { padding-left: 22px; position: relative; font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+.pillar-bullets li::before { content: "✓"; position: absolute; left: 0; top: 0; color: #16a34a; font-weight: 800; font-size: 16px; }
+.pillar-cta { margin-top: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pillar-trust { font-size: 11px; color: var(--muted); }
+.q-block-soft { background: #F9FAFB; padding: 14px; border-radius: 10px; border: 1px solid var(--border); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.chip { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 999px; background: #fff; cursor: pointer; font-size: 13px; transition: all .15s; font-family: inherit; color: var(--ink); }
+.chip:hover { border-color: var(--navy); }
+.chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+.aides-box { background: linear-gradient(135deg, #FFF8F0 0%, #FFE8D0 100%); border: 2px solid var(--orange); border-radius: 12px; padding: 22px; margin: 18px 0; }
+.aides-box-title { font-size: 12px; font-weight: 700; color: var(--orange-dark); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.aides-box-amount { font-size: 32px; font-weight: 800; color: var(--navy); line-height: 1.1; margin-bottom: 6px; }
+.aides-box-amount .max { color: var(--orange); }
+.aides-box-sub { font-size: 13px; color: var(--ink); margin-bottom: 14px; }
+.aides-box ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.aides-box li { font-size: 13px; padding-left: 22px; position: relative; color: var(--ink); }
+.aides-box li::before { content: "€"; position: absolute; left: 0; top: 0; color: var(--orange-dark); font-weight: 800; }
+body.easy-read, body.easy-read p, body.easy-read li, body.easy-read .lead, body.easy-read .label { font-size: 17px !important; line-height: 1.8 !important; letter-spacing: .02em !important; font-family: 'Atkinson Hyperlegible', 'Verdana', 'Arial', sans-serif !important; }
+body.easy-read p, body.easy-read li { max-width: 60ch; }
+body.easy-read .h1 { font-size: 32px !important; line-height: 1.3 !important; }
+body.easy-read .h2 { font-size: 24px !important; line-height: 1.4 !important; }
+.qpv-badge-detected { display:flex; align-items:center; gap:8px; padding:10px 14px; background:rgba(243,146,0,.1); border:1px solid var(--orange); border-radius:8px; color:var(--orange-dark); font-weight:500; font-size:13px; line-height:1.4; }
+.qpv-badge-not { display:flex; align-items:center; gap:8px; padding:10px 14px; background:#F9FAFB; border:1px solid var(--border); border-radius:8px; color:var(--muted); font-size:12px; line-height:1.4; }
+.qpv-scanning { display:flex; align-items:center; gap:10px; padding:10px 14px; background:#FFF8EC; border:1px solid #FFAF00; border-radius:8px; color:#6B3300; font-size:12px; }
+.qpv-scanning::before { content:""; width:14px; height:14px; border:2px solid #FFAF00; border-top-color:transparent; border-radius:50%; animation:spin .8s linear infinite; flex-shrink:0; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.demo-chips { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center; }
+.demo-chips .label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; font-weight:600; margin-right:4px; }
+.demo-chip { display:inline-flex; align-items:center; gap:6px; padding:7px 12px; border-radius:18px; font-size:12px; font-weight:500; cursor:pointer; transition:all .15s; border:1.5px solid var(--border); background:#fff; color:var(--navy); }
+.demo-chip:hover { border-color:var(--orange); background:rgba(243,146,0,.08); transform:translateY(-1px); }
+.demo-chip.qpv { border-color:rgba(243,146,0,.4); background:rgba(243,146,0,.06); }
+.demo-chip.qpv::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--orange); animation:pulse 1.8s ease-in-out infinite; }
+.demo-chip.no-qpv::before { content:""; width:8px; height:8px; border-radius:50%; background:#9CA3AF; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.5; transform:scale(1.3); } }
+.region-info { display:flex; align-items:center; gap:8px; padding:8px 12px; background:#F0F9FF; border:1px solid #BAE6FD; border-radius:6px; font-size:12px; color:#0369A1; margin-top:6px; }
+.tooltip-i { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:var(--muted); color:white; font-size:9px; font-weight:700; cursor:help; margin-left:4px; vertical-align:1px; position:relative; }
+.tooltip-i:hover::after { content:attr(data-tip); position:absolute; bottom:120%; left:50%; transform:translateX(-50%); background:var(--navy); color:white; padding:8px 12px; border-radius:6px; font-size:11px; font-weight:400; white-space:nowrap; z-index:10; min-width:200px; white-space:normal; width:240px; line-height:1.4; }
+.step-time-hint { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:11px; margin-left:8px; }
+
+/* === MODALES LÉGALES === */
+.legal-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; align-items:center; justify-content:center; padding:20px; }
+.legal-modal.open { display:flex; }
+.legal-modal-content { background:white; border-radius:14px; max-width:720px; width:100%; max-height:88vh; overflow-y:auto; padding:28px; position:relative; }
+.legal-modal h2 { color:var(--navy); margin:0 0 10px; font-size:22px; }
+.legal-modal .updated { font-size:11px; color:var(--muted); margin-bottom:18px; }
+.legal-modal h3 { color:var(--navy); margin:18px 0 8px; font-size:15px; }
+.legal-modal p, .legal-modal li { font-size:14px; line-height:1.7; color:#374151; }
+.legal-modal .close-modal { position:absolute; top:14px; right:14px; background:#F3F4F6; border:none; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:20px; color:var(--navy); }
+.legal-modal .close-modal:hover { background:#E5E7EB; }
+
+/* === BANDEAU COOKIES === */
+.cookie-banner { position:fixed; bottom:14px; left:14px; right:14px; max-width:560px; margin:0 auto; background:white; border:2px solid var(--navy); border-radius:14px; padding:16px 20px; box-shadow:0 8px 24px rgba(0,0,0,.18); z-index:180; display:none; }
+.cookie-banner.show { display:block; animation:slideUp .3s ease; }
+@keyframes slideUp { from { transform:translateY(20px); opacity:0; } to { transform:none; opacity:1; } }
+.cookie-banner p { margin:0 0 12px; font-size:13px; color:var(--navy); line-height:1.5; }
+.cookie-banner-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.cookie-banner button { padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; }
+.cookie-accept { background:var(--orange); color:white; }
+.cookie-accept:hover { background:var(--orange-dark); }
+.cookie-refuse { background:#F3F4F6; color:var(--navy); }
+.cookie-config { background:transparent; color:var(--navy); text-decoration:underline; padding:8px 4px; }
+
+/* === DISCLAIMER IA === */
+.ai-disclaimer { font-size:10px; color:var(--muted); font-style:italic; margin-top:8px; text-align:center; padding:6px 12px; background:rgba(0,0,0,.03); border-radius:6px; }
+
+/* === FOOTER LIENS LÉGAUX === */
+.footer-legal { margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,.15); display:flex; gap:14px; flex-wrap:wrap; font-size:11px; }
+.footer-legal a { color:rgba(255,255,255,.85); text-decoration:none; }
+.footer-legal a:hover { color:#FFD800; text-decoration:underline; }
+.footer-legal .sep { color:rgba(255,255,255,.3); }
+
+/* === ARIA / Validation === */
+.required-marker { color:#DC2626; font-weight:700; margin-left:2px; }
+.field-error { display:none; background:#FEF2F2; border:1px solid #FCA5A5; color:#B91C1C; padding:8px 12px; border-radius:6px; font-size:12px; margin-top:6px; }
+.field-error.show { display:block; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+/* === ACCESSIBILITÉ WCAG 2.1 AA === */
+.skip-link { position:absolute; top:-100px; left:0; background:var(--navy); color:white; padding:10px 18px; z-index:200; text-decoration:none; font-weight:600; transition:top .15s; border-radius:0 0 8px 0; }
+.skip-link:focus { top:0; }
+*:focus-visible { outline:3px solid var(--orange) !important; outline-offset:3px !important; }
+
+/* Bouton accessibilité INTÉGRÉ AU HEADER — WCAG 2.5.5 cible 48x48 mini + label permanent */
+.a11y-btn-header { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; min-height: 48px; background: white; color: var(--navy); border: 2px solid var(--navy); border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 600; font-family: inherit; transition: all .15s; }
+.a11y-btn-header:hover { background: var(--navy); color: white; transform: translateY(-1px); }
+.a11y-btn-header:focus-visible { outline: 3px solid #FFB800; outline-offset: 3px; }
+.a11y-btn-header svg { flex-shrink: 0; }
+@media (max-width: 640px) {
+  .a11y-btn-header span { display: none; }
+  .a11y-btn-header { padding: 10px 12px; min-width: 48px; }
+}
+
+/* Panneau accessibilité */
+.a11y-panel { position:fixed; top:80px; right:14px; z-index:150; background:white; border:2px solid var(--navy); border-radius:12px; padding:18px; width:300px; box-shadow:0 8px 24px rgba(0,0,0,.15); display:none; }
+.a11y-panel.open { display:block; }
+.a11y-panel h3 { margin:0 0 12px; font-size:14px; color:var(--navy); display:flex; align-items:center; justify-content:space-between; }
+.a11y-panel .close { background:none; border:none; cursor:pointer; font-size:20px; color:var(--muted); line-height:1; padding:0; }
+.a11y-row { padding:10px 0; border-bottom:1px solid var(--border); }
+.a11y-row:last-child { border-bottom:none; }
+.a11y-row .label { font-size:12px; color:var(--navy); font-weight:600; margin-bottom:6px; display:block; }
+.a11y-buttons { display:flex; gap:6px; }
+.a11y-btn { flex:1; padding:8px 6px; border:1.5px solid var(--border); background:white; border-radius:6px; cursor:pointer; font-size:12px; color:var(--navy); transition:all .12s; }
+.a11y-btn:hover { border-color:var(--orange); }
+.a11y-btn.active { border-color:var(--orange); background:rgba(243,146,0,.1); font-weight:600; }
+.a11y-toggle { display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+.a11y-toggle .text { font-size:13px; color:var(--navy); }
+.a11y-toggle .sw { width:36px; height:20px; background:#D1D5DB; border-radius:10px; position:relative; transition:.15s; flex-shrink:0; }
+.a11y-toggle .sw::after { content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; background:white; border-radius:50%; transition:.15s; }
+.a11y-toggle input { display:none; }
+.a11y-toggle input:checked + .sw { background:var(--orange); }
+.a11y-toggle input:checked + .sw::after { left:18px; }
+
+/* Mode TEXTE GRAND */
+body.a11y-text-large { font-size:18px; }
+body.a11y-text-large .h1 { font-size:32px !important; }
+body.a11y-text-large .h2 { font-size:24px !important; }
+body.a11y-text-large .h3 { font-size:18px !important; }
+body.a11y-text-large .lead, body.a11y-text-large p, body.a11y-text-large .label, body.a11y-text-large .input, body.a11y-text-large .radio, body.a11y-text-large .btn { font-size:16px !important; }
+body.a11y-text-xlarge { font-size:21px; }
+body.a11y-text-xlarge .h1 { font-size:38px !important; }
+body.a11y-text-xlarge .h2 { font-size:28px !important; }
+body.a11y-text-xlarge .h3 { font-size:21px !important; }
+body.a11y-text-xlarge .lead, body.a11y-text-xlarge p, body.a11y-text-xlarge .label, body.a11y-text-xlarge .input, body.a11y-text-xlarge .radio, body.a11y-text-xlarge .btn { font-size:18px !important; }
+
+/* Mode CONTRASTE ÉLEVÉ */
+body.a11y-contrast { background:#000 !important; color:#fff !important; }
+body.a11y-contrast .card, body.a11y-contrast .hero, body.a11y-contrast .programme-card, body.a11y-contrast .result-head, body.a11y-contrast .kpi, body.a11y-contrast .topbar, body.a11y-contrast .a11y-panel { background:#000 !important; color:#fff !important; border:2px solid #FFD800 !important; }
+body.a11y-contrast .h1, body.a11y-contrast .h2, body.a11y-contrast .h3, body.a11y-contrast .pc-title, body.a11y-contrast .brand-name, body.a11y-contrast .kpi-val { color:#FFD800 !important; }
+body.a11y-contrast .lead, body.a11y-contrast p, body.a11y-contrast .pc-desc, body.a11y-contrast .pc-tag-box strong, body.a11y-contrast .reasons li { color:#fff !important; }
+body.a11y-contrast .btn-primary { background:#FFD800 !important; color:#000 !important; border:2px solid #FFD800 !important; }
+body.a11y-contrast .btn-outline { background:#000 !important; color:#FFD800 !important; border:2px solid #FFD800 !important; }
+body.a11y-contrast a { color:#FFD800 !important; text-decoration:underline !important; }
+
+/* Mode DYSLEXIE — lettres + espace + lignes plus aérées */
+body.a11y-dyslexia { font-family: 'Atkinson Hyperlegible', -apple-system, sans-serif !important; letter-spacing:0.06em !important; line-height:1.85 !important; word-spacing:0.16em !important; }
+body.a11y-dyslexia p, body.a11y-dyslexia .lead, body.a11y-dyslexia li { line-height:2 !important; }
+body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
+
+/* TTS reading state */
+.a11y-reading { background:rgba(243,146,0,.15) !important; outline:2px solid var(--orange); }
+
+/* Réduction des animations pour utilisateurs sensibles */
+@media (prefers-reduced-motion: reduce) {
+  * { animation:none !important; transition:none !important; }
+}
+
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+<div class="a11y-panel" id="a11y-panel" role="dialog" aria-labelledby="a11y-title" aria-modal="false">
+  <h3 id="a11y-title">♿ Accessibilité <button class="close" id="a11y-close" aria-label="Fermer le panneau d'accessibilité">×</button></h3>
+  <div class="a11y-row">
+    <span class="label">Taille du texte</span>
+    <div class="a11y-buttons" role="radiogroup" aria-label="Choisir la taille du texte">
+      <button type="button" class="a11y-btn active" data-text-size="normal" aria-pressed="true">A</button>
+      <button type="button" class="a11y-btn" data-text-size="large" aria-pressed="false">A+</button>
+      <button type="button" class="a11y-btn" data-text-size="xlarge" aria-pressed="false">A++</button>
+    </div>
+  </div>
+  <div class="a11y-row">
+    <label class="a11y-toggle">
+      <span class="text">Contraste élevé</span>
+      <input type="checkbox" id="a11y-contrast" aria-label="Activer le contraste élevé">
+      <span class="sw" aria-hidden="true"></span>
+    </label>
+  </div>
+  <div class="a11y-row">
+    <label class="a11y-toggle">
+      <span class="text">Mode dyslexie</span>
+      <input type="checkbox" id="a11y-dyslexia" aria-label="Activer le mode adapté à la dyslexie">
+      <span class="sw" aria-hidden="true"></span>
+    </label>
+  </div>
+  <div class="a11y-row">
+    <label class="a11y-toggle">
+      <span class="text">Lecture facile (FALC)</span>
+      <input type="checkbox" id="a11y-easyread" aria-label="Activer la lecture facile : texte plus grand, espacement augmenté, police adaptée">
+      <span class="sw" aria-hidden="true"></span>
+    </label>
+    <p style="font-size:10px;color:var(--muted);margin:6px 0 0;">Texte plus grand, espacement augmenté, police Atkinson Hyperlegible.</p>
+  </div>
+  <div class="a11y-row">
+    <label class="a11y-toggle">
+      <span class="text">Lecture vocale</span>
+      <input type="checkbox" id="a11y-tts" aria-label="Activer la lecture vocale automatique">
+      <span class="sw" aria-hidden="true"></span>
+    </label>
+    <p style="font-size:10px;color:var(--muted);margin:6px 0 0;">Active la synthèse vocale au clic sur un texte.</p>
+  </div>
+  <p style="font-size:10px;color:var(--muted);margin:10px 0 0;text-align:center;">Conforme WCAG 2.1 AA · RGAA</p>
+</div>
+<div class="demo-banner">Démo interactive — données fictives à but de démonstration. Aucune donnée n'est transmise.</div>
+<header class="topbar">
+  <div class="brand"><span class="dot"></span><span class="brand-name">OrientaPro</span><span class="brand-sub">MVP démo</span></div>
+  <button class="a11y-btn-header" id="a11y-fab" aria-label="Ouvrir les options d'accessibilité : taille du texte, contraste, animations, lecture vocale" aria-expanded="false" aria-controls="a11y-panel" title="Options d'accessibilité">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="5" r="2"/>
+      <path d="M5 8h14"/>
+      <path d="M9 8v6l-2 7"/>
+      <path d="M15 8v6l2 7"/>
+      <path d="M9 14h6"/>
+    </svg>
+    <span>Accessibilité</span>
+  </button>
+  <nav class="tabs">
+    <button data-go="landing" class="active">Accueil</button>
+    <button data-go="diagnostic">Diagnostic</button>
+    <button data-go="resultats" class="lock" id="tab-resultats">Résultats</button>
+    <button data-go="login">Espace structure</button>
+    <button data-go="dashboard" class="lock" id="tab-dashboard">Dashboard</button>
+    <button data-go="catalogue" class="lock" id="tab-catalogue">Catalogue</button>
+  </nav>
+</header>
+<div class="app" id="main-content" role="main">
+<section class="screen active" data-screen="landing">
+  <div class="hero">
+    <p class="eyebrow">Orientation entrepreneuriale inclusive · 100% gratuit</p>
+    <h1 class="h1">En 15 minutes,<br><span class="accent">trouvez l'accompagnement et les aides faites pour vous.</span></h1>
+    <p class="lead"><strong>2 800 € à 35 000 € d'aides</strong> existent pour les porteurs <strong>QPV, RQTH</strong> et ruraux — <strong>7 sur 10 les ignorent</strong>. On vous évite 3 semaines de recherche entre BGE, ADIE, AGEFIPH, NACRE et Quartiers 2030.</p>
+    <div class="hero-cta">
+      <button class="btn btn-primary" data-go="diagnostic" aria-label="Démarrer le diagnostic gratuit, 15 minutes">Démarrer mon diagnostic gratuit →</button>
+      <button class="btn btn-ghost" data-go="exemple" aria-label="Voir un exemple de résultat de diagnostic">Voir un exemple de résultat</button>
+    </div>
+    <p class="hero-proof" aria-live="polite"><span class="dot-live" aria-hidden="true"></span><strong id="liveCount">1 247</strong> porteurs orientés ce mois · <strong>94%</strong> repartent avec au moins 2 structures pertinentes</p>
+    <p class="hero-trust">Sans inscription · Données protégées (RGPD) · Compatible lecteur d'écran · <a href="#how-it-works" data-go-section="how-it-works">Je suis une structure d'accompagnement →</a></p>
+  </div>
+  <div class="pillars" id="how-it-works">
+    <div class="pillar"><div class="pillar-num">01</div><h3>Porteurs de projet</h3><p>Diagnostic 15 min, identification RQTH / QPV, structures recommandées et aides mobilisables estimées.</p></div>
+    <div class="pillar pillar-pro">
+      <div class="pillar-num">02</div>
+      <p class="pillar-eyebrow">Pour structures · BGE, ADIE, CitésLab, France Active, CCI</p>
+      <h3>Recevez 2× plus de porteurs déjà qualifiés — et prouvez votre impact.</h3>
+      <ul class="pillar-bullets">
+        <li><strong>−50% de RDV perdus</strong> : porteurs pré-qualifiés sur vos critères (territoire, statut, stade).</li>
+        <li><strong>+30% de conversion</strong> dossiers : besoin, blocage et échéance documentés avant le 1er contact.</li>
+        <li><strong>Reporting impact QPV/RQTH</strong> RGPD-by-design, exportable ANCT / Région / AGEFIPH (CSV/JSON, marque blanche possible).</li>
+        <li><strong>Zéro intégration CRM</strong> : on s'adapte à votre outil. Test gratuit en 48 h.</li>
+      </ul>
+      <p class="pillar-cta">
+        <a href="#login" data-go="login" class="btn btn-ghost btn-sm" aria-label="Accéder à la démo structure">Je suis structure — accès démo →</a>
+        <span class="pillar-trust">Conforme RGPD · Hébergé en France · Label France Inclusion en cours</span>
+      </p>
+    </div>
+    <div class="pillar"><div class="pillar-num">03</div><h3>Partenaires institutionnels</h3><p>Reporting d'impact, marque blanche, intégrations Bpifrance / Agefiph / ANCT / Régions.</p></div>
+  </div>
+  <div class="impact-strip">
+    <div><div class="impact-num">12</div><div class="impact-lbl">Structures pilotes engagées</div></div>
+    <div><div class="impact-num">89</div><div class="impact-lbl">Porteurs accompagnés</div></div>
+    <div><div class="impact-num">42%</div><div class="impact-lbl">Issus de QPV</div></div>
+    <div><div class="impact-num">28%</div><div class="impact-lbl">Reconnus RQTH</div></div>
+  </div>
+</section>
+
+<section class="screen" data-screen="diagnostic">
+  <div class="card">
+    <div class="steps-progress"><span id="step-label">Étape 1 sur 5</span><span id="step-pct">20 %</span></div>
+    <div class="bar"><div id="step-bar" style="width:20%"></div></div>
+    <div id="step-1">
+      <h2 class="h2">Votre profil</h2>
+      <p class="lead">Quelques informations pour personnaliser votre orientation.</p>
+      <div class="field"><label class="label">Tranche d'âge *</label>
+        <div class="radio-grid" data-radio="trancheAge">
+          <div class="radio" data-val="18-25">18-25</div><div class="radio" data-val="26-35">26-35</div><div class="radio" data-val="36-45">36-45</div><div class="radio" data-val="46-55">46-55</div><div class="radio" data-val="56+">56+</div>
+        </div></div>
+      <div class="field"><label class="label">Situation actuelle *</label>
+        <div class="radio-grid" data-radio="statutActuel">
+          <div class="radio" data-val="Salarié">Salarié</div><div class="radio" data-val="Demandeur emploi">Demandeur emploi</div><div class="radio" data-val="Étudiant">Étudiant</div><div class="radio" data-val="Indépendant">Indépendant</div><div class="radio" data-val="Autre">Autre</div>
+        </div></div>
+    </div>
+    <div id="step-2" style="display:none">
+      <h2 class="h2">Votre situation <span class="step-time-hint">⏱ ~30 s</span></h2>
+      <p class="lead">Une adresse suffit — nous déduisons automatiquement votre région et votre éligibilité QPV.</p>
+      <div class="field">
+        <label class="label" for="diag-adresse">Adresse *</label>
+        <input id="diag-adresse" type="text" class="input" placeholder="Ex. 15 Avenue Henri Barbusse, 93300 Aubervilliers" autocomplete="off" />
+        <div id="qpv-status" style="margin-top:10px;font-size:12px;display:none;"></div>
+        <div id="region-detected" class="region-info" style="display:none;">📍 Région détectée : <strong id="region-name"></strong></div>
+        <div class="demo-chips">
+          <span class="label">Tester :</span>
+          <button type="button" class="demo-chip qpv" data-fill-address="15 Avenue Henri Barbusse, 93300 Aubervilliers">Adresse QPV</button>
+          <button type="button" class="demo-chip no-qpv" data-fill-address="1 Rue de la Paix, 75002 Paris">Hors QPV</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Profil <span class="tooltip-i" data-tip="Le statut RQTH ouvre droit à des aides Agefiph dédiées : Coup de pouce création jusqu\'à 6 300 €, accompagnement spécialisé h\'up entrepreneurs. Le statut QPV active les dispositifs Quartiers 2030 (ANCT) et le prêt d\'honneur Initiative France majoré.">i</span></label>
+        <label class="check"><input type="checkbox" id="diag-rqth"> Je suis reconnu Travailleur Handicapé (RQTH) <span style="color:var(--success);font-size:11px;margin-left:4px;">+1 500 à 6 300 € d\'aide Agefiph</span></label>
+        <label class="check"><input type="checkbox" id="diag-qpv"> Je réside en Quartier Prioritaire de la Ville (QPV) <span style="color:var(--success);font-size:11px;margin-left:4px;">Dispositif Quartiers 2030 (ANCT)</span></label>
+        <p class="help" style="margin-top:8px;font-size:10px;color:var(--muted);">🔗 En production : détection via <a href="https://api-adresse.data.gouv.fr" target="_blank" style="color:var(--orange);">BAN data.gouv.fr</a> + <a href="https://apicarto.ign.fr" target="_blank" style="color:var(--orange);">API Carto IGN</a> (source ANCT).</p>
+      </div>
+      <input type="hidden" id="diag-region" />
+    </div>
+    <div id="step-3" style="display:none">
+      <h2 class="h2">Votre projet</h2>
+      <p class="lead">Décrivez brièvement votre projet entrepreneurial.</p>
+      <div class="field"><label class="label">Secteur d'activité *</label>
+        <div class="radio-grid" data-radio="secteurProjet">
+          <div class="radio" data-val="Commerce">Commerce</div><div class="radio" data-val="Services">Services</div><div class="radio" data-val="Restauration">Restauration</div><div class="radio" data-val="Tech / Numérique">Tech / Numérique</div><div class="radio" data-val="Artisanat">Artisanat</div><div class="radio" data-val="Autre">Autre</div>
+        </div></div>
+      <div class="field"><label class="label">Maturité du projet *</label>
+        <div class="radio-grid" data-radio="maturiteProjet">
+          <div class="radio" data-val="Idée">Idée</div><div class="radio" data-val="Étude en cours">Étude en cours</div><div class="radio" data-val="Prêt à lancer">Prêt à lancer</div><div class="radio" data-val="Déjà lancé">Déjà lancé</div>
+        </div></div>
+    </div>
+    <div id="step-4" style="display:none">
+      <h2 class="h2">Votre besoin</h2>
+      <p class="lead">Plus on comprend votre situation, plus l'orientation sera juste. Aucune réponse ne vous engage.</p>
+      <div class="field"><label class="label">1. Quel accompagnement vous est le plus utile aujourd'hui ? *</label>
+        <div class="radio-grid" data-radio="besoinPrincipal">
+          <div class="radio" data-val="Diagnostic / Accompagnement">Diagnostic / Accompagnement</div><div class="radio" data-val="Financement">Financement</div><div class="radio" data-val="Formation">Formation</div><div class="radio" data-val="Mise en réseau">Mise en réseau</div><div class="radio" data-val="Hébergement / Locaux">Hébergement / Locaux</div>
+        </div></div>
+      <div class="field"><label class="label">2. Quel est votre principal blocage <strong>aujourd'hui</strong> ? *</label>
+        <div class="radio-grid" data-radio="blocagePrincipal">
+          <div class="radio" data-val="Pas de financement">Je n'ai pas de financement</div><div class="radio" data-val="Manque de méthodologie">Je manque de méthodologie</div><div class="radio" data-val="Isolement">Je suis isolé(e)</div><div class="radio" data-val="Pas de garant">Je n'ai pas de garant</div><div class="radio" data-val="Ne sait pas par où commencer">Je ne sais pas par où commencer</div>
+        </div></div>
+      <div class="field q-block-soft"><label class="label">3. Avez-vous une échéance ? <span style="font-weight:400;color:var(--muted);font-size:11px;">(facultatif)</span></label>
+        <div class="chip-row" data-radio="echeance">
+          <button type="button" class="chip" data-val="Urgent <3 mois">Oui, dans moins de 3 mois</button>
+          <button type="button" class="chip" data-val="3-6 mois">Oui, dans 3 à 6 mois</button>
+          <button type="button" class="chip" data-val="Pas d'urgence">Pas d'urgence</button>
+        </div></div>
+      <div class="field"><label class="label" for="diag-desc">4. Voulez-vous préciser quelque chose ? <span style="font-weight:400;color:var(--muted);font-size:11px;">(facultatif)</span></label><textarea id="diag-desc" rows="3" class="textarea" placeholder="Ex : je porte un projet de food-truck, j'ai déjà un local pressenti, mais je n'arrive pas à monter le prévisionnel…" maxlength="500"></textarea>
+        <p class="help" style="margin-top:6px;font-size:11px;color:var(--muted);">Ces précisions servent uniquement à personnaliser votre synthèse. Elles ne sont pas partagées sans votre accord.</p>
+      </div>
+    </div>
+    <div id="step-5" style="display:none">
+      <h2 class="h2">Réception du compte-rendu</h2>
+      <p class="lead">Choisissez comment vous souhaitez recevoir vos résultats.</p>
+      <div class="field"><label class="label" for="diag-email">Adresse e-mail (facultatif)</label><input id="diag-email" type="email" class="input" placeholder="vous@exemple.fr" /></div>
+      <div class="field"><label class="label">Transmission à une structure</label>
+        <label class="check"><input type="checkbox" id="diag-consent"><span>J'accepte que mon dossier soit transmis à la structure d'accompagnement la mieux adaptée (RGPD).</span></label>
+      </div>
+    </div>
+    <div class="err" id="diag-err"></div>
+    <div class="step-nav"><button class="btn btn-ghost" id="btn-prev" style="visibility:hidden">← Précédent</button><button class="btn btn-primary" id="btn-next">Suivant →</button></div>
+  </div>
+</section>
+
+<section class="screen" data-screen="resultats"><div id="resultats-container"></div></section>
+
+<section class="screen" data-screen="login">
+  <div class="login-wrap">
+    <div class="card">
+      <h2 class="h2">Espace structure</h2>
+      <p class="lead">Connectez-vous pour gérer votre catalogue et consulter les diagnostics reçus.</p>
+      <div class="demo-fastlogin">
+        <span>🎯 <strong>Mode démo</strong> — accès rapide sans authentification</span>
+        <button class="btn btn-primary btn-sm" onclick="demoLogin(1)">Accès démo BGE →</button>
+      </div>
+      <form id="login-form" style="margin-top:14px;">
+        <div class="field"><label class="label" for="login-email">E-mail</label><input id="login-email" type="email" class="input" required /></div>
+        <div class="field"><label class="label" for="login-pwd">Mot de passe</label><input id="login-pwd" type="password" class="input" required /></div>
+        <div class="err" id="login-err"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Se connecter</button>
+      </form>
+      <div class="demo-accounts">
+        <strong>Comptes démonstration (clic pour pré-remplir)</strong>
+        <ul style="padding:0; margin:0;">
+          <li data-demo="demo-bge@orientapro.fr">→ <code>demo-bge@orientapro.fr</code> — BGE Grand Est</li>
+          <li data-demo="demo-adie@orientapro.fr">→ <code>demo-adie@orientapro.fr</code> — ADIE Île-de-France</li>
+          <li data-demo="demo-hup@orientapro.fr">→ <code>demo-hup@orientapro.fr</code> — h'up entrepreneurs (RQTH)</li>
+          <li data-demo="demo-fa@orientapro.fr">→ <code>demo-fa@orientapro.fr</code> — France Active Grand Est</li>
+        </ul>
+        <p style="margin-top:8px; margin-bottom:0;">Mot de passe : <code>demo2026</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" data-screen="dashboard"><div id="dashboard-container"></div></section>
+<section class="screen" data-screen="catalogue"><div id="catalogue-container"></div></section>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <h4>OrientaPro</h4>
+      <p style="font-size:13px; color:rgba(255,255,255,.8);">L'orientation entrepreneuriale, augmentée par l'IA souveraine et les APIs publiques.</p>
+      <div class="badges"><span>RGPD</span><span>RGAA WCAG 2.1 AA</span><span>IA souveraine FR</span></div>
+    </div>
+    <div>
+      <h4>Partenaires &amp; structures pilotes</h4>
+      <div class="partners"><span class="partner">BGE</span><span class="partner">ADIE</span><span class="partner">France Active</span><span class="partner">h'up entrepreneurs</span><span class="partner">Bpifrance</span><span class="partner">Agefiph</span></div>
+    </div>
+  </div>
+  <div class="footer-mistral">
+    <svg class="mistral-logo" viewBox="0 0 36 36" aria-hidden="true"><rect x="0" y="0" width="12" height="12" fill="#FFD800"/><rect x="12" y="0" width="12" height="12" fill="#FFAF00"/><rect x="24" y="0" width="12" height="12" fill="#FF8205"/><rect x="0" y="12" width="12" height="12" fill="#FFAF00"/><rect x="12" y="12" width="12" height="12" fill="#FA500F"/><rect x="24" y="12" width="12" height="12" fill="#E10500"/><rect x="0" y="24" width="12" height="12" fill="#FA500F"/><rect x="12" y="24" width="12" height="12" fill="#E10500"/><rect x="24" y="24" width="12" height="12" fill="#840000"/></svg>
+    <span>Analyse propulsée par <strong lang="en">Mistral AI</strong> — IA souveraine française, hébergement européen, conforme RGPD.</span>
+  </div>
+  <nav class="footer-legal" aria-label="Liens légaux">
+    <button type="button" class="link-as-button" data-open-legal="mentions" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;font-size:11px;text-decoration:none;">Mentions légales</button>
+    <span class="sep">·</span>
+    <button type="button" class="link-as-button" data-open-legal="confidentialite" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;font-size:11px;">Politique de confidentialité</button>
+    <span class="sep">·</span>
+    <button type="button" class="link-as-button" data-open-legal="cookies" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;font-size:11px;">Cookies</button>
+    <span class="sep">·</span>
+    <button type="button" class="link-as-button" data-open-legal="cgu" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;font-size:11px;">CGU</button>
+    <span class="sep">·</span>
+    <a href="mailto:contact@orientapro.fr">Contact</a>
+  </nav>
+</footer>
+</div>
+
+<!-- BANDEAU COOKIES -->
+<div class="cookie-banner" id="cookie-banner" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-desc">
+  <p id="cookie-title" style="font-weight:600;margin-bottom:6px;">🍪 Vos préférences</p>
+  <p id="cookie-desc">Nous utilisons uniquement des cookies techniques nécessaires au fonctionnement (préférences d'accessibilité). Aucun cookie publicitaire ni tracking tiers.</p>
+  <div class="cookie-banner-actions">
+    <button class="cookie-accept" id="cookie-accept" aria-label="Accepter les cookies techniques">Accepter</button>
+    <button class="cookie-refuse" id="cookie-refuse" aria-label="Refuser et continuer sans cookies">Refuser</button>
+    <button class="cookie-config" data-open-legal="cookies" aria-label="En savoir plus sur les cookies">En savoir plus</button>
+  </div>
+</div>
+
+<!-- MODALES LÉGALES -->
+<div class="legal-modal" id="modal-mentions" role="dialog" aria-labelledby="mentions-title" aria-modal="true">
+  <div class="legal-modal-content">
+    <button class="close-modal" data-close-legal aria-label="Fermer la fenêtre">×</button>
+    <h2 id="mentions-title">Mentions légales</h2>
+    <p class="updated">Mise à jour : mai 2026</p>
+    <h3>Éditeur</h3>
+    <p>OrientaPro — projet en phase pré-bêta. Forme juridique : en cours de constitution. Contact éditorial : <a href="mailto:contact@orientapro.fr">contact@orientapro.fr</a>. Directeur de la publication : à confirmer lors de la constitution juridique.</p>
+    <h3>Hébergeur</h3>
+    <p>GitHub Pages — GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis. <a href="https://github.com" target="_blank" rel="noopener">github.com</a></p>
+    <h3>Propriété intellectuelle</h3>
+    <p>L'ensemble des contenus (textes, images, code, logo, design) présents sur ce site sont la propriété d'OrientaPro ou de leurs auteurs respectifs. Toute reproduction, totale ou partielle, sans autorisation écrite préalable est interdite (Code de la Propriété Intellectuelle).</p>
+    <h3>Crédits</h3>
+    <p>Données QPV : ANCT — Agence Nationale de la Cohésion des Territoires. APIs publiques de référence : <a href="https://api-adresse.data.gouv.fr" target="_blank" rel="noopener">BAN data.gouv.fr</a> et <a href="https://apicarto.ign.fr" target="_blank" rel="noopener">API Carto IGN</a>. IA souveraine : <span lang="en">Mistral AI</span>.</p>
+  </div>
+</div>
+
+<div class="legal-modal" id="modal-confidentialite" role="dialog" aria-labelledby="conf-title" aria-modal="true">
+  <div class="legal-modal-content">
+    <button class="close-modal" data-close-legal aria-label="Fermer la fenêtre">×</button>
+    <h2 id="conf-title">Politique de confidentialité</h2>
+    <p class="updated">Mise à jour : mai 2026 — conforme RGPD (UE 2016/679)</p>
+    <h3>Responsable de traitement</h3>
+    <p>OrientaPro — <a href="mailto:dpo@orientapro.fr">dpo@orientapro.fr</a></p>
+    <h3>Données collectées (démo et production)</h3>
+    <ul>
+      <li><strong>Diagnostic porteur</strong> : tranche d'âge, statut, région, ville, statut RQTH / QPV (facultatif), secteur d'activité, maturité projet, besoin principal, email (facultatif)</li>
+      <li><strong>Espace structure</strong> : nom de structure, email, programmes au catalogue</li>
+      <li><strong>Données techniques</strong> : préférences d'accessibilité (localStorage), aucun cookie tiers</li>
+    </ul>
+    <h3>Finalités</h3>
+    <p>Orientation vers les structures d'accompagnement et identification des aides mobilisables. Transmission de votre dossier <strong>uniquement avec votre consentement explicite</strong>.</p>
+    <h3>Base légale</h3>
+    <p>Article 6.1.a du RGPD — consentement de la personne concernée.</p>
+    <h3>Durée de conservation</h3>
+    <p>12 mois maximum pour les diagnostics. Préférences d'accessibilité : tant que vous ne les supprimez pas.</p>
+    <h3>Destinataires</h3>
+    <p>Structures d'accompagnement sélectionnées par vous-même, exclusivement. Aucune transmission à des tiers commerciaux.</p>
+    <h3>Transferts hors UE</h3>
+    <p>Aucun transfert hors Union Européenne. L'IA Mistral est hébergée en France.</p>
+    <h3>Vos droits</h3>
+    <p>Vous disposez des droits d'accès, de rectification, d'effacement, de portabilité, de limitation et d'opposition. Pour les exercer : <a href="mailto:dpo@orientapro.fr">dpo@orientapro.fr</a>. Réclamation auprès de la <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.</p>
+    <h3>Décisions automatisées</h3>
+    <p>Le moteur de matching est totalement explicable (score sur 100 + raisons). Aucune décision automatisée sans intervention humaine au sens de l'article 22 RGPD.</p>
+  </div>
+</div>
+
+<div class="legal-modal" id="modal-cookies" role="dialog" aria-labelledby="cook-title" aria-modal="true">
+  <div class="legal-modal-content">
+    <button class="close-modal" data-close-legal aria-label="Fermer la fenêtre">×</button>
+    <h2 id="cook-title">Gestion des cookies</h2>
+    <p class="updated">Mise à jour : mai 2026</p>
+    <h3>Cookies techniques (nécessaires)</h3>
+    <p>Nous utilisons uniquement le stockage local (<code>localStorage</code>) de votre navigateur pour mémoriser vos préférences d'accessibilité (taille du texte, contraste, mode dyslexie, lecture vocale). Ces données ne quittent jamais votre navigateur.</p>
+    <h3>Cookies tiers</h3>
+    <p>Aucun. Pas de Google Analytics, pas de Facebook Pixel, pas de tracking publicitaire.</p>
+    <h3>Synthèse vocale</h3>
+    <p>La lecture vocale utilise l'API <span lang="en">Web Speech</span> native de votre navigateur. Aucun texte n'est envoyé vers un serveur externe.</p>
+    <h3>Suppression</h3>
+    <p>Vous pouvez supprimer ces préférences à tout moment via les paramètres de votre navigateur (Effacer les données du site).</p>
+  </div>
+</div>
+
+<div class="legal-modal" id="modal-cgu" role="dialog" aria-labelledby="cgu-title" aria-modal="true">
+  <div class="legal-modal-content">
+    <button class="close-modal" data-close-legal aria-label="Fermer la fenêtre">×</button>
+    <h2 id="cgu-title">Conditions Générales d'Utilisation</h2>
+    <p class="updated">Mise à jour : mai 2026</p>
+    <h3>1. Objet</h3>
+    <p>OrientaPro propose un service gratuit d'orientation vers des structures d'accompagnement entrepreneurial. La présente version est une démonstration à des fins de présentation (notamment Plug&Start, Station Numix).</p>
+    <h3>2. Engagements de l'utilisateur</h3>
+    <p>L'utilisateur s'engage à fournir des informations sincères. Le service est destiné à des personnes physiques majeures résidant en France.</p>
+    <h3>3. Disponibilité</h3>
+    <p>Le service est fourni « en l'état », sans garantie de disponibilité absolue. OrientaPro met en œuvre tous les moyens raisonnables pour assurer la continuité du service.</p>
+    <h3>4. Absence d'obligation de résultat</h3>
+    <p>Les recommandations de structures et d'aides constituent des orientations à titre indicatif. Elles ne se substituent pas à un conseil personnalisé d'un professionnel.</p>
+    <h3>5. Responsabilité</h3>
+    <p>OrientaPro ne pourra être tenu responsable de l'usage qui sera fait des recommandations. Les décisions finales (constitution de dossier, demande d'aide, choix de structure) relèvent de la seule responsabilité de l'utilisateur.</p>
+    <h3>6. Droit applicable</h3>
+    <p>Les présentes CGU sont régies par le droit français. En cas de litige, médiation préalable auprès du Médiateur National de la Consommation. Compétence des tribunaux français.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+const MISTRAL_SVG = `<svg class="mistral-logo" viewBox="0 0 36 36"><rect x="0" y="0" width="12" height="12" fill="#FFD800"/><rect x="12" y="0" width="12" height="12" fill="#FFAF00"/><rect x="24" y="0" width="12" height="12" fill="#FF8205"/><rect x="0" y="12" width="12" height="12" fill="#FFAF00"/><rect x="12" y="12" width="12" height="12" fill="#FA500F"/><rect x="24" y="12" width="12" height="12" fill="#E10500"/><rect x="0" y="24" width="12" height="12" fill="#FA500F"/><rect x="12" y="24" width="12" height="12" fill="#E10500"/><rect x="24" y="24" width="12" height="12" fill="#840000"/></svg>`;
+
+const REGIONS = ['Auvergne-Rhône-Alpes', 'Bourgogne-Franche-Comté', 'Bretagne', 'Centre-Val de Loire', 'Corse', 'Grand Est', 'Hauts-de-France', 'Île-de-France', 'Normandie', 'Nouvelle-Aquitaine', 'Occitanie', 'Pays de la Loire', "Provence-Alpes-Côte d'Azur"];
+const STRUCTURES = [
+  { id: 1, nom: 'BGE Grand Est', email: 'demo-bge@orientapro.fr', region: 'Grand Est', ville: 'Troyes' },
+  { id: 2, nom: 'ADIE Île-de-France', email: 'demo-adie@orientapro.fr', region: 'Île-de-France', ville: 'Paris' },
+  { id: 3, nom: "h'up entrepreneurs", email: 'demo-hup@orientapro.fr', region: 'National', ville: 'Paris' },
+  { id: 4, nom: 'France Active Grand Est', email: 'demo-fa@orientapro.fr', region: 'Grand Est', ville: 'Strasbourg' },
+];
+let PROGRAMMES = [
+  { id: 1, structureId: 1, nom: 'Parcours Créa BGE', description: "Accompagnement complet à la création d'entreprise sur 6 mois : étude de marché, business plan, prévisionnel financier, démarches administratives.", ciblePublic: 'Tous', zoneGeographique: 'Grand Est', capaciteAnnuelle: 200, prisEnCharge: true, duree: '6 mois', format: 'Hybride', contact: 'contact@bge-grandest.fr' },
+  { id: 2, structureId: 1, nom: 'NACRE Grand Est', description: "Nouvel Accompagnement à la Création et la Reprise d'Entreprise. Aide au montage du projet et prêt à taux zéro jusqu'à 10 000 €.", ciblePublic: 'Demandeurs emploi', zoneGeographique: 'Grand Est', capaciteAnnuelle: 80, prisEnCharge: true, duree: '3 ans', format: 'Présentiel', contact: null },
+  { id: 3, structureId: 1, nom: 'Accompagnement Quartiers 2030', description: 'Programme dédié aux porteurs de projet issus des quartiers prioritaires. Coaching personnalisé, accès à des financements adaptés, mise en réseau.', ciblePublic: 'QPV', zoneGeographique: 'Grand Est', capaciteAnnuelle: 100, prisEnCharge: true, duree: '12 mois', format: 'Hybride', contact: null },
+  { id: 4, structureId: 2, nom: 'Microcrédit Création', description: "Prêt jusqu'à 12 000 € pour démarrer une activité indépendante, sans condition de diplôme ni d'apport personnel.", ciblePublic: 'Tous', zoneGeographique: 'Île-de-France', capaciteAnnuelle: 500, prisEnCharge: true, duree: 'Variable', format: 'Hybride', contact: 'idf@adie.org' },
+  { id: 5, structureId: 2, nom: 'CréaJeunes', description: 'Programme dédié aux moins de 32 ans souhaitant créer leur entreprise. Formation, coaching et financement.', ciblePublic: 'Jeunes', zoneGeographique: 'Île-de-France', capaciteAnnuelle: 150, prisEnCharge: true, duree: '4 mois', format: 'Présentiel', contact: null },
+  { id: 6, structureId: 3, nom: 'Parcours RQTH Entrepreneur', description: 'Accompagnement spécialisé Travailleurs Indépendants Handicapés : coaching par experts, adaptation du poste, accès aux dispositifs Agefiph.', ciblePublic: 'RQTH', zoneGeographique: 'National', capaciteAnnuelle: 300, prisEnCharge: true, duree: '12 mois', format: 'Distanciel', contact: 'contact@h-up.fr' },
+  { id: 7, structureId: 3, nom: 'Mentorat TIH', description: "Mise en relation avec un mentor TIH expérimenté pendant 6 mois. Partage d'expérience et réseau professionnel.", ciblePublic: 'RQTH', zoneGeographique: 'National', capaciteAnnuelle: 100, prisEnCharge: true, duree: '6 mois', format: 'Distanciel', contact: null },
+  { id: 8, structureId: 4, nom: 'Garantie Égalité Femmes', description: "Garantie bancaire dédiée aux créatrices d'entreprise. Sécurise jusqu'à 80 % du prêt bancaire.", ciblePublic: 'Femmes', zoneGeographique: 'Grand Est', capaciteAnnuelle: 50, prisEnCharge: true, duree: 'Variable', format: 'Hybride', contact: null },
+  { id: 9, structureId: 4, nom: "Pacte d'Émergence", description: "Subvention de 5 000 à 10 000 € pour les projets à forte utilité sociale, en complément d'un accompagnement structurant.", ciblePublic: 'Tous', zoneGeographique: 'Grand Est', capaciteAnnuelle: 30, prisEnCharge: true, duree: '12 mois', format: 'Hybride', contact: null },
+];
+const AIDES_CATALOG = [
+  { id:'acre', nom:"ACRE", source:"URSSAF / France Travail", montant:"Exonération charges", desc:"Exonération partielle de charges sociales la 1ère année.", eligible:(p)=>true },
+  { id:'nacre', nom:"NACRE", source:"État / Région", montant:"Jusqu'à 10 000 €", desc:"Prêt à taux zéro + accompagnement 3 ans pour la création/reprise.", eligible:(p)=>norm(p.statutActuel)==='demandeur emploi'||p.qpv||p.rqth },
+  { id:'arce', nom:"ARCE", source:"France Travail", montant:"45% des droits ARE", desc:"Versement en capital de 45% du reliquat de droits à l'allocation chômage.", eligible:(p)=>norm(p.statutActuel)==='demandeur emploi' },
+  { id:'q2030', nom:"Quartiers 2030", source:"ANCT", montant:"Subvention + coaching", desc:"Dispositif national pour l'entrepreneuriat dans les QPV. Coaching personnalisé et accès facilité aux financements.", eligible:(p)=>p.qpv },
+  { id:'agefiph_cdp', nom:"Coup de pouce création", source:"AGEFIPH", montant:"Jusqu'à 6 300 €", desc:"Aide forfaitaire à la création/reprise d'entreprise pour les bénéficiaires de l'OETH.", eligible:(p)=>p.rqth },
+  { id:'agefiph_acc', nom:"Aide à la création AGEFIPH", source:"AGEFIPH", montant:"Jusqu'à 12 000 €", desc:"Accompagnement renforcé + aide financière pour créer une activité adaptée au handicap.", eligible:(p)=>p.rqth },
+  { id:'bpi_creation', nom:"Diagnostic Bpifrance Création", source:"Bpifrance", montant:"Gratuit", desc:"Diagnostic personnalisé du projet + accès à la communauté Création.", eligible:(p)=>true },
+  { id:'pret_honneur', nom:"Prêt d'honneur", source:"Initiative France", montant:"5 000 à 30 000 €", desc:"Prêt personnel à taux zéro sans garantie ni caution personnelle, à effet de levier bancaire.", eligible:(p)=>true },
+  { id:'adie_garantie', nom:"Garantie ADIE", source:"ADIE", montant:"Jusqu'à 12 000 €", desc:"Microcrédit pour démarrer une activité sans condition de diplôme.", eligible:(p)=>true },
+  { id:'cap_jeunes', nom:"CréaJeunes ADIE", source:"ADIE", montant:"Formation + microcrédit", desc:"Programme dédié aux -32 ans : formation 4 mois + accès au microcrédit.", eligible:(p)=>['18-25','26-35'].includes(p.trancheAge) },
+  { id:'pacte_emergence', nom:"Pacte d'Émergence", source:"France Active", montant:"5 000 à 10 000 €", desc:"Subvention pour les projets à forte utilité sociale + accompagnement structurant.", eligible:(p)=>true },
+];
+let DIAGNOSTICS = [
+  { id: 101, trancheAge:'26-35', statutActuel:'Demandeur emploi', rqth:false, qpv:true, region:'Grand Est', ville:'Reims', secteurProjet:'Restauration', maturiteProjet:'Idée', besoinPrincipal:'Financement', email:'fatou.d@example.fr', consentementTransmission:true, createdAt:'2026-05-14T10:15:00Z', porteurAlias:'Fatou D.' },
+  { id: 102, trancheAge:'36-45', statutActuel:'Salarié', rqth:true, qpv:false, region:'Grand Est', ville:'Strasbourg', secteurProjet:'Services', maturiteProjet:'Prêt à lancer', besoinPrincipal:'Mise en réseau', email:'karim.b@example.fr', consentementTransmission:true, createdAt:'2026-05-12T14:32:00Z', porteurAlias:'Karim B.' },
+  { id: 103, trancheAge:'46-55', statutActuel:'Demandeur emploi', rqth:true, qpv:true, region:'Grand Est', ville:'Mulhouse', secteurProjet:'Commerce', maturiteProjet:'Étude en cours', besoinPrincipal:'Diagnostic / Accompagnement', email:'aicha.k@example.fr', consentementTransmission:true, createdAt:'2026-05-11T09:20:00Z', porteurAlias:'Aïcha K.' },
+  { id: 104, trancheAge:'18-25', statutActuel:'Étudiant', rqth:false, qpv:true, region:'Grand Est', ville:'Metz', secteurProjet:'Tech / Numérique', maturiteProjet:'Idée', besoinPrincipal:'Formation', email:null, consentementTransmission:false, createdAt:'2026-05-10T16:00:00Z', porteurAlias:'Mohamed A.' },
+  { id: 105, trancheAge:'36-45', statutActuel:'Indépendant', rqth:false, qpv:false, region:'Grand Est', ville:'Nancy', secteurProjet:'Services', maturiteProjet:'Déjà lancé', besoinPrincipal:'Financement', email:'claire.r@example.fr', consentementTransmission:true, createdAt:'2026-05-09T11:45:00Z', porteurAlias:'Claire R.' },
+  { id: 106, trancheAge:'26-35', statutActuel:'Demandeur emploi', rqth:false, qpv:true, region:'Grand Est', ville:'Troyes', secteurProjet:'Artisanat', maturiteProjet:'Idée', besoinPrincipal:'Diagnostic / Accompagnement', email:'mamadou.t@example.fr', consentementTransmission:true, createdAt:'2026-05-08T15:30:00Z', porteurAlias:'Mamadou T.' },
+  { id: 107, trancheAge:'36-45', statutActuel:'Salarié', rqth:true, qpv:false, region:'Grand Est', ville:'Reims', secteurProjet:'Tech / Numérique', maturiteProjet:'Étude en cours', besoinPrincipal:'Formation', email:'assia.m@example.fr', consentementTransmission:false, createdAt:'2026-05-06T08:50:00Z', porteurAlias:'Assia M.' },
+  { id: 108, trancheAge:'46-55', statutActuel:'Demandeur emploi', rqth:true, qpv:false, region:'Grand Est', ville:'Colmar', secteurProjet:'Commerce', maturiteProjet:'Idée', besoinPrincipal:'Mise en réseau', email:'sophie.l@example.fr', consentementTransmission:true, createdAt:'2026-05-05T13:20:00Z', porteurAlias:'Sophie L.' },
+];
+let SESSION = { loggedIn: false, structureId: null, structureNom: null };
+function norm(s){ if (!s) return ''; return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim(); }
+function scorer(profil, p){
+  let score = 0; const raisons = [];
+  if (p.zoneGeographique === 'National') { score += 25; raisons.push('Programme national accessible partout en France'); }
+  else if (norm(p.zoneGeographique) === norm(profil.region)) { score += 30; raisons.push('Programme déployé en ' + profil.region); }
+  const pub = norm(p.ciblePublic);
+  if (pub === 'rqth' && profil.rqth) { score += 30; raisons.push('Programme dédié aux Travailleurs Handicapés (RQTH)'); }
+  else if (pub === 'qpv' && profil.qpv) { score += 30; raisons.push('Programme dédié aux résidents de Quartiers Prioritaires (QPV)'); }
+  else if (pub === 'jeunes' && ['18-25','26-35'].includes(profil.trancheAge)) { score += 25; raisons.push('Programme dédié aux jeunes porteurs (-32 ans)'); }
+  else if (pub === 'demandeurs emploi' && norm(profil.statutActuel) === 'demandeur emploi') { score += 25; raisons.push("Programme dédié aux demandeurs d'emploi"); }
+  else if (pub === 'tous') { score += 15; raisons.push('Programme ouvert à tous les publics'); }
+  const desc = norm(p.description) + ' ' + norm(p.nom);
+  const b = norm(profil.besoinPrincipal);
+  if (b.startsWith('financement') && /(financement|pret|microcredit|subvention|garantie|nacre)/.test(desc)) { score += 20; raisons.push('Réponse explicite au besoin de financement'); }
+  else if (b.startsWith('formation') && /(formation|coaching|atelier|mentor|parcours)/.test(desc)) { score += 20; raisons.push('Programme de formation / coaching adapté'); }
+  else if ((b.startsWith('diagnostic') || b.includes('accompagnement')) && /(diagnostic|accompagnement|etude|business plan)/.test(desc)) { score += 18; raisons.push('Accompagnement structurant adapté'); }
+  else if (b.includes('reseau') && /(mentor|reseau|mise en relation|networking|club)/.test(desc)) { score += 20; raisons.push("Mise en réseau et partage d'expérience"); }
+  else if (b.includes('hebergement') && /(incubateur|pepiniere|coworking|hebergement)/.test(desc)) { score += 20; raisons.push('Hébergement / locaux mis à disposition'); }
+  if (p.capaciteAnnuelle >= 50) score += 3;
+  if (p.prisEnCharge) score += 2;
+  return { score: Math.min(score, 100), raisons: raisons.slice(0, 4) };
+}
+function match(profil){
+  const scored = PROGRAMMES.filter(p => p.prisEnCharge).map(p => ({ id: p.id, ...scorer(profil, p) })).sort((a, b) => b.score - a.score);
+  const filtered = scored.filter(x => x.score >= 25);
+  return (filtered.length >= 3 ? filtered : scored).slice(0, 5);
+}
+function aidesFor(profil){ return AIDES_CATALOG.filter(a => a.eligible(profil)); }
+function mistralSuggestion(profil, topStructure){
+  const traits = [];
+  if (profil.qpv) traits.push('résidant en quartier prioritaire');
+  if (profil.rqth) traits.push('avec une reconnaissance RQTH');
+  if (norm(profil.statutActuel) === 'demandeur emploi') traits.push("demandeur d'emploi");
+  const traitStr = traits.length > 0 ? ' (' + traits.join(', ') + ')' : '';
+  const intro = `Profil ${profil.trancheAge} ans${traitStr}, projet ${profil.secteurProjet.toLowerCase()} en phase « ${profil.maturiteProjet.toLowerCase()} », besoin principal : ${profil.besoinPrincipal.toLowerCase()}.`;
+  // Empathie ciblée selon le blocage exprimé
+  let empathie = '';
+  if (profil.blocagePrincipal === 'Pas de financement') empathie = ` Vous mentionnez un blocage financier — vous n'êtes pas seul : 6 porteurs sur 10 démarrent sans apport.`;
+  else if (profil.blocagePrincipal === 'Manque de méthodologie') empathie = ` Le manque de méthodologie est le frein n°1 des porteurs débutants — c'est normal, et ça se construit étape par étape.`;
+  else if (profil.blocagePrincipal === 'Isolement') empathie = ` L'isolement est le facteur d'échec le plus sous-estimé. Rejoindre un réseau de pairs double les chances de survie à 3 ans.`;
+  else if (profil.blocagePrincipal === 'Pas de garant') empathie = ` Pas de garant ? France Active couvre jusqu'à 65% de votre prêt bancaire via sa garantie — c'est précisément conçu pour ça.`;
+  else if (profil.blocagePrincipal === 'Ne sait pas par où commencer') empathie = ` Démarrer est souvent le plus dur. Un diagnostic gratuit avec une structure spécialisée vous donnera une feuille de route claire en 1 heure.`;
+  // Conseil principal
+  let conseil;
+  if (profil.rqth && profil.qpv) conseil = `Le cumul RQTH + QPV ouvre droit à deux dispositifs cumulables (AGEFIPH Coup de pouce + Quartiers 2030). Nous recommandons un premier rendez-vous avec ${topStructure} pour cadrer le plan de financement.`;
+  else if (profil.rqth) conseil = `L'AGEFIPH propose un Coup de pouce création (jusqu'à 6 300 €) cumulable avec un accompagnement spécialisé. Premier rendez-vous recommandé avec ${topStructure}.`;
+  else if (profil.qpv) conseil = `Le dispositif Quartiers 2030 (ANCT) est mobilisable sans condition d'âge ni de statut. Rendez-vous avec ${topStructure} pour bénéficier d'un coaching adapté et activer le prêt d'honneur Initiative France.`;
+  else if (norm(profil.statutActuel) === 'demandeur emploi') conseil = `L'ARCE (versement de 45% des droits ARE) combiné au NACRE constitue un levier majeur pour démarrer. ${topStructure} pourra étudier votre dossier complet.`;
+  else conseil = `Pour ce profil, le diagnostic gratuit Bpifrance Création + un prêt d'honneur Initiative France peuvent constituer un socle solide. ${topStructure} pourra approfondir l'éligibilité aux aides régionales.`;
+  // Urgence éventuelle
+  let urgence = '';
+  if (profil.echeance === 'Urgent <3 mois') urgence = ` Étant donné votre échéance (< 3 mois), prenez RDV avec ${topStructure} cette semaine — la plupart proposent un créneau sous 7 jours.`;
+  else if (profil.echeance === '3-6 mois') urgence = ` Avec une échéance de 3 à 6 mois, vous avez le temps de constituer un dossier solide. Démarrez par le diagnostic gratuit.`;
+  return intro + empathie + ' ' + conseil + urgence;
+}
+function estimateAides(profil){
+  let min = 0, max = 0; const detail = [];
+  if (profil.rqth) { min += 1500; max += 6300; detail.push("AGEFIPH Coup de pouce création : 1 500 € à 6 300 €"); }
+  if (profil.qpv) { min += 5000; max += 15000; detail.push("Quartiers 2030 (ANCT) : jusqu'à 15 000 €"); }
+  if (norm(profil.besoinPrincipal).startsWith('financement') || norm(profil.blocagePrincipal||'') === 'pas de financement') { min += 3000; max += 8000; detail.push("NACRE prêt à taux zéro : 3 000 € à 8 000 €"); }
+  if (norm(profil.statutActuel) === 'demandeur emploi') { min += 2000; max += 6000; detail.push("ARCE / ARE (Pôle emploi) : 45% des droits restants versés en capital"); }
+  if (profil.blocagePrincipal === 'Pas de garant') { detail.push("France Active garantie : couverture jusqu'à 65% du prêt bancaire"); }
+  if (max === 0) { min = 1500; max = 5000; detail.push("Diagnostic Bpifrance Création gratuit + prêt d'honneur Initiative France possible"); }
+  return { min, total: max, detail };
+}
+function bumpCounter(){
+  const el = document.getElementById('liveCount');
+  if (!el) return;
+  let n = parseInt(localStorage.getItem('opLiveCount') || '1247', 10);
+  n += Math.floor(Math.random()*3)+1;
+  localStorage.setItem('opLiveCount', String(n));
+  el.textContent = n.toLocaleString('fr-FR');
+  setTimeout(bumpCounter, 30000 + Math.random()*60000);
+}
+// Démarre le compteur une fois le DOM prêt
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bumpCounter); else bumpCounter();
+
+function downloadSynthesePdf(diagId){
+  if (typeof window.jspdf === 'undefined') { toast("Le module PDF n'est pas encore chargé, réessayez dans 1 s."); return; }
+  const { jsPDF } = window.jspdf;
+  const diag = DIAGNOSTICS.find(d => d.id === diagId);
+  if (!diag) { toast('Diagnostic introuvable.'); return; }
+  const ordered = diag.programmesMatched.map(m => {
+    const p = PROGRAMMES.find(x => x.id === m.id);
+    const s = STRUCTURES.find(x => x.id === p.structureId);
+    return Object.assign({}, p, { structure: s, score: m.score, raisons: m.raisons });
+  });
+  const seen = new Set(); const top = [];
+  for (const o of ordered) { if (!seen.has(o.structure.id) && top.length < 3) { seen.add(o.structure.id); top.push(o); } }
+  const estim = estimateAides(diag);
+
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, M = 18; let y = M;
+  // En-tête
+  doc.setFillColor(14, 42, 71); doc.rect(0, 0, W, 28, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(20);
+  doc.text('OrientaPro', M, 14);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  doc.text("Synthèse personnalisée d'orientation entrepreneuriale", M, 21);
+  y = 38;
+  // Profil
+  doc.setTextColor(14, 42, 71); doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+  doc.text('Votre profil', M, y); y += 7;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(60, 60, 60);
+  const tags = []; if (diag.rqth) tags.push('RQTH'); if (diag.qpv) tags.push('QPV');
+  const profilLines = [
+    'Tranche d\'âge : ' + diag.trancheAge + ' ans',
+    'Situation : ' + diag.statutActuel,
+    'Territoire : ' + diag.region + (diag.ville ? ' · ' + diag.ville : ''),
+    'Spécificités : ' + (tags.length ? tags.join(' + ') : 'Standard'),
+    'Projet : ' + diag.secteurProjet + ' (' + diag.maturiteProjet + ')',
+    'Besoin principal : ' + diag.besoinPrincipal,
+    'Blocage exprimé : ' + (diag.blocagePrincipal || 'Non renseigné'),
+    'Échéance : ' + (diag.echeance || "Pas d'urgence"),
+  ];
+  profilLines.forEach(l => { doc.text(l, M, y); y += 5; });
+  y += 4;
+  // Aides estimées
+  if (estim.total > 0) {
+    doc.setFillColor(255, 248, 240); doc.rect(M, y-2, W-2*M, 28, 'F');
+    doc.setTextColor(198, 117, 0); doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+    doc.text("Potentiel d'aides mobilisables", M+3, y+4);
+    doc.setTextColor(14, 42, 71); doc.setFontSize(16);
+    doc.text(estim.min.toLocaleString('fr-FR') + ' € à ' + estim.total.toLocaleString('fr-FR') + ' €', M+3, y+13);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(60, 60, 60);
+    doc.text('Cumul estimé sous réserve d\'éligibilité et de validation par les organismes.', M+3, y+20);
+    y += 32;
+    estim.detail.forEach(d => { doc.setFontSize(9); doc.text('• ' + d, M, y); y += 4.5; });
+    y += 5;
+  }
+  // Structures recommandées
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(14, 42, 71);
+  doc.text('Structures recommandées', M, y); y += 7;
+  top.forEach((p, idx) => {
+    if (y > 260) { doc.addPage(); y = M; }
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(14, 42, 71);
+    doc.text('#' + (idx+1) + ' · ' + p.nom, M, y); y += 5;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(60, 60, 60);
+    doc.text(p.structure.nom + ' — ' + (p.structure.ville || p.structure.region) + ' · Matching ' + p.score + '/100', M, y); y += 4;
+    const descLines = doc.splitTextToSize(p.description, W - 2*M); doc.text(descLines, M, y); y += descLines.length * 4;
+    if (p.contact) { doc.setFont('helvetica', 'italic'); doc.text('Contact : ' + p.contact, M, y); y += 4; doc.setFont('helvetica', 'normal'); }
+    y += 4;
+  });
+  // Prochaines étapes
+  if (y > 240) { doc.addPage(); y = M; }
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(13); doc.setTextColor(14, 42, 71);
+  doc.text('Vos 3 prochaines étapes', M, y); y += 7;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(60, 60, 60);
+  const steps = [
+    '1. Contacter ' + (top[0] ? top[0].structure.nom : 'la structure recommandée') + ' (RDV gratuit, sous 7 jours).',
+    '2. Préparer les pièces : justificatif de domicile, ' + (diag.rqth ? "notification MDPH/RQTH, " : "") + (diag.statutActuel === 'Demandeur emploi' ? "attestation France Travail, " : "") + 'description du projet.',
+    '3. Suivre l\'évolution de votre dossier sur votre espace OrientaPro (export JSON/CSV disponible).',
+  ];
+  steps.forEach(s => { const lines = doc.splitTextToSize(s, W-2*M); doc.text(lines, M, y); y += lines.length * 5 + 2; });
+  // Pied
+  doc.setFontSize(7); doc.setTextColor(120, 120, 120);
+  doc.text('OrientaPro · Démo MVP · Données protégées (RGPD) · Document généré le ' + new Date().toLocaleDateString('fr-FR'), M, 290);
+  doc.save('OrientaPro_Synthese_' + diag.id + '.pdf');
+  toast('Synthèse PDF téléchargée');
+}
+function go(screen){
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.dataset.screen === screen));
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.go === screen));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (screen === 'dashboard') renderDashboard();
+  if (screen === 'catalogue') renderCatalogue();
+}
+document.querySelectorAll('[data-go]').forEach(el => el.addEventListener('click', () => go(el.dataset.go)));
+let DIAG = { trancheAge:'', statutActuel:'', rqth:false, qpv:false, region:'', ville:'', secteurProjet:'', maturiteProjet:'', besoinPrincipal:'', blocagePrincipal:'', echeance:"Pas d'urgence", descriptionProjet:'', email:'', consentementTransmission:false };
+let DIAG_STEP = 1;
+(function(){
+  // Région auto-déduite depuis le code postal (hidden input, plus de dropdown)
+  function regionFromCP(cp) {
+    if (!cp) return '';
+    const d = cp.substring(0, 2);
+    const map = {
+      '01':'Auvergne-Rhône-Alpes','03':'Auvergne-Rhône-Alpes','07':'Auvergne-Rhône-Alpes','15':'Auvergne-Rhône-Alpes','26':'Auvergne-Rhône-Alpes','38':'Auvergne-Rhône-Alpes','42':'Auvergne-Rhône-Alpes','43':'Auvergne-Rhône-Alpes','63':'Auvergne-Rhône-Alpes','69':'Auvergne-Rhône-Alpes','73':'Auvergne-Rhône-Alpes','74':'Auvergne-Rhône-Alpes',
+      '21':'Bourgogne-Franche-Comté','25':'Bourgogne-Franche-Comté','39':'Bourgogne-Franche-Comté','58':'Bourgogne-Franche-Comté','70':'Bourgogne-Franche-Comté','71':'Bourgogne-Franche-Comté','89':'Bourgogne-Franche-Comté','90':'Bourgogne-Franche-Comté',
+      '22':'Bretagne','29':'Bretagne','35':'Bretagne','56':'Bretagne',
+      '18':'Centre-Val de Loire','28':'Centre-Val de Loire','36':'Centre-Val de Loire','37':'Centre-Val de Loire','41':'Centre-Val de Loire','45':'Centre-Val de Loire',
+      '08':'Grand Est','10':'Grand Est','51':'Grand Est','52':'Grand Est','54':'Grand Est','55':'Grand Est','57':'Grand Est','67':'Grand Est','68':'Grand Est','88':'Grand Est',
+      '02':'Hauts-de-France','59':'Hauts-de-France','60':'Hauts-de-France','62':'Hauts-de-France','80':'Hauts-de-France',
+      '75':'Île-de-France','77':'Île-de-France','78':'Île-de-France','91':'Île-de-France','92':'Île-de-France','93':'Île-de-France','94':'Île-de-France','95':'Île-de-France',
+      '14':'Normandie','27':'Normandie','50':'Normandie','61':'Normandie','76':'Normandie',
+      '16':'Nouvelle-Aquitaine','17':'Nouvelle-Aquitaine','19':'Nouvelle-Aquitaine','23':'Nouvelle-Aquitaine','24':'Nouvelle-Aquitaine','33':'Nouvelle-Aquitaine','40':'Nouvelle-Aquitaine','47':'Nouvelle-Aquitaine','64':'Nouvelle-Aquitaine','79':'Nouvelle-Aquitaine','86':'Nouvelle-Aquitaine','87':'Nouvelle-Aquitaine',
+      '09':'Occitanie','11':'Occitanie','12':'Occitanie','30':'Occitanie','31':'Occitanie','32':'Occitanie','34':'Occitanie','46':'Occitanie','48':'Occitanie','65':'Occitanie','66':'Occitanie','81':'Occitanie','82':'Occitanie',
+      '44':'Pays de la Loire','49':'Pays de la Loire','53':'Pays de la Loire','72':'Pays de la Loire','85':'Pays de la Loire',
+      '04':"Provence-Alpes-Côte d'Azur",'05':"Provence-Alpes-Côte d'Azur",'06':"Provence-Alpes-Côte d'Azur",'13':"Provence-Alpes-Côte d'Azur",'83':"Provence-Alpes-Côte d'Azur",'84':"Provence-Alpes-Côte d'Azur",
+      '2A':'Corse','2B':'Corse',
+    };
+    return map[d] || '';
+  }
+  // Auto-détection QPV (démo : 2 adresses test hardcodées + base mockée)
+  const QPV_DEMO_DB = {
+    '15 avenue henri barbusse, 93300 aubervilliers': { qpv: true, nom: 'Villette - Quatre-Chemins', source: 'ANCT' },
+    '12 rue de la rotonde, 93000 bobigny': { qpv: true, nom: 'Centre-ville Bobigny', source: 'ANCT' },
+    '8 rue de roubaix, 59100 roubaix': { qpv: true, nom: 'Alma-Gare', source: 'ANCT' },
+    '20 rue jean jaures, 13015 marseille': { qpv: true, nom: 'Saint-Mauront — Bellevue', source: 'ANCT' },
+    '1 rue de la paix, 75002 paris': { qpv: false },
+    '10 rue de rivoli, 75001 paris': { qpv: false },
+    '5 avenue victor hugo, 67000 strasbourg': { qpv: false },
+  };
+  const adresseInput = document.getElementById('diag-adresse');
+  const qpvStatus = document.getElementById('qpv-status');
+  const qpvCheckbox = document.getElementById('diag-qpv');
+  let qpvTimer = null;
+  function detectQPV(addr) {
+    const normalized = addr.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+    DIAG.ville = addr;
+    // Extraction code postal + déduction région
+    const cpMatch = addr.match(/\b(\d{5}|2[AB]\d{3})\b/);
+    if (cpMatch) {
+      const region = regionFromCP(cpMatch[1]);
+      if (region) {
+        DIAG.region = region;
+        document.getElementById('diag-region').value = region;
+        const ri = document.getElementById('region-detected');
+        const rn = document.getElementById('region-name');
+        if (rn) rn.textContent = region;
+        if (ri) ri.style.display = 'flex';
+      }
+    }
+    if (normalized.length < 8) { qpvStatus.style.display = 'none'; return; }
+    qpvStatus.style.display = 'block';
+    qpvStatus.innerHTML = '<div class="qpv-scanning"><span>Analyse de l\'adresse via API Carto IGN…</span></div>';
+    clearTimeout(qpvTimer);
+    qpvTimer = setTimeout(() => {
+      const hit = QPV_DEMO_DB[normalized];
+      if (hit && hit.qpv) {
+        qpvStatus.innerHTML = '<div class="qpv-badge-detected">✓ Adresse en <strong>QPV détectée</strong> — Quartier <em>' + hit.nom + '</em> (' + hit.source + '). Éligible aux dispositifs ANCT / Quartiers 2030.</div>';
+        qpvCheckbox.checked = true; DIAG.qpv = true;
+      } else if (hit) {
+        qpvStatus.innerHTML = '<div class="qpv-badge-not">Adresse vérifiée — <strong>Hors QPV</strong>. Les dispositifs ANCT spécifiques ne s\'appliquent pas, mais d\'autres aides restent mobilisables.</div>';
+        qpvCheckbox.checked = false; DIAG.qpv = false;
+      } else {
+        qpvStatus.innerHTML = '<div class="qpv-badge-not">Adresse non reconnue dans la base démo. En production : vérification via <a href="https://sig.ville.gouv.fr/atlas/QPV/" target="_blank" style="color:var(--orange);">sig.ville.gouv.fr</a>. Vous pouvez cocher manuellement ci-dessous.</div>';
+      }
+    }, 900);
+  }
+  adresseInput.addEventListener('input', e => detectQPV(e.target.value));
+  document.querySelectorAll('[data-fill-address]').forEach(btn => btn.addEventListener('click', () => {
+    adresseInput.value = btn.dataset.fillAddress;
+    detectQPV(btn.dataset.fillAddress);
+  }));
+  document.getElementById('diag-rqth').addEventListener('change', e => DIAG.rqth = e.target.checked);
+  document.getElementById('diag-qpv').addEventListener('change', e => DIAG.qpv = e.target.checked);
+  document.getElementById('diag-desc').addEventListener('input', e => DIAG.descriptionProjet = e.target.value);
+  document.getElementById('diag-email').addEventListener('input', e => DIAG.email = e.target.value);
+  document.getElementById('diag-consent').addEventListener('change', e => DIAG.consentementTransmission = e.target.checked);
+})();
+document.querySelectorAll('[data-radio]').forEach(group => {
+  const field = group.dataset.radio;
+  group.querySelectorAll('.radio').forEach(r => r.addEventListener('click', () => {
+    group.querySelectorAll('.radio').forEach(x => x.classList.remove('sel'));
+    r.classList.add('sel');
+    DIAG[field] = r.dataset.val;
+  }));
+  // Chips (échéance) - same group mecanique mais autre sélecteur
+  group.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+    group.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    DIAG[field] = c.dataset.val;
+  }));
+});
+function showStep(n){
+  DIAG_STEP = n;
+  for (let i = 1; i <= 5; i++) document.getElementById('step-'+i).style.display = i === n ? 'block' : 'none';
+  document.getElementById('step-label').textContent = 'Étape ' + n + ' sur 5';
+  document.getElementById('step-pct').textContent = (n*20) + ' %';
+  document.getElementById('step-bar').style.width = (n*20) + '%';
+  document.getElementById('btn-prev').style.visibility = n === 1 ? 'hidden' : 'visible';
+  document.getElementById('btn-next').textContent = n === 5 ? 'Voir mes résultats →' : 'Suivant →';
+  document.getElementById('diag-err').classList.remove('show');
+}
+function validate(step){
+  const err = document.getElementById('diag-err'); err.classList.remove('show');
+  if (step === 1 && (!DIAG.trancheAge || !DIAG.statutActuel)) { err.textContent = "Merci de renseigner votre tranche d'âge et votre situation actuelle."; err.classList.add('show'); return false; }
+  if (step === 2 && !DIAG.region) { err.textContent = "Merci d'indiquer votre adresse (la région est déduite automatiquement)."; err.classList.add('show'); return false; }
+  if (step === 3 && (!DIAG.secteurProjet || !DIAG.maturiteProjet)) { err.textContent = 'Merci de préciser le secteur et la maturité.'; err.classList.add('show'); return false; }
+  if (step === 4 && (!DIAG.besoinPrincipal || !DIAG.blocagePrincipal)) { err.textContent = "Merci de répondre aux questions 1 et 2 — c'est ce qui permet une orientation juste."; err.classList.add('show'); return false; }
+  return true;
+}
+document.getElementById('btn-prev').addEventListener('click', () => { if (DIAG_STEP > 1) showStep(DIAG_STEP - 1); });
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (!validate(DIAG_STEP)) return;
+  if (DIAG_STEP < 5) showStep(DIAG_STEP + 1);
+  else submitDiagnostic();
+});
+function submitDiagnostic(){
+  const newId = 200 + DIAGNOSTICS.length;
+  const diag = Object.assign({ id: newId }, DIAG, { createdAt: new Date().toISOString(), porteurAlias: DIAG.email ? DIAG.email.split('@')[0] : 'Anonyme' });
+  diag.programmesMatched = match(diag);
+  DIAGNOSTICS.unshift(diag);
+  document.getElementById('tab-resultats').classList.remove('lock');
+  renderResultats(diag);
+  go('resultats');
+  toast('Diagnostic enregistré · analyse IA en cours…');
+}
+function renderResultats(diag){
+  const ordered = diag.programmesMatched.map(m => {
+    const p = PROGRAMMES.find(x => x.id === m.id);
+    const s = STRUCTURES.find(x => x.id === p.structureId);
+    return Object.assign({}, p, { structure: s, score: m.score, raisons: m.raisons });
+  });
+  const seen = new Set(); const topStructures = [];
+  for (const o of ordered) {
+    if (!seen.has(o.structure.id) && topStructures.length < 3) { seen.add(o.structure.id); topStructures.push(o); }
+  }
+  const aides = aidesFor(diag);
+  const topName = topStructures[0] ? topStructures[0].structure.nom : 'une structure';
+  const suggestion = mistralSuggestion(diag, topName);
+  const estim = estimateAides(diag);
+
+  const html = `
+    <div class="result-head">
+      <p class="eyebrow">Diagnostic complété</p>
+      <h2 class="h2">Votre analyse personnalisée</h2>
+      <div class="profile-line">
+        <span class="chip chip-navy">${diag.trancheAge} ans</span>
+        <span class="chip chip-navy">${diag.statutActuel}</span>
+        <span class="chip chip-navy">${diag.region}</span>
+        ${diag.rqth ? '<span class="chip chip-orange">RQTH</span>' : ''}
+        ${diag.qpv ? '<span class="chip chip-orange">QPV</span>' : ''}
+      </div>
+      <p style="margin-top:10px; font-size:14px; color: var(--muted);">Projet : ${diag.secteurProjet} · Maturité ${diag.maturiteProjet.toLowerCase()} · Besoin ${diag.besoinPrincipal.toLowerCase()}</p>
+      <div class="export-row">
+        <button class="btn btn-outline btn-sm" onclick="exportDiagJson(${diag.id})">↓ Exporter mon dossier (JSON)</button>
+        <button class="btn btn-outline btn-sm" onclick="exportDiagCsv(${diag.id})">↓ Exporter mon dossier (CSV)</button>
+        <button class="btn btn-primary btn-sm" onclick="downloadSynthesePdf(${diag.id})">📄 Télécharger ma synthèse (PDF)</button>
+      </div>
+    </div>
+    ${estim.total > 0 ? `
+    <div class="aides-box" role="region" aria-label="Estimation des aides mobilisables">
+      <div class="aides-box-title">💰 Potentiel d'aides mobilisables pour votre profil</div>
+      <div class="aides-box-amount">${estim.min.toLocaleString('fr-FR')} € <span class="max">à ${estim.total.toLocaleString('fr-FR')} €</span></div>
+      <p class="aides-box-sub">Cumul estimé sur la base de votre profil et de votre territoire. Sous réserve d'éligibilité et de validation par les organismes concernés.</p>
+      <ul>${estim.detail.map(d => '<li>'+d+'</li>').join('')}</ul>
+    </div>
+    ` : ''}
+    <div class="mistral-panel">
+      <div class="mistral-panel-head">${MISTRAL_SVG}<div><div class="mistral-panel-title">Analyse IA souveraine — Mistral AI</div><div class="mistral-panel-sub">Synthèse personnalisée &middot; hébergement européen &middot; conforme RGPD</div></div></div>
+      <div class="mistral-suggestion ai-typing" id="mistral-typing"></div>
+      <p class="ai-disclaimer">Démo — synthèse simulée à des fins d'illustration. En production : réponse générée en temps réel par Mistral AI (modèle hébergé en Europe, sans envoi de données hors UE).</p>
+    </div>
+    <div class="section-title"><h3 class="h2">1 · Structures recommandées</h3><span class="count-pill">${topStructures.length} sur ${STRUCTURES.length}</span></div>
+    ${topStructures.map((p, idx) => `
+      <div class="programme-card">
+        <div class="pc-head">
+          <div><div class="pc-rank">#${idx+1}</div><div class="pc-org">${p.structure.nom} — ${p.structure.ville || p.structure.region}</div><h3 class="pc-title">${p.nom}</h3></div>
+          <div class="pc-score-wrap"><div class="pc-score">${p.score}<small>/100</small></div><div class="pc-score-lbl">matching</div></div>
+        </div>
+        <p class="pc-desc">${p.description}</p>
+        <div class="pc-tags">
+          <div class="pc-tag-box"><span>Public</span><strong>${p.ciblePublic}</strong></div>
+          <div class="pc-tag-box"><span>Zone</span><strong>${p.zoneGeographique}</strong></div>
+          ${p.duree ? '<div class="pc-tag-box"><span>Durée</span><strong>'+p.duree+'</strong></div>' : ''}
+          ${p.format ? '<div class="pc-tag-box"><span>Format</span><strong>'+p.format+'</strong></div>' : ''}
+        </div>
+        ${p.raisons.length > 0 ? '<div class="reasons"><div class="reasons-title">Pourquoi cette structure</div><ul>' + p.raisons.map(r => '<li>'+r+'</li>').join('') + '</ul></div>' : ''}
+        ${p.contact ? '<p class="pc-contact"><strong>Contact :</strong> '+p.contact+'</p>' : ''}
+      </div>
+    `).join('')}
+    <div class="section-title"><h3 class="h2">2 · Aides mobilisables estimées</h3><span class="count-pill">${aides.length} dispositif${aides.length>1?'s':''}</span></div>
+    <div class="aides-grid">
+      ${aides.map(a => `
+        <div class="aide-card">
+          <div class="aide-card-head"><h4 class="aide-card-name">${a.nom}</h4><span class="aide-card-amount">${a.montant}</span></div>
+          <span class="aide-card-source">${a.source}</span>
+          <p class="aide-card-desc">${a.desc}</p>
+          <span class="aide-card-eligible">Éligibilité estimée</span>
+        </div>
+      `).join('')}
+    </div>
+    <p class="aides-disclaimer">Estimations indicatives. L'éligibilité et les montants définitifs sont confirmés sous réserve de l'étude complète de votre dossier par la structure d'accompagnement. OrientaPro ne se substitue pas à un conseil personnalisé.</p>
+    <div class="cta-end">
+      <h3>Et maintenant ?</h3>
+      <p>${diag.consentementTransmission ? "Vous avez consenti à la transmission de votre dossier. Les structures recommandées peuvent y accéder via leur espace dédié." : "Vous n'avez pas activé la transmission automatique. Vos données restent confidentielles."}</p>
+      <button class="btn btn-primary" onclick="restartDiag()">Refaire un diagnostic</button>
+    </div>
+    <div class="mistral-footer-row">${MISTRAL_SVG}<span>Analyse propulsée par <strong>Mistral AI</strong> — IA souveraine française, hébergement européen, conforme RGPD.</span></div>
+    <div class="rgpd-note"><strong>RGPD :</strong> votre nom et prénom ne sont jamais collectés. Votre email n'est partagé avec une structure que si vous avez explicitement coché la transmission.</div>
+  `;
+  document.getElementById('resultats-container').innerHTML = html;
+  typeText(document.getElementById('mistral-typing'), suggestion, 12);
+}
+function typeText(el, text, speed){
+  el.textContent = ''; el.classList.add('ai-typing');
+  let i = 0;
+  function step(){ if (i < text.length) { el.textContent += text.charAt(i); i++; setTimeout(step, speed); } else el.classList.remove('ai-typing'); }
+  step();
+}
+function restartDiag(){
+  Object.keys(DIAG).forEach(k => DIAG[k] = (typeof DIAG[k] === 'boolean' ? false : ''));
+  document.querySelectorAll('.radio.sel').forEach(r => r.classList.remove('sel'));
+  document.getElementById('diag-region').value = '';
+  const a = document.getElementById('diag-adresse'); if (a) a.value = '';
+  const qs = document.getElementById('qpv-status'); if (qs) qs.style.display = 'none';
+  const ri = document.getElementById('region-detected'); if (ri) ri.style.display = 'none';
+  const rh = document.getElementById('diag-region'); if (rh) rh.value = '';
+  document.getElementById('diag-rqth').checked = false;
+  document.getElementById('diag-qpv').checked = false;
+  document.getElementById('diag-desc').value = '';
+  document.getElementById('diag-email').value = '';
+  document.getElementById('diag-consent').checked = false;
+  showStep(1); go('diagnostic');
+}
+function buildCompteRendu(diag){
+  return {
+    diagnosticId: diag.id, date: diag.createdAt,
+    profil: { trancheAge: diag.trancheAge, statutActuel: diag.statutActuel, region: diag.region, ville: diag.ville || null, rqth: diag.rqth, qpv: diag.qpv, email: diag.consentementTransmission ? (diag.email || null) : null },
+    projet: { secteur: diag.secteurProjet, maturite: diag.maturiteProjet, besoinPrincipal: diag.besoinPrincipal },
+    consentementTransmission: diag.consentementTransmission,
+    structuresRecommandees: diag.programmesMatched.map(m => { const p = PROGRAMMES.find(x => x.id === m.id); const s = STRUCTURES.find(x => x.id === p.structureId); return { id: p.id, nom: p.nom, score: m.score, raisons: m.raisons, structure: s.nom, ville: s.ville, region: s.region, ciblePublic: p.ciblePublic, contact: p.contact }; }),
+    aidesMobilisables: aidesFor(diag).map(a => ({ id: a.id, nom: a.nom, source: a.source, montant: a.montant, description: a.desc })),
+    analyseIA: { provider: 'Mistral AI', model: 'mistral-medium', generatedAt: new Date().toISOString() },
+  };
+}
+function csvEscape(v){ if (v === null || v === undefined) return ''; const s = String(v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }
+function toCsv(rapports){
+  const headers = ['diagnostic_id','date','tranche_age','statut','region','rqth','qpv','email','secteur','besoin','programme_id','programme_nom','programme_score','structure'];
+  const lines = [headers.join(',')];
+  rapports.forEach(r => {
+    r.structuresRecommandees.forEach(p => {
+      lines.push([r.diagnosticId,r.date,r.profil.trancheAge,r.profil.statutActuel,r.profil.region,r.profil.rqth,r.profil.qpv,r.profil.email,r.projet.secteur,r.projet.besoinPrincipal,p.id,p.nom,p.score,p.structure].map(csvEscape).join(','));
+    });
+  });
+  return lines.join('\n');
+}
+function download(filename, content, mime){
+  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function exportDiagJson(id){ const d = DIAGNOSTICS.find(x => x.id === id); download('diagnostic-'+id+'.json', JSON.stringify(buildCompteRendu(d), null, 2), 'application/json'); toast('Dossier exporté en JSON'); }
+function exportDiagCsv(id){ const d = DIAGNOSTICS.find(x => x.id === id); download('diagnostic-'+id+'.csv', toCsv([buildCompteRendu(d)]), 'text/csv'); toast('Dossier exporté en CSV'); }
+function exportStructureAll(format){
+  const ourIds = new Set(PROGRAMMES.filter(p => p.structureId === SESSION.structureId).map(p => p.id));
+  const filtered = DIAGNOSTICS.filter(d => d.programmesMatched.some(m => ourIds.has(m.id)));
+  const rapports = filtered.map(buildCompteRendu);
+  if (format === 'csv') download('orientapro-export.csv', toCsv(rapports), 'text/csv');
+  else download('orientapro-export.json', JSON.stringify({ structure: SESSION.structureNom, count: rapports.length, rapports, ia: 'Mistral AI' }, null, 2), 'application/json');
+  toast('Export ' + format.toUpperCase() + ' téléchargé (' + rapports.length + ' dossiers)');
+}
+function demoLogin(structureId){
+  const s = STRUCTURES.find(x => x.id === structureId);
+  SESSION.loggedIn = true; SESSION.structureId = s.id; SESSION.structureNom = s.nom;
+  document.getElementById('tab-dashboard').classList.remove('lock');
+  document.getElementById('tab-catalogue').classList.remove('lock');
+  toast('Mode démo — connecté en tant que ' + s.nom);
+  go('dashboard');
+}
+document.querySelectorAll('[data-demo]').forEach(li => li.addEventListener('click', () => {
+  document.getElementById('login-email').value = li.dataset.demo;
+  document.getElementById('login-pwd').value = 'demo2026';
+}));
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const pwd = document.getElementById('login-pwd').value;
+  const err = document.getElementById('login-err'); err.classList.remove('show');
+  const s = STRUCTURES.find(x => x.email === email);
+  if (!s || pwd !== 'demo2026') { err.textContent = 'Identifiants incorrects'; err.classList.add('show'); return; }
+  SESSION.loggedIn = true; SESSION.structureId = s.id; SESSION.structureNom = s.nom;
+  document.getElementById('tab-dashboard').classList.remove('lock');
+  document.getElementById('tab-catalogue').classList.remove('lock');
+  toast('Bienvenue ' + s.nom);
+  go('dashboard');
+});
+DIAGNOSTICS.forEach(d => d.programmesMatched = match(d));
+function renderDashboard(){
+  if (!SESSION.loggedIn) { go('login'); return; }
+  const structure = STRUCTURES.find(s => s.id === SESSION.structureId);
+  const ourProgs = PROGRAMMES.filter(p => p.structureId === SESSION.structureId);
+  const ourProgIds = new Set(ourProgs.map(p => p.id));
+  const matched = DIAGNOSTICS.filter(d => d.programmesMatched.some(m => ourProgIds.has(m.id)));
+  const total = matched.length;
+  const rqth = matched.filter(d => d.rqth).length;
+  const qpv = matched.filter(d => d.qpv).length;
+  const consent = matched.filter(d => d.consentementTransmission).length;
+  const besoinMap = {}; const regionMap = {};
+  matched.forEach(d => { besoinMap[d.besoinPrincipal] = (besoinMap[d.besoinPrincipal]||0)+1; regionMap[d.region] = (regionMap[d.region]||0)+1; });
+  const topBesoin = Object.entries(besoinMap).sort((a,b)=>b[1]-a[1])[0];
+  const regions = Object.entries(regionMap).sort((a,b)=>b[1]-a[1]);
+  const pct = n => total === 0 ? '0 %' : Math.round(n/total*100) + ' %';
+
+  document.getElementById('dashboard-container').innerHTML = `
+    <div class="dash-head">
+      <div>
+        <h1 class="h2" style="margin:0; font-size:24px;">${structure.nom}</h1>
+        <p style="margin:4px 0 0; color: var(--muted); font-size:13px;">${structure.ville || ''} · ${structure.region}</p>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Déconnexion</button>
+    </div>
+
+    <div class="mistral-panel" style="padding:14px 18px; margin:0 0 16px;">
+      <div class="mistral-panel-head" style="margin:0;">
+        ${MISTRAL_SVG}
+        <div>
+          <div class="mistral-panel-title">Insight IA · Mistral AI</div>
+          <div class="mistral-panel-sub">${total > 0 ? `Vos diagnostics matchés ce mois-ci montrent une part RQTH de ${pct(rqth)} et QPV de ${pct(qpv)} — au-dessus de la moyenne nationale (28% RQTH, 42% QPV). Profil ICP confirmé : projets en idéation à forte composante inclusion.` : 'Aucun diagnostic matché pour le moment. L\'IA suggère d\'enrichir le catalogue avec un programme dédié RQTH ou QPV pour augmenter l\'attractivité.'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><p class="kpi-lbl">Programmes au catalogue</p><div class="kpi-val">${ourProgs.length}</div></div>
+      <div class="kpi"><p class="kpi-lbl">Diagnostics matchés</p><div class="kpi-val">${total}</div></div>
+      <div class="kpi kpi-accent"><p class="kpi-lbl">Part RQTH</p><div class="kpi-val">${pct(rqth)}</div><div class="kpi-sub">${rqth} diagnostic${rqth>1?'s':''}</div></div>
+      <div class="kpi kpi-accent"><p class="kpi-lbl">Part QPV</p><div class="kpi-val">${pct(qpv)}</div><div class="kpi-sub">${qpv} diagnostic${qpv>1?'s':''}</div></div>
+    </div>
+
+    <div class="kpi-grid-3">
+      <div class="kpi"><p class="kpi-lbl">Taux de consentement transmission</p><div class="kpi-val">${pct(consent)}</div><div class="kpi-sub">${consent} sur ${total}</div></div>
+      <div class="kpi"><p class="kpi-lbl">Besoin principal le plus fréquent</p><div class="kpi-val" style="font-size:18px;">${topBesoin ? topBesoin[0] : '—'}</div><div class="kpi-sub">${topBesoin ? topBesoin[1] + ' diag.' : ''}</div></div>
+      <div class="kpi"><p class="kpi-lbl">Régions couvertes</p><div class="kpi-val">${regions.length}</div><div class="kpi-sub">${regions.slice(0,2).map(([r,n])=>`${r} (${n})`).join(' · ') || '—'}</div></div>
+    </div>
+
+    <div class="cards-grid-2">
+      <a href="javascript:void(0)" class="action-card" onclick="go('catalogue')">
+        <h3>Gérer mon catalogue →</h3>
+        <p>Créer, modifier, activer/désactiver ou supprimer vos programmes d'accompagnement.</p>
+      </a>
+      <a href="javascript:void(0)" class="action-card alt" onclick="exportStructureAll('csv')">
+        <h3>Exporter mes dossiers ↓</h3>
+        <p>Télécharger l'ensemble des diagnostics matchés (CSV CRM-ready).</p>
+      </a>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-head">
+        <h3>Diagnostics récents correspondant à votre catalogue</h3>
+        <span class="link" onclick="exportStructureAll('json')">Export JSON</span>
+      </div>
+      ${matched.length === 0 ? '<div class="empty-state">Aucun diagnostic matché. Ajoutez ou activez un programme pour augmenter votre couverture.</div>' : `
+      <table>
+        <thead><tr><th>Date</th><th>Porteur</th><th>Région · Ville</th><th>Besoin</th><th>Profil</th><th>Consent.</th><th>Export</th></tr></thead>
+        <tbody>
+          ${matched.slice(0,15).map(d => `
+            <tr>
+              <td>${new Date(d.createdAt).toLocaleDateString('fr-FR')}</td>
+              <td><strong>${d.porteurAlias || 'Anonyme'}</strong></td>
+              <td>${d.region}${d.ville ? ' · '+d.ville : ''}</td>
+              <td>${d.besoinPrincipal}</td>
+              <td>
+                ${d.rqth ? '<span class="badge badge-rqth">RQTH</span> ' : ''}
+                ${d.qpv ? '<span class="badge badge-qpv">QPV</span> ' : ''}
+                ${!d.rqth && !d.qpv ? '<span class="badge badge-std">Standard</span>' : ''}
+              </td>
+              <td>${d.consentementTransmission ? '<span class="badge badge-yes">Oui</span>' : '<span class="badge badge-no">Non</span>'}</td>
+              <td><span class="link" onclick="exportDiagJson(${d.id})">JSON</span> · <span class="link" onclick="exportDiagCsv(${d.id})">CSV</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      `}
+    </div>
+  `;
+}
+
+function logout() {
+  SESSION = { loggedIn: false, structureId: null, structureNom: null };
+  document.getElementById('tab-dashboard').classList.add('lock');
+  document.getElementById('tab-catalogue').classList.add('lock');
+  toast('Vous êtes déconnecté');
+  go('landing');
+}
+
+// ====================================
+// CATALOGUE CRUD
+// ====================================
+let CAT_EDITING = null;
+const PUBLICS = ['Tous','QPV','RQTH','Jeunes','Femmes','Demandeurs emploi'];
+const FORMATS = ['Présentiel','Distanciel','Hybride'];
+
+function renderCatalogue() {
+  if (!SESSION.loggedIn) { go('login'); return; }
+  const ours = PROGRAMMES.filter(p => p.structureId === SESSION.structureId).sort((a, b) => Number(b.prisEnCharge) - Number(a.prisEnCharge));
+  document.getElementById('catalogue-container').innerHTML = `
+    <div style="margin-bottom:14px;"><span class="link" onclick="go('dashboard')">← Retour au dashboard</span></div>
+    <div class="cat-head">
+      <h1 class="h2" style="margin:0; font-size:22px;">Mon catalogue de programmes</h1>
+      <button class="btn btn-primary btn-sm" onclick="catStartCreate()">+ Ajouter un programme</button>
+    </div>
+    <div id="cat-form-slot"></div>
+    <div id="cat-list">
+      ${ours.length === 0 ? '<div class="card empty-state">Aucun programme. Cliquez sur « Ajouter un programme » pour commencer.</div>' : ours.map(p => `
+        <div class="programme-row">
+          <div class="pr-top">
+            <h3 class="pr-title">${p.nom}</h3>
+            <span class="badge ${p.prisEnCharge ? 'badge-active':'badge-off'}">${p.prisEnCharge ? 'Actif':'Désactivé'}</span>
+          </div>
+          <p style="margin:10px 0; color:#4B5563; line-height:1.6; font-size:14px;">${p.description}</p>
+          <div class="pc-tags">
+            <div class="pc-tag-box"><span>Public</span><strong>${p.ciblePublic}</strong></div>
+            <div class="pc-tag-box"><span>Zone</span><strong>${p.zoneGeographique}</strong></div>
+            ${p.duree ? `<div class="pc-tag-box"><span>Durée</span><strong>${p.duree}</strong></div>` : ''}
+            ${p.format ? `<div class="pc-tag-box"><span>Format</span><strong>${p.format}</strong></div>` : ''}
+            <div class="pc-tag-box"><span>Capacité</span><strong>${p.capaciteAnnuelle}/an</strong></div>
+          </div>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-sm" onclick="catEdit(${p.id})">Modifier</button>
+            <button class="btn btn-ghost btn-sm" onclick="catToggle(${p.id})">${p.prisEnCharge ? 'Désactiver':'Activer'}</button>
+            <button class="btn btn-danger btn-sm" onclick="catDelete(${p.id})">Supprimer</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  CAT_EDITING = null;
+}
+
+function catStartCreate() {
+  CAT_EDITING = { nom:'', description:'', ciblePublic:'Tous', zoneGeographique:'', capaciteAnnuelle:0, prisEnCharge:true, duree:'', format:'', contact:'' };
+  renderCatForm();
+}
+function catEdit(id) {
+  const p = PROGRAMMES.find(x => x.id === id);
+  CAT_EDITING = { id: p.id, nom:p.nom, description:p.description, ciblePublic:p.ciblePublic, zoneGeographique:p.zoneGeographique, capaciteAnnuelle:p.capaciteAnnuelle, prisEnCharge:p.prisEnCharge, duree:p.duree||'', format:p.format||'', contact:p.contact||'' };
+  renderCatForm();
+  document.getElementById('cat-form-slot').scrollIntoView({ behavior:'smooth' });
+}
+function renderCatForm() {
+  if (!CAT_EDITING) { document.getElementById('cat-form-slot').innerHTML = ''; return; }
+  const e = CAT_EDITING;
+  document.getElementById('cat-form-slot').innerHTML = `
+    <div class="card">
+      <h3 class="h3" style="margin-bottom:14px;">${e.id ? 'Modifier le programme' : 'Nouveau programme'}</h3>
+      <div class="form-row">
+        <div class="field"><label class="label">Nom *</label><input class="input" id="cf-nom" value="${e.nom.replace(/"/g,'&quot;')}" /></div>
+        <div class="field"><label class="label">Public cible *</label><select class="select" id="cf-pub">${PUBLICS.map(p=>`<option value="${p}" ${p===e.ciblePublic?'selected':''}>${p}</option>`).join('')}</select></div>
+        <div class="field"><label class="label">Zone géographique *</label><input class="input" id="cf-zone" placeholder="National, Grand Est..." value="${e.zoneGeographique.replace(/"/g,'&quot;')}" /></div>
+        <div class="field"><label class="label">Format</label><select class="select" id="cf-fmt"><option value="">—</option>${FORMATS.map(f=>`<option value="${f}" ${f===e.format?'selected':''}>${f}</option>`).join('')}</select></div>
+        <div class="field"><label class="label">Durée</label><input class="input" id="cf-duree" placeholder="6 mois, 12 mois..." value="${(e.duree||'').replace(/"/g,'&quot;')}" /></div>
+        <div class="field"><label class="label">Capacité annuelle</label><input class="input" id="cf-cap" type="number" min="0" value="${e.capaciteAnnuelle}" /></div>
+        <div class="field" style="grid-column:1/-1"><label class="label">Contact (email ou téléphone)</label><input class="input" id="cf-contact" value="${(e.contact||'').replace(/"/g,'&quot;')}" /></div>
+      </div>
+      <div class="field"><label class="label">Description *</label><textarea class="textarea" id="cf-desc" rows="3">${e.description}</textarea></div>
+      <label class="check"><input type="checkbox" id="cf-active" ${e.prisEnCharge?'checked':''}> Programme actif (visible dans le matching)</label>
+      <div class="err" id="cf-err"></div>
+      <div class="row-actions" style="margin-top:14px;">
+        <button class="btn btn-primary btn-sm" onclick="catSave()">${e.id ? 'Mettre à jour' : 'Créer'}</button>
+        <button class="btn btn-ghost btn-sm" onclick="catCancel()">Annuler</button>
+      </div>
+    </div>
+  `;
+}
+function catCancel() { CAT_EDITING = null; renderCatForm(); }
+function catSave() {
+  const e = CAT_EDITING;
+  const data = {
+    nom: document.getElementById('cf-nom').value.trim(),
+    description: document.getElementById('cf-desc').value.trim(),
+    ciblePublic: document.getElementById('cf-pub').value,
+    zoneGeographique: document.getElementById('cf-zone').value.trim(),
+    capaciteAnnuelle: parseInt(document.getElementById('cf-cap').value, 10) || 0,
+    prisEnCharge: document.getElementById('cf-active').checked,
+    duree: document.getElementById('cf-duree').value.trim() || null,
+    format: document.getElementById('cf-fmt').value || null,
+    contact: document.getElementById('cf-contact').value.trim() || null,
+  };
+  const err = document.getElementById('cf-err');
+  err.classList.remove('show');
+  if (data.nom.length < 2 || data.description.length < 10 || data.zoneGeographique.length < 2) {
+    err.textContent = 'Vérifiez les champs obligatoires (nom, description ≥10 caractères, zone géographique).';
+    err.classList.add('show'); return;
+  }
+  if (e.id) { const idx = PROGRAMMES.findIndex(x => x.id === e.id); PROGRAMMES[idx] = { ...PROGRAMMES[idx], ...data }; toast('Programme mis à jour'); }
+  else { const newId = Math.max(...PROGRAMMES.map(p=>p.id)) + 1; PROGRAMMES.unshift({ id:newId, structureId: SESSION.structureId, ...data, urlInfo:null }); toast('Programme créé'); }
+  DIAGNOSTICS.forEach(d => d.programmesMatched = match(d));
+  CAT_EDITING = null; renderCatalogue();
+}
+function catToggle(id) {
+  const p = PROGRAMMES.find(x => x.id === id); p.prisEnCharge = !p.prisEnCharge;
+  DIAGNOSTICS.forEach(d => d.programmesMatched = match(d));
+  toast(`Programme ${p.prisEnCharge ? 'activé' : 'désactivé'}`); renderCatalogue();
+}
+function catDelete(id) {
+  const p = PROGRAMMES.find(x => x.id === id);
+  if (!confirm(`Supprimer définitivement « ${p.nom} » ?`)) return;
+  PROGRAMMES = PROGRAMMES.filter(x => x.id !== id);
+  DIAGNOSTICS.forEach(d => d.programmesMatched = match(d));
+  toast('Programme supprimé'); renderCatalogue();
+}
+
+// ====================================
+// TOAST
+// ====================================
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ====================================
+// ACCESSIBILITÉ — Panel + toggles
+// ====================================
+(function(){
+  const body = document.body;
+  const panel = document.getElementById('a11y-panel');
+  const fab = document.getElementById('a11y-fab');
+  const close = document.getElementById('a11y-close');
+  if (!panel || !fab) return;
+  function save(k, v) { try { localStorage.setItem('op-a11y-' + k, v); } catch(e){} }
+  function load(k, def) { try { return localStorage.getItem('op-a11y-' + k) || def; } catch(e){ return def; } }
+  function openPanel() { panel.classList.add('open'); fab.setAttribute('aria-expanded', 'true'); }
+  function closePanel() { panel.classList.remove('open'); fab.setAttribute('aria-expanded', 'false'); }
+  fab.addEventListener('click', () => panel.classList.contains('open') ? closePanel() : openPanel());
+  if (close) close.addEventListener('click', closePanel);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && panel.classList.contains('open')) closePanel(); });
+  // Taille de texte
+  const sizeBtns = panel.querySelectorAll('[data-text-size]');
+  function applySize(s) {
+    body.classList.remove('a11y-size-large','a11y-size-xlarge');
+    if (s === 'large') body.classList.add('a11y-size-large');
+    else if (s === 'xlarge') body.classList.add('a11y-size-xlarge');
+    save('size', s);
+    sizeBtns.forEach(b => { const on = b.dataset.textSize === s; b.classList.toggle('active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  }
+  sizeBtns.forEach(b => b.addEventListener('click', () => applySize(b.dataset.textSize)));
+  applySize(load('size', 'normal'));
+  // Contraste
+  const cInput = document.getElementById('a11y-contrast');
+  function applyContrast(on) { body.classList.toggle('a11y-contrast', on); save('contrast', on ? '1' : '0'); cInput.checked = on; }
+  cInput.addEventListener('change', e => applyContrast(e.target.checked));
+  applyContrast(load('contrast', '0') === '1');
+  // Dyslexie
+  const dInput = document.getElementById('a11y-dyslexia');
+  function applyDyslexia(on) { body.classList.toggle('a11y-dyslexia', on); save('dyslexia', on ? '1' : '0'); dInput.checked = on; }
+  dInput.addEventListener('change', e => applyDyslexia(e.target.checked));
+  applyDyslexia(load('dyslexia', '0') === '1');
+  // Lecture facile (FALC)
+  const erInput = document.getElementById('a11y-easyread');
+  function applyEasyRead(on) { body.classList.toggle('easy-read', on); save('easyread', on ? '1' : '0'); erInput.checked = on; }
+  erInput.addEventListener('change', e => applyEasyRead(e.target.checked));
+  applyEasyRead(load('easyread', '0') === '1');
+  // TTS (Web Speech API)
+  const tInput = document.getElementById('a11y-tts');
+  let ttsOn = false;
+  function applyTts(on) {
+    ttsOn = on; tInput.checked = on; save('tts', on ? '1' : '0');
+    if (!on && window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+  tInput.addEventListener('change', e => applyTts(e.target.checked));
+  applyTts(load('tts', '0') === '1');
+  document.addEventListener('click', (e) => {
+    if (!ttsOn || !window.speechSynthesis) return;
+    const tgt = e.target.closest('p, h1, h2, h3, li, .lead, .label, .pc-desc');
+    if (!tgt || panel.contains(tgt)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(tgt.textContent.trim().slice(0, 350));
+    u.lang = 'fr-FR'; u.rate = 0.95;
+    document.querySelectorAll('.a11y-reading').forEach(x => x.classList.remove('a11y-reading'));
+    tgt.classList.add('a11y-reading');
+    u.onend = () => tgt.classList.remove('a11y-reading');
+    window.speechSynthesis.speak(u);
+  });
+})();
+</script>
+</body>
+</html>
