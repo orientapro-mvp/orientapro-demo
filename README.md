@@ -2,7 +2,7 @@
 
 > Plateforme d'orientation entrepreneuriale inclusive pour porteurs de projet QPV / RQTH et structures d'accompagnement.
 
-🔗 **Démo en ligne** : https://VOTRE-USER.github.io/orientapro-demo
+🔗 **Démo en ligne** : https://orientapro-mvp.github.io/orientapro-demo
 
 ## À propos
 
