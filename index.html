@@ -556,6 +556,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
 }
 
 </style>
+<link rel="stylesheet" href="assets/orientapro-rag.css">
 </head>
 <body>
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -2198,5 +2199,15 @@ function toast(msg) {
   }
 })();
 </script>
+
+<!-- ============================================================
+     OrientaPro RAG — diagnostic FALC (Marie) + chatbot Q&A
+     Backend Python FastAPI sur Hugging Face Spaces (Mistral AI).
+     Tout est non-bloquant : si l'API est down, l'app reste utilisable.
+     ============================================================ -->
+<script src="assets/config.js"></script>
+<script src="assets/rag-client.js" defer></script>
+<script src="assets/diagnostic-express.js" defer></script>
+<script src="assets/chat-widget.js" defer></script>
 </body>
 </html>
