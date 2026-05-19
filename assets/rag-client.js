@@ -75,4 +75,10 @@
   }
 
   window.OrientaProRAG = { diagnostic, chat, available, healthcheck };
+
+  // Warm-up : réveille le conteneur HF Spaces (cold start ~10s) avant que
+  // l'utilisateur clique sur "Voir mes 3 aides". Silencieux si l'API est down.
+  if (available()) {
+    setTimeout(() => { healthcheck().catch(() => {}); }, 800);
+  }
 })();
