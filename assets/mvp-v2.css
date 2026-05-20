@@ -407,12 +407,12 @@ body.a11y-contrast .op-dossier-sub,
 body.a11y-contrast .op-dossier-bridge p { color: #fff !important; }
 
 /* ============================================================
-   BOUTON RETOUR EN HAUT
+   BOUTON RETOUR EN HAUT — décalé pour ne pas chevaucher le chatbot
    ============================================================ */
 .op-back-to-top {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  bottom: 88px;
   z-index: 170;
   width: 52px;
   height: 52px;
@@ -431,6 +431,218 @@ body.a11y-contrast .op-dossier-bridge p { color: #fff !important; }
 .op-back-to-top:focus-visible { outline: 3px solid #FFB800; outline-offset: 3px; }
 .op-back-to-top[hidden] { display: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 540px) { .op-back-to-top { bottom: 80px; right: 14px; width: 46px; height: 46px; } }
+
+/* ============================================================
+   MINI-DÉMO "Voici le dossier de Marie en 30 sec"
+   ============================================================ */
+.op-demo {
+  margin: 36px 0 56px;
+  padding: 32px 24px;
+  background: linear-gradient(180deg, #FFF8EC 0%, #FFFFFF 70%);
+  border: 1px solid #FFD480;
+  border-radius: var(--radius-xl);
+}
+.op-demo-head { text-align: center; margin-bottom: 22px; }
+.op-demo-head h2 { font-size: 26px; color: #0E2A47; margin: 6px 0 8px; line-height: 1.25; }
+.op-demo-sub { font-size: 14.5px; color: #6B7280; margin: 0 auto; max-width: 580px; line-height: 1.55; }
+
+.op-demo-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.op-demo-tab {
+  background: #fff;
+  border: 2px solid #E5E7EB;
+  color: #0E2A47;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 18px;
+  min-height: 44px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all .15s;
+}
+.op-demo-tab:hover { border-color: #F39200; }
+.op-demo-tab.is-active {
+  background: #0E2A47;
+  color: #fff;
+  border-color: #0E2A47;
+  box-shadow: 0 4px 12px rgba(14, 42, 71, 0.18);
+}
+.op-demo-tab:focus-visible { outline: 3px solid #FFB800; outline-offset: 2px; }
+
+.op-demo-card {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  animation: opFadeIn 0.3s ease-out;
+}
+.op-demo-card[hidden] { display: none; }
+@keyframes opFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.op-demo-card-head { margin-bottom: 18px; }
+.op-demo-card-badge {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fff;
+  background: #0E2A47;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.op-demo-card-head h3 {
+  font-size: 19px;
+  color: #0E2A47;
+  margin: 4px 0 6px;
+  line-height: 1.3;
+}
+.op-demo-card-projet { font-size: 13.5px; color: #4B5563; line-height: 1.6; margin: 0; }
+.op-demo-card-projet strong { color: #0E2A47; }
+
+.op-demo-aides {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.op-demo-aide {
+  background: #F9FAFB;
+  border-left: 4px solid #F39200;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+.op-demo-aide-amount {
+  font-size: 20px;
+  font-weight: 800;
+  color: #C67500;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.op-demo-aide-nom { font-size: 13px; font-weight: 600; color: #0E2A47; margin-bottom: 2px; line-height: 1.3; }
+.op-demo-aide-org { font-size: 11px; color: #6B7280; text-transform: uppercase; letter-spacing: 0.4px; }
+
+.op-demo-contacts, .op-demo-checklist {
+  background: #F9FAFB;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-top: 12px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.op-demo-contacts p, .op-demo-checklist p { margin: 0 0 6px; color: #4B5563; }
+.op-demo-checklist ul { margin: 6px 0 0; padding-left: 20px; color: #0E2A47; }
+.op-demo-checklist li { margin-bottom: 4px; }
+
+.op-demo-cta {
+  text-align: center;
+  margin-top: 22px;
+}
+.op-demo-cta-help { font-size: 12px; color: #6B7280; margin: 10px 0 0; font-style: italic; }
+
+/* Mobile */
+@media (max-width: 700px) {
+  .op-demo { padding: 22px 14px; margin: 22px 0 32px; }
+  .op-demo-head h2 { font-size: 21px; }
+  .op-demo-tab { font-size: 12.5px; padding: 9px 14px; }
+  .op-demo-aides { grid-template-columns: 1fr; }
+  .op-demo-aide-amount { font-size: 22px; }
+  .op-demo-card { padding: 18px 16px; }
+}
+
+/* Modes a11y */
+body.a11y-contrast .op-demo,
+body.a11y-contrast .op-demo-card,
+body.a11y-contrast .op-demo-tab,
+body.a11y-contrast .op-demo-aide,
+body.a11y-contrast .op-demo-contacts,
+body.a11y-contrast .op-demo-checklist { background: #000 !important; border-color: #FFD800 !important; color: #fff !important; }
+body.a11y-contrast .op-demo-head h2,
+body.a11y-contrast .op-demo-card-head h3,
+body.a11y-contrast .op-demo-aide-amount { color: #FFD800 !important; }
+body.easy-read .op-demo-head h2 { font-size: 30px !important; }
+body.easy-read .op-demo-card-head h3 { font-size: 22px !important; }
+body.easy-read .op-demo-aide-nom { font-size: 16px !important; }
+body.easy-read .op-demo-contacts, body.easy-read .op-demo-checklist { font-size: 16px !important; line-height: 1.8 !important; }
+
+/* ============================================================
+   MOBILE FIXES — optimisation 360px (smartphone standard)
+   ============================================================ */
+@media (max-width: 540px) {
+  /* Hero : titre adapté, line-height généreux */
+  .hero { padding: 28px 14px !important; }
+  .hero .h1 { font-size: clamp(22px, 6.5vw, 28px) !important; line-height: 1.25 !important; word-break: normal !important; hyphens: none !important; }
+  .hero-v2-eyebrow { font-size: 12px !important; padding: 6px 14px !important; }
+  .hero-v2-reassure { gap: 6px 14px !important; font-size: 12px !important; }
+  .hero-cta { flex-direction: column !important; gap: 8px !important; }
+  .hero-cta .btn { width: 100% !important; justify-content: center !important; min-height: 48px !important; font-size: 15px !important; }
+  /* Stats hero : 1 colonne */
+  .op-stats { grid-template-columns: 1fr !important; gap: 12px !important; padding: 16px 14px !important; }
+  .op-stat-num { font-size: 24px !important; }
+  /* "Pourquoi choisir" : 1 colonne */
+  .op-whyus { margin: 36px 0 !important; padding: 0 6px !important; }
+  .op-whyus h2 { font-size: 22px !important; }
+  .op-whyus-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .op-whyus-card { padding: 20px 16px !important; }
+  /* Comment ça marche : 1 colonne */
+  .op-steps { grid-template-columns: 1fr !important; gap: 12px !important; }
+  .op-step { padding: 16px 14px !important; }
+  /* Fonctionnalités à venir : 1 colonne */
+  .op-coming-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .op-coming-card { padding: 16px 14px !important; }
+  /* Sources : centrage + taille réduite */
+  .op-sources { padding: 22px 14px !important; margin: 32px 0 !important; }
+  .op-sources-row { gap: 8px !important; }
+  .op-sources-logo { font-size: 11.5px !important; padding: 6px 12px !important; min-width: auto !important; }
+  /* FAQ : pleine largeur + cible tactile augmentée */
+  .op-faq { margin: 28px 0 !important; padding: 22px 8px !important; }
+  .op-faq h2 { font-size: 22px !important; padding: 0 8px !important; }
+  .op-faq-item summary { padding: 14px 14px !important; font-size: 14.5px !important; min-height: 52px !important; }
+  .op-faq-answer { padding: 0 14px 14px !important; font-size: 14px !important; line-height: 1.65 !important; }
+  /* Sticky banner persona compact */
+  .op-persona-banner { font-size: 11.5px !important; padding: 8px 12px !important; gap: 8px !important; top: 60px !important; }
+  .op-persona-banner-switch { font-size: 11px !important; padding: 4px 10px !important; min-height: 28px !important; }
+  /* Persona switch en colonne */
+  .persona-switch { flex-direction: column !important; gap: 6px !important; max-width: 100% !important; padding: 6px !important; }
+  .persona-pill { min-height: 56px !important; padding: 10px 16px !important; flex-direction: row !important; gap: 10px !important; font-size: 14px !important; }
+  .op-persona-intro { font-size: 12px !important; margin: 14px 8px 4px !important; }
+  /* Footer : 1 colonne */
+  .footer { padding: 22px 16px !important; }
+  .footer .footer-grid { grid-template-columns: 1fr !important; gap: 22px !important; }
+  /* Boutons CTA universels : éviter zoom iOS et cible tactile */
+  .btn, .btn-primary, .btn-outline, .btn-ghost { min-height: 48px !important; padding: 12px 18px !important; font-size: 15px !important; }
+  /* Inputs : font-size 16px pour empêcher le zoom iOS au focus */
+  .input, .textarea, .select { font-size: 16px !important; min-height: 48px !important; }
+  /* Sticky nav compact */
+  .topbar { padding: 8px 10px !important; }
+  .tabs button { font-size: 11.5px !important; padding: 5px 8px !important; min-height: 36px !important; }
+  /* Modales légales : pleine largeur */
+  .legal-modal-content { max-width: 95vw !important; max-height: 88vh !important; padding: 18px !important; }
+  .legal-modal h2 { font-size: 18px !important; }
+  .legal-modal h3 { font-size: 14px !important; }
+  /* Dossier Passerelle : sections compactes */
+  .op-dossier-section { padding: 16px 14px !important; }
+  .op-dossier-section h3 { font-size: 15px !important; }
+  .op-dossier-actions { flex-direction: column !important; gap: 8px !important; }
+  .op-dossier-actions .btn { width: 100% !important; }
+}
+
+/* Très petits écrans (< 380px) — iPhone SE etc. */
+@media (max-width: 380px) {
+  .hero .h1 { font-size: 20px !important; }
+  .op-whyus h2, .op-faq h2 { font-size: 20px !important; }
+  .op-stat-num { font-size: 22px !important; }
+  .op-stat-lbl { font-size: 11.5px !important; }
+}
 
 /* ============================================================
    PERSONA SWITCH RENFORCÉ + SÉPARATEUR VISUEL

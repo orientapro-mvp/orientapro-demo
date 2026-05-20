@@ -674,18 +674,97 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
       <p class="hero-proof" aria-live="polite" style="margin-top:14px;"><span class="dot-live" aria-hidden="true"></span><strong id="liveCount">1 247</strong> porteurs orientés ce mois · <strong>94 %</strong> repartent avec un dossier prêt à présenter</p>
     </div>
 
-    <!-- Bandeau réassurance officielle (inspiration dossierfacile.fr) -->
-    <div class="op-trust-bar" role="region" aria-label="Garanties OrientaPro">
-      <span class="op-trust-bar-icon" aria-hidden="true">✓</span>
-      <span><strong>Service gratuit et indépendant.</strong> <span class="op-trust-bar-partners">Partenaires&nbsp;:</span> CARPF · France Travail · Cap Emploi · AGEFIPH · Initiactive 95 · CCI Val-d'Oise</span>
-    </div>
-
     <!-- Stats hero — chiffres clés (style Leadfox) -->
     <div class="op-stats" role="region" aria-label="Chiffres clés OrientaPro">
       <div><div class="op-stat-num">15 min</div><div class="op-stat-lbl">pour identifier vos aides</div></div>
       <div><div class="op-stat-num">15 +</div><div class="op-stat-lbl">programmes d'accompagnement référencés</div></div>
       <div><div class="op-stat-num">100 % gratuit</div><div class="op-stat-lbl">sans inscription, données protégées</div></div>
     </div>
+
+    <!-- === MINI-DÉMO "Voici le dossier de Marie en 30 sec" — remplace l'ancien diagnostic-express === -->
+    <section class="op-demo" aria-labelledby="demo-title">
+      <div class="op-demo-head">
+        <p class="eyebrow" style="color:#C67500;">Démonstration · 30 secondes</p>
+        <h2 id="demo-title">Voici ce que les porteurs reçoivent</h2>
+        <p class="op-demo-sub">Choisissez un profil pour voir le Dossier Passerelle correspondant — sans rien remplir.</p>
+      </div>
+      <div class="op-demo-tabs" role="tablist" aria-label="Profils d'exemple">
+        <button class="op-demo-tab is-active" role="tab" aria-selected="true" data-demo-persona="marie">Marie · 38 ans · RQTH</button>
+        <button class="op-demo-tab" role="tab" aria-selected="false" data-demo-persona="karim">Karim · 28 ans · QPV</button>
+        <button class="op-demo-tab" role="tab" aria-selected="false" data-demo-persona="fatou">Fatou · 45 ans · Créatrice</button>
+      </div>
+
+      <article class="op-demo-card" data-demo-content="marie">
+        <header class="op-demo-card-head">
+          <div class="op-demo-card-badge">Dossier Passerelle OrientaPro</div>
+          <h3>Marie D. — 38 ans · RQTH · Garges-lès-Gonesse</h3>
+          <p class="op-demo-card-projet">Projet : <strong>Salon de coiffure adapté aux personnes handicapées</strong> · Stade : Idée à structurer · Besoin : Financement + accompagnement</p>
+        </header>
+        <div class="op-demo-aides">
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">6 300 €</div><div class="op-demo-aide-nom">AGEFIPH — Coup de pouce création</div><div class="op-demo-aide-org">RQTH · National</div></div>
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">12 000 €</div><div class="op-demo-aide-nom">ADIE — Microcrédit professionnel</div><div class="op-demo-aide-org">Sans apport · IDF</div></div>
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">8 000 €</div><div class="op-demo-aide-nom">Initiactive 95 — Prêt d'honneur</div><div class="op-demo-aide-org">Taux zéro · Val-d'Oise</div></div>
+        </div>
+        <div class="op-demo-contacts">
+          <p><strong>Contacts prioritaires&nbsp;:</strong></p>
+          <p>📞 Cap Emploi Val-d'Oise : 01 39 90 24 24 — référente Sandrine M.</p>
+          <p>📞 Initiactive 95 : 01 39 88 11 99</p>
+        </div>
+        <div class="op-demo-checklist">
+          <p><strong>À préparer pour le 1er rendez-vous&nbsp;:</strong></p>
+          <ul><li>✓ Notification RQTH (MDPH)</li><li>✓ Description du projet (1 page)</li><li>✓ Justificatif de domicile QPV (sig.ville.gouv.fr)</li><li>✓ Budget prévisionnel (modèle gratuit fourni)</li></ul>
+        </div>
+      </article>
+
+      <article class="op-demo-card" data-demo-content="karim" hidden>
+        <header class="op-demo-card-head">
+          <div class="op-demo-card-badge">Dossier Passerelle OrientaPro</div>
+          <h3>Karim B. — 28 ans · QPV Sarcelles</h3>
+          <p class="op-demo-card-projet">Projet : <strong>Food truck cuisine maghrébine</strong> · Stade : Idée · Besoin : Financement + permis stationnement</p>
+        </header>
+        <div class="op-demo-aides">
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">10 000 €</div><div class="op-demo-aide-nom">Quartiers 2030 (ANCT)</div><div class="op-demo-aide-org">QPV · Subvention</div></div>
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">7 000 €</div><div class="op-demo-aide-nom">Talents des Cités — Bpifrance</div><div class="op-demo-aide-org">Concours QPV</div></div>
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">Gratuit</div><div class="op-demo-aide-nom">ADIE — CréaJeunes</div><div class="op-demo-aide-org">−32 ans · Formation 4 mois</div></div>
+        </div>
+        <div class="op-demo-contacts">
+          <p><strong>Contacts prioritaires&nbsp;:</strong></p>
+          <p>📞 CitésLab Bpifrance Sarcelles : conseiller de proximité dédié</p>
+          <p>📞 ADIE IDF : 0 969 328 110</p>
+        </div>
+        <div class="op-demo-checklist">
+          <p><strong>À préparer pour le 1er rendez-vous&nbsp;:</strong></p>
+          <ul><li>✓ Justificatif d'adresse en QPV Sarcelles</li><li>✓ Formation HACCP + Permis d'exploitation à anticiper</li><li>✓ Devis camion aménagé (25-60 k€)</li><li>✓ Demande de permis de stationnement (mairie)</li></ul>
+        </div>
+      </article>
+
+      <article class="op-demo-card" data-demo-content="fatou" hidden>
+        <header class="op-demo-card-head">
+          <div class="op-demo-card-badge">Dossier Passerelle OrientaPro</div>
+          <h3>Fatou D. — 45 ans · Créatrice · Reims (Grand Est)</h3>
+          <p class="op-demo-card-projet">Projet : <strong>Atelier couture africaine + e-shop</strong> · Stade : Test d'activité · Besoin : Statut + accompagnement</p>
+        </header>
+        <div class="op-demo-aides">
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">Test</div><div class="op-demo-aide-nom">Coopérative d'Activité (CAE)</div><div class="op-demo-aide-org">Statut salarié protégé</div></div>
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">Garantie 80 %</div><div class="op-demo-aide-nom">France Active — Garantie EGALITE Femmes</div><div class="op-demo-aide-org">Prêt bancaire couvert</div></div>
+          <div class="op-demo-aide"><div class="op-demo-aide-amount">5 000 €</div><div class="op-demo-aide-nom">NACRE — Prêt taux zéro</div><div class="op-demo-aide-org">National · Demandeur emploi</div></div>
+        </div>
+        <div class="op-demo-contacts">
+          <p><strong>Contacts prioritaires&nbsp;:</strong></p>
+          <p>📞 BGE Grand Est : 03 26 79 35 30 (Reims)</p>
+          <p>📞 France Active Grand Est : 03 88 35 87 27</p>
+        </div>
+        <div class="op-demo-checklist">
+          <p><strong>À préparer pour le 1er rendez-vous&nbsp;:</strong></p>
+          <ul><li>✓ Description offre + cible (1 page)</li><li>✓ Estimation CA premiers mois</li><li>✓ Photos / portfolio de pièces réalisées</li><li>✓ Attestation France Travail récente</li></ul>
+        </div>
+      </article>
+
+      <div class="op-demo-cta">
+        <button class="btn btn-primary" data-go="diagnostic" data-track="cta_demo_to_diag" aria-label="Faire mon diagnostic personnalisé">Faire le mien — c'est gratuit →</button>
+        <p class="op-demo-cta-help">Ces 3 dossiers sont des exemples illustratifs basés sur des dispositifs réels.</p>
+      </div>
+    </section>
 
     <!-- Section "Pourquoi choisir OrientaPro" — 4 piliers -->
     <section class="op-whyus" aria-labelledby="whyus-title">
@@ -1048,7 +1127,11 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <h3>Propriété intellectuelle</h3>
     <p>L'ensemble des contenus (textes, images, code, logo, design) présents sur ce site sont la propriété d'OrientaPro ou de leurs auteurs respectifs. Toute reproduction, totale ou partielle, sans autorisation écrite préalable est interdite (Code de la Propriété Intellectuelle).</p>
     <h3>Crédits</h3>
-    <p>Données QPV : ANCT — Agence Nationale de la Cohésion des Territoires. APIs publiques de référence : <a href="https://api-adresse.data.gouv.fr" target="_blank" rel="noopener">BAN data.gouv.fr</a> et <a href="https://apicarto.ign.fr" target="_blank" rel="noopener">API Carto IGN</a>. IA souveraine : <span lang="en">Mistral AI</span>.</p>
+    <p>Données QPV : ANCT — Agence Nationale de la Cohésion des Territoires. APIs publiques de référence : <a href="https://api-adresse.data.gouv.fr" target="_blank" rel="noopener">BAN data.gouv.fr</a> et <a href="https://apicarto.ign.fr" target="_blank" rel="noopener">API Carto IGN</a>. Données AGEFIPH, BPI France et data.gouv.fr utilisées à titre informatif.</p>
+    <h3>Médiation à la consommation</h3>
+    <p>Conformément à l'article L.611-1 du Code de la consommation, vous pouvez saisir gratuitement un médiateur en cas de litige non résolu avec OrientaPro. Le médiateur compétent sera désigné lors du passage en production commerciale (T3 2026).</p>
+    <h3>Loi applicable et juridiction</h3>
+    <p>Le présent site est soumis au droit français. Toute réclamation peut être adressée à <a href="mailto:elhafed.badr@gmail.com">elhafed.badr@gmail.com</a> sous 15 jours ouvrés. En cas de litige persistant, et après tentative amiable, les tribunaux français sont seuls compétents.</p>
   </div>
 </div>
 
@@ -1080,7 +1163,11 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <h3>Vos droits</h3>
     <p>Vous disposez des droits d'accès, de rectification, d'effacement, de portabilité, de limitation et d'opposition. Pour les exercer : <a href="mailto:dpo@orientapro.fr">dpo@orientapro.fr</a>. Réclamation auprès de la <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.</p>
     <h3>Décisions automatisées</h3>
-    <p>Le moteur de matching est totalement explicable (score sur 100 + raisons). Aucune décision automatisée sans intervention humaine au sens de l'article 22 RGPD.</p>
+    <p>Conformément à l'article 22 du RGPD, notre moteur de matching est <strong>totalement explicable</strong> (score sur 100 + raisons textuelles). Aucune décision juridique ou financière n'est prise automatiquement. Vous gardez la main sur vos choix.</p>
+    <h3>Réclamation CNIL</h3>
+    <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez saisir gratuitement la Commission Nationale Informatique et Libertés : <a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a> — 3 place de Fontenoy, 75007 Paris.</p>
+    <h3>Modification</h3>
+    <p>Cette politique peut évoluer pour rester conforme à la réglementation. La date de mise à jour figure en haut. En cas d'évolution substantielle, vous serez informé sur la page d'accueil.</p>
   </div>
 </div>
 
@@ -1096,7 +1183,9 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <h3>Synthèse vocale</h3>
     <p>La lecture vocale utilise l'API <span lang="en">Web Speech</span> native de votre navigateur. Aucun texte n'est envoyé vers un serveur externe.</p>
     <h3>Suppression</h3>
-    <p>Vous pouvez supprimer ces préférences à tout moment via les paramètres de votre navigateur (Effacer les données du site).</p>
+    <p>Vous pouvez supprimer ces préférences à tout moment via les paramètres de votre navigateur (Effacer les données du site). En mode navigation privée, rien n'est conservé après fermeture de l'onglet.</p>
+    <h3>Consentement</h3>
+    <p>Comme nous n'utilisons que du stockage technique <strong>strictement nécessaire</strong> au fonctionnement du site (recommandation CNIL sur les cookies exemptés de consentement), aucun bandeau de consentement préalable n'est requis. Vous pouvez tout de même bloquer le stockage local via votre navigateur.</p>
   </div>
 </div>
 
@@ -1115,8 +1204,18 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <p>Les recommandations de structures et d'aides constituent des orientations à titre indicatif. Elles ne se substituent pas à un conseil personnalisé d'un professionnel.</p>
     <h3>5. Responsabilité</h3>
     <p>OrientaPro ne pourra être tenu responsable de l'usage qui sera fait des recommandations. Les décisions finales (constitution de dossier, demande d'aide, choix de structure) relèvent de la seule responsabilité de l'utilisateur.</p>
-    <h3>6. Droit applicable</h3>
-    <p>Les présentes CGU sont régies par le droit français. En cas de litige, médiation préalable auprès du Médiateur National de la Consommation. Compétence des tribunaux français.</p>
+    <h3>6. Propriété intellectuelle</h3>
+    <p>Le site, son design, son algorithme de matching et ses contenus sont la propriété de Badr EL HAFED. Toute reproduction ou réutilisation commerciale nécessite un accord écrit préalable. Les marques mentionnées (AGEFIPH, BPI, ANCT, ADIE, BGE…) appartiennent à leurs propriétaires respectifs et sont citées à titre informatif.</p>
+    <h3>7. Modification des CGU</h3>
+    <p>Les CGU peuvent être mises à jour. La version applicable est celle en ligne au moment de votre utilisation. La date de mise à jour figure en haut du document.</p>
+    <h3>8. Force majeure</h3>
+    <p>OrientaPro ne pourra être tenu responsable en cas d'événement extérieur, imprévisible et irrésistible (panne hébergeur, cyberattaque majeure, catastrophe naturelle).</p>
+    <h3>9. Loi applicable et juridiction</h3>
+    <p>Les présentes CGU sont soumises au droit français. En cas de litige et après tentative de résolution amiable, les tribunaux français sont compétents.</p>
+    <h3>10. Médiation à la consommation</h3>
+    <p>Conformément à l'article L.611-1 du Code de la consommation, vous pouvez recourir gratuitement à un médiateur. Le médiateur compétent sera désigné lors du passage en production commerciale.</p>
+    <h3>11. Réclamation</h3>
+    <p>Pour toute réclamation, contactez : <a href="mailto:elhafed.badr@gmail.com">elhafed.badr@gmail.com</a>. Réponse sous 15 jours ouvrés. Pour les questions liées aux données personnelles : <a href="mailto:dpo@orientapro.fr">dpo@orientapro.fr</a>.</p>
   </div>
 </div>
 
@@ -2369,9 +2468,10 @@ function toast(msg) {
      ============================================================ -->
 <script src="assets/config.js"></script>
 <script src="assets/rag-client.js" defer></script>
-<script src="assets/diagnostic-express.js" defer></script>
+<!-- diagnostic-express.js désactivé pour le pitch : remplacé par la mini-démo "Dossier de Marie" en HTML statique -->
 <script src="assets/chat-widget.js" defer></script>
 <script src="assets/back-to-top.js" defer></script>
+<script src="assets/persona-faq.js" defer></script>
 
 <!-- Branchement tracking sur les boutons data-track="..." (délégué) -->
 <script>
