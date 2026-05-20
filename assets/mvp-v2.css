@@ -1,11 +1,63 @@
 /* assets/mvp-v2.css
-   Styles additifs pour le MVP v2 OrientaPro (brief J-1) :
-   - Hero override
-   - Section "Comment ça marche" en 4 étapes
-   - Section FAQ accordéon
-   - Screen "Dossier Passerelle"
-   Tous les styles sont compatibles body.easy-read et body.a11y-contrast existants.
+   Styles additifs pour le MVP v2 OrientaPro (brief J-1).
+   Compatibles body.easy-read et body.a11y-contrast existants.
 */
+
+/* ============================================================
+   DESIGN TOKENS — système d'ombres, radius et spacing cohérent
+   Inspiration Stripe / Linear : élégance silencieuse.
+   ============================================================ */
+:root {
+  /* Ombres en 3 couches (sm = repos, md = hover, lg = modale) */
+  --shadow-sm: 0 1px 2px rgba(14, 42, 71, 0.04), 0 1px 1px rgba(14, 42, 71, 0.03);
+  --shadow-md: 0 4px 12px rgba(14, 42, 71, 0.08), 0 2px 4px rgba(14, 42, 71, 0.04);
+  --shadow-lg: 0 12px 32px rgba(14, 42, 71, 0.14), 0 4px 8px rgba(14, 42, 71, 0.06);
+  /* Border-radius cohérent */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+  /* Spacing 8px strict */
+  --s1: 4px;  --s2: 8px;  --s3: 12px;  --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 40px;  --s8: 48px;
+  --s9: 64px; --s10: 80px;
+}
+
+/* ============================================================
+   BANDEAU RÉASSURANCE OFFICIELLE (inspiration dossierfacile.fr)
+   ============================================================ */
+.op-trust-bar {
+  margin: 18px auto 24px;
+  padding: 14px 22px;
+  background: #F0F9F4;
+  border: 1px solid #C7E8D4;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 880px;
+  font-size: 13.5px;
+  color: #065F46;
+  line-height: 1.5;
+}
+.op-trust-bar-icon {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  background: #10B981;
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700;
+}
+.op-trust-bar strong { color: #065F46; font-weight: 700; }
+.op-trust-bar-partners { color: #047857; font-weight: 600; }
+@media (max-width: 600px) {
+  .op-trust-bar { flex-direction: column; text-align: center; gap: 8px; padding: 14px 16px; }
+}
+body.a11y-contrast .op-trust-bar { background: #000 !important; border-color: #FFD800 !important; color: #FFD800 !important; }
+body.a11y-contrast .op-trust-bar strong, body.a11y-contrast .op-trust-bar-partners { color: #FFD800 !important; }
+body.easy-read .op-trust-bar { font-size: 16px !important; line-height: 1.75 !important; }
 
 /* ============================================================
    HERO V2 — nouveaux titre / sous-titre / CTA

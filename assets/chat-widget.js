@@ -66,28 +66,38 @@
         ],
       };
     }
-    const lignes = ["Voici ce que je trouve dans notre catalogue pour votre question :"];
+    // Réponse structurée — cards riches + texte fallback
+    const cards = scored.map(x => {
+      const p = x.p;
+      const s = window.STRUCTURES.find(st => st.id === p.structureId) || {};
+      const tel = (p.contact || p.contactLabel || "").match(/(0[1-9](?:[\s.-]?\d{2}){4}|\d{4})/);
+      return {
+        nom: p.nom,
+        organisme: p.organisme || s.nom || "",
+        montant: p.montant || p.cout || "À voir avec la structure",
+        publics: p.publicsCibles || (p.ciblePublic ? [p.ciblePublic] : ["Tous publics"]),
+        description: p.description ? (p.description.length > 140 ? p.description.slice(0, 140) + "…" : p.description) : "",
+        contact: p.contactLabel || p.contact || "",
+        tel: tel ? tel[0].replace(/[\s.-]/g, "") : null,
+        lien: p.contactUrl || (s.email ? "mailto:" + s.email : ""),
+        territoires: p.territoires || [],
+      };
+    });
+    const greeting = cards.length === 1
+      ? "Voici 1 aide qui correspond à votre question :"
+      : `Voici ${cards.length} aides qui correspondent à votre question :`;
+    const lignes = [greeting];
     scored.forEach((x, i) => {
       const p = x.p;
       const s = window.STRUCTURES.find(st => st.id === p.structureId) || {};
       const orga = p.organisme || s.nom || "";
       lignes.push("");
       lignes.push(`${i + 1}. ${p.nom}${orga ? " (" + orga + ")" : ""}`);
-      lignes.push(`   Pour qui ? ${(p.publicsCibles || []).join(", ") || p.ciblePublic || "Tous publics"}.`);
-      lignes.push(`   Montant : ${p.montant || p.cout || "À voir avec la structure"}.`);
+      lignes.push(`   Montant : ${p.montant || p.cout || "À voir"}.`);
       if (p.contactLabel || p.contact) lignes.push(`   Contact : ${p.contactLabel || p.contact}.`);
     });
-    lignes.push("");
-    lignes.push("Pour une orientation complète, faites le diagnostic gratuit ci-dessus. Cela génère un dossier prêt à présenter.");
-    const sources = scored.map(x => {
-      const p = x.p;
-      const s = window.STRUCTURES.find(st => st.id === p.structureId) || {};
-      return {
-        nom: p.nom + (s.nom ? " — " + s.nom : ""),
-        lien: p.contactUrl || (s.email ? "mailto:" + s.email : "#"),
-      };
-    });
-    return { answer_falc: lignes.join("\n"), sources };
+    const sources = cards.map(c => ({ nom: c.nom + (c.organisme ? " — " + c.organisme : ""), lien: c.lien }));
+    return { greeting, cards, answer_falc: lignes.join("\n"), sources };
   }
 
   const SUGGESTIONS = [
@@ -140,10 +150,12 @@
     "aria-label": "Fermer l'assistant",
   }, ["×"]);
 
+  const headerAvatar = el("div", { class: "op-chat-avatar", "aria-hidden": "true" }, ["L"]);
   const header = el("header", { class: "op-chat-header" }, [
+    headerAvatar,
     el("div", { class: "op-chat-header-title", id: "op-chat-title" }, [
-      "Assistant OrientaPro",
-      el("span", { class: "op-chat-header-sub" }, ["Aides, structures, démarches — sources citées"]),
+      "Léa, votre assistante OrientaPro",
+      el("span", { class: "op-chat-header-sub" }, ["En ligne · Réponse en quelques secondes"]),
     ]),
     closeBtn,
   ]);
@@ -158,8 +170,9 @@
   });
 
   const intro = el("div", { class: "op-chat-intro" }, [
-    el("strong", null, ["Bonjour 👋"]),
-    document.createTextNode(" Posez-moi une question sur les aides ou les démarches. Je m'appuie sur des sources publiques officielles (AGEFIPH, Bpifrance, ANCT, Initiactive 95...) et je cite chaque source."),
+    el("strong", null, ["Bonjour 👋 Je suis Léa."]),
+    document.createTextNode(" Posez-moi votre question, même imparfaite — je comprends. Je m'appuie sur des sources officielles (AGEFIPH, Bpifrance, ANCT, France Travail, Initiactive 95…) et je cite chaque réponse."),
+    el("p", { class: "op-chat-intro-prompt" }, ["💡 Voici des exemples de questions :"]),
     el("div", { class: "op-chat-suggestions", role: "group", "aria-label": "Exemples de questions" },
       SUGGESTIONS.map(q => el("button", {
         class: "op-chat-suggestion",
@@ -263,9 +276,82 @@
     body.scrollTop = body.scrollHeight;
   }
 
+  // Rendu enrichi : greeting court + mini-cards par programme avec boutons d'action
+  function appendBotCards(greeting, cards) {
+    const wrap = el("div", { class: "op-msg op-msg-bot op-msg-rich" });
+    if (greeting) wrap.appendChild(el("div", { class: "op-msg-text" }, [greeting]));
+    const cardsWrap = el("div", { class: "op-chat-cards" });
+    cards.forEach((c) => {
+      const tags = (c.publics || []).slice(0, 2).map(p => el("span", { class: "op-chat-card-tag" }, [String(p).toUpperCase()]));
+      const actions = el("div", { class: "op-chat-card-actions" });
+      if (c.tel) {
+        const btn = el("a", {
+          class: "op-chat-card-btn op-chat-card-btn-primary",
+          href: "tel:" + c.tel,
+          "data-track": "chat_call_clicked",
+          "aria-label": "Appeler " + c.organisme,
+        }, ["📞 Appeler"]);
+        actions.appendChild(btn);
+      }
+      if (c.lien) {
+        const btn = el("a", {
+          class: "op-chat-card-btn op-chat-card-btn-secondary",
+          href: c.lien,
+          target: "_blank",
+          rel: "noopener",
+          "data-track": "chat_link_clicked",
+        }, ["→ Voir détails"]);
+        actions.appendChild(btn);
+      }
+      const dossierBtn = el("button", {
+        class: "op-chat-card-btn op-chat-card-btn-ghost",
+        type: "button",
+        "data-track": "chat_dossier_clicked",
+        onclick: () => {
+          close();
+          if (window.OrientaProDossier && window.OrientaProDossier.open) {
+            window.OrientaProDossier.open();
+          } else {
+            document.querySelector('[data-go="diagnostic"]')?.click();
+          }
+        },
+      }, ["📋 Mon dossier"]);
+      actions.appendChild(dossierBtn);
+
+      const card = el("article", { class: "op-chat-card" }, [
+        el("div", { class: "op-chat-card-tags" }, tags),
+        el("h4", { class: "op-chat-card-nom" }, [c.nom]),
+        c.organisme ? el("p", { class: "op-chat-card-orga" }, [c.organisme]) : null,
+        el("div", { class: "op-chat-card-montant" }, [c.montant]),
+        c.description ? el("p", { class: "op-chat-card-desc" }, [c.description]) : null,
+        c.contact ? el("p", { class: "op-chat-card-contact" }, ["📞 " + c.contact]) : null,
+        actions,
+      ]);
+      cardsWrap.appendChild(card);
+    });
+    wrap.appendChild(cardsWrap);
+    const closing = el("p", { class: "op-chat-closing" }, [
+      "💡 Pour aller plus loin, ",
+      el("button", {
+        class: "op-chat-closing-link",
+        type: "button",
+        onclick: () => { close(); document.querySelector('[data-go="diagnostic"]')?.click(); },
+      }, ["faites le diagnostic gratuit complet"]),
+      " — cela génère votre Dossier Passerelle à transmettre.",
+    ]);
+    wrap.appendChild(closing);
+    body.appendChild(wrap);
+    body.scrollTop = body.scrollHeight;
+  }
+
   function appendBotBusy() {
-    const textNode = el("div", { class: "op-msg-text" }, ["Je cherche dans les sources officielles…"]);
-    const wrap = el("div", { class: "op-msg op-msg-bot", "aria-busy": "true" }, [textNode]);
+    const dots = el("div", { class: "op-chat-typing", "aria-hidden": "true" }, [
+      el("span", { class: "op-chat-typing-dot" }),
+      el("span", { class: "op-chat-typing-dot" }),
+      el("span", { class: "op-chat-typing-dot" }),
+    ]);
+    const srLabel = el("span", { class: "sr-only" }, ["Léa réfléchit à votre question"]);
+    const wrap = el("div", { class: "op-msg op-msg-bot op-msg-busy", "aria-busy": "true" }, [dots, srLabel]);
     body.appendChild(wrap);
     body.scrollTop = body.scrollHeight;
     return wrap;
@@ -309,10 +395,17 @@
         res = null;
       }
     }
+    // Petit délai humain pour rendre l'expérience plus naturelle (~600 ms)
+    await new Promise(r => setTimeout(r, 500));
     busyNode.remove();
     if (res) {
-      appendBot(res.answer_falc || "Je n'ai pas trouvé d'information précise.", res.sources || []);
-      if (window.trackEvent) window.trackEvent("chat_question_asked", { hasSources: (res.sources || []).length > 0 });
+      // Rendu enrichi (mini-cards) si la réponse en contient
+      if (Array.isArray(res.cards) && res.cards.length) {
+        appendBotCards(res.greeting || "Voici ce que je trouve :", res.cards);
+      } else {
+        appendBot(res.answer_falc || "Je n'ai pas trouvé d'information précise.", res.sources || []);
+      }
+      if (window.trackEvent) window.trackEvent("chat_question_asked", { cards: (res.cards || []).length });
     } else {
       appendError("Service temporairement indisponible.");
     }

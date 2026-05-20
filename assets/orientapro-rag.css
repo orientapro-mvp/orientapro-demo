@@ -314,6 +314,14 @@
   background: #0E2A47;
   color: #fff;
 }
+.op-chat-avatar {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: linear-gradient(135deg, #F39200 0%, #C67500 100%);
+  color: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 16px;
+  box-shadow: 0 2px 6px rgba(243, 146, 0, 0.45);
+}
 .op-chat-header-title { font-weight: 700; font-size: 14px; flex: 1; }
 .op-chat-header-sub { font-size: 11px; opacity: 0.85; display: block; margin-top: 2px; }
 .op-chat-close {
@@ -334,6 +342,12 @@
   padding: 14px 16px; font-size: 13.5px; color: #6B3300; line-height: 1.55;
 }
 .op-chat-intro strong { color: #92571A; }
+.op-chat-intro-prompt {
+  margin: 14px 0 6px;
+  font-size: 12.5px;
+  color: #6B3300;
+  font-weight: 600;
+}
 .op-chat-suggestions { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
 .op-chat-suggestion {
   font-family: inherit; font-size: 13px; text-align: left;
@@ -354,6 +368,146 @@
   content: "▊"; animation: op-blink 1s step-end infinite; color: #F39200; margin-left: 2px;
 }
 @keyframes op-blink { 50% { opacity: 0; } }
+
+/* === Typing indicator 3 points (mode busy enrichi) === */
+.op-msg-busy { padding: 14px 16px !important; min-width: 70px; }
+.op-chat-typing { display: inline-flex; gap: 5px; align-items: center; }
+.op-chat-typing-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #F39200; opacity: 0.4;
+  animation: op-typing 1.2s infinite ease-in-out;
+}
+.op-chat-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.op-chat-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes op-typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* === Mini-cards de résultats dans le chat (style mesaides) === */
+.op-msg-rich { max-width: 100% !important; background: transparent !important; border: 0 !important; padding: 0 !important; }
+.op-msg-rich .op-msg-text {
+  background: #fff; border: 1px solid #E5E7EB; border-radius: 12px;
+  padding: 10px 14px; margin-bottom: 10px; font-size: 14px;
+}
+.op-chat-cards { display: flex; flex-direction: column; gap: 10px; }
+.op-chat-card {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-left: 4px solid #F39200;
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: box-shadow .15s, transform .15s;
+}
+.op-chat-card:hover {
+  box-shadow: 0 6px 18px rgba(14, 42, 71, 0.08);
+  transform: translateY(-1px);
+}
+.op-chat-card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.op-chat-card-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(243, 146, 0, 0.12);
+  color: #6B3300;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.op-chat-card-nom {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0E2A47;
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+.op-chat-card-orga {
+  font-size: 11.5px;
+  color: #6B7280;
+  margin: 0 0 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.op-chat-card-montant {
+  font-size: 18px;
+  font-weight: 800;
+  color: #C67500;
+  margin: 6px 0 8px;
+}
+.op-chat-card-desc {
+  font-size: 13px;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+.op-chat-card-contact {
+  font-size: 12.5px;
+  color: #0E2A47;
+  margin: 0 0 10px;
+  padding: 6px 10px;
+  background: #F9FAFB;
+  border-radius: 6px;
+}
+.op-chat-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.op-chat-card-btn {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  border: 0;
+  min-height: 36px;
+  transition: background .15s, transform .15s, box-shadow .15s;
+}
+.op-chat-card-btn-primary { background: #F39200; color: #fff; }
+.op-chat-card-btn-primary:hover { background: #C67500; transform: translateY(-1px); }
+.op-chat-card-btn-secondary { background: #fff; color: #0E2A47; border: 1px solid #0E2A47; }
+.op-chat-card-btn-secondary:hover { background: #0E2A47; color: #fff; }
+.op-chat-card-btn-ghost { background: #F9FAFB; color: #0E2A47; border: 1px solid #E5E7EB; }
+.op-chat-card-btn-ghost:hover { background: #E5E7EB; }
+.op-chat-card-btn:focus-visible { outline: 3px solid #FFB800; outline-offset: 2px; }
+
+/* Phrase de conclusion sous les cards */
+.op-chat-closing {
+  font-size: 13px;
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 12px 4px 0;
+  padding: 10px 14px;
+  background: #FFF8EC;
+  border-left: 3px solid #FFAF00;
+  border-radius: 8px;
+}
+.op-chat-closing-link {
+  background: none; border: 0; padding: 0;
+  color: #C67500; font-weight: 700;
+  cursor: pointer; text-decoration: underline;
+  font-family: inherit; font-size: inherit;
+}
+.op-chat-closing-link:hover { color: #92571A; }
+
+/* Adaptations a11y */
+body.easy-read .op-chat-card-nom { font-size: 16px !important; }
+body.easy-read .op-chat-card-montant { font-size: 20px !important; }
+body.easy-read .op-chat-card-desc { font-size: 15px !important; line-height: 1.75 !important; }
+body.easy-read .op-chat-card-btn { font-size: 14px !important; min-height: 42px !important; }
+body.a11y-contrast .op-chat-card { background: #000 !important; border-color: #FFD800 !important; border-left-color: #F39200 !important; }
+body.a11y-contrast .op-chat-card-nom { color: #FFD800 !important; }
+body.a11y-contrast .op-chat-card-desc, body.a11y-contrast .op-chat-card-contact { color: #fff !important; background: #000 !important; }
+body.a11y-contrast .op-chat-card-btn-secondary { background: #000 !important; color: #fff !important; border-color: #FFD800 !important; }
+body.a11y-contrast .op-chat-card-btn-ghost { background: #1a1a1a !important; color: #FFD800 !important; border-color: #FFD800 !important; }
+body.a11y-contrast .op-chat-closing { background: #1a1a1a !important; color: #FFD800 !important; }
 
 .op-msg-sources {
   margin-top: 10px; padding-top: 8px; border-top: 1px dashed #E5E7EB;
