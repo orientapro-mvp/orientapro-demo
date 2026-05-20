@@ -99,7 +99,7 @@
           <div class="op-dossier-actions">
             <button class="btn btn-primary" id="dossier-download-pdf">📄 Télécharger en PDF</button>
             <button class="btn btn-outline" id="dossier-print">🖨️ Imprimer</button>
-            <button class="btn btn-ghost" id="dossier-copy-msg">💬 Copier le message d'introduction</button>
+            <button class="btn btn-primary" id="dossier-transferer" data-open="transferer">📤 Transférer à la structure</button>
           </div>
           <p class="op-dossier-copy-feedback" id="dossier-copy-feedback" aria-live="polite"></p>
         </header>
@@ -298,7 +298,7 @@
   function bindDossierActions(diag) {
     const btnPdf = document.getElementById("dossier-download-pdf");
     const btnPrint = document.getElementById("dossier-print");
-    const btnCopy = document.getElementById("dossier-copy-msg");
+    const btnCopy = null; // Bouton "Copier le message" remplacé par "Transférer à la structure" (géré par transfert-modal.js)
     const feedback = document.getElementById("dossier-copy-feedback");
 
     if (btnPdf) btnPdf.addEventListener("click", () => generatePdf(diag));

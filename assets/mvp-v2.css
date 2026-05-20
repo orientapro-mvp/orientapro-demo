@@ -25,6 +25,242 @@
 }
 
 /* ============================================================
+   MODALE TRANSFERT À LA STRUCTURE (#9)
+   ============================================================ */
+.op-tr-modal { max-width: 720px !important; }
+.op-tr-modal h2 { color: #0E2A47; margin: 0 0 8px; font-size: 22px; }
+.op-tr-intro {
+  background: #F0F9F4; border-left: 4px solid #10B981;
+  border-radius: 8px; padding: 12px 14px;
+  font-size: 13.5px; color: #065F46;
+  margin: 0 0 18px; line-height: 1.55;
+}
+.op-tr-intro strong { color: #047857; }
+
+.op-tr-resume {
+  background: #F9FAFB;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+.op-tr-resume h3 {
+  font-size: 12.5px;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0 0 10px;
+}
+.op-tr-resume dl { margin: 0; }
+.op-tr-resume dt {
+  font-size: 11.5px;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 8px;
+}
+.op-tr-resume dd { margin: 2px 0 0; font-size: 14px; color: #0E2A47; font-weight: 500; }
+.op-tr-resume ul { margin: 4px 0 0; padding-left: 20px; font-size: 13px; }
+.op-tr-resume ul li { margin-bottom: 3px; }
+
+.op-tr-field { margin-bottom: 14px; display: flex; flex-direction: column; }
+.op-tr-field label {
+  font-size: 13.5px; font-weight: 600; color: #0E2A47; margin-bottom: 6px;
+}
+.op-tr-field input,
+.op-tr-field select {
+  font-family: inherit; font-size: 16px;
+  padding: 11px 14px;
+  border: 1.5px solid #E5E7EB; border-radius: 10px;
+  background: #fff; color: #111827; min-height: 44px;
+}
+.op-tr-field input:focus,
+.op-tr-field select:focus {
+  outline: none; border-color: #F39200;
+  box-shadow: 0 0 0 3px rgba(243, 146, 0, 0.18);
+}
+.op-tr-field [aria-invalid="true"] { border-color: #DC2626; background: #FEF2F2; }
+.op-tr-help {
+  font-size: 12px; color: #6B7280; margin: 4px 0 0; line-height: 1.45;
+}
+.op-tr-error {
+  font-size: 12.5px; color: #B91C1C; margin: 6px 0 0;
+}
+
+.op-tr-checkbox label {
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer; font-weight: 500;
+  padding: 10px 14px; background: #F9FAFB;
+  border: 1.5px solid #E5E7EB; border-radius: 10px;
+}
+.op-tr-checkbox label:hover { background: #F1F5F9; border-color: #D1D5DB; }
+.op-tr-checkbox input[type="checkbox"] {
+  margin-top: 3px; width: 18px; height: 18px;
+  accent-color: #F39200; flex-shrink: 0;
+}
+.op-tr-checkbox span { font-size: 13.5px; color: #4B5563; line-height: 1.5; }
+
+.op-tr-formats {
+  border: 1px solid #E5E7EB; border-radius: 12px;
+  padding: 14px 16px 12px; margin: 4px 0 14px;
+}
+.op-tr-formats legend {
+  font-size: 13px; font-weight: 700; color: #0E2A47;
+  padding: 0 8px; letter-spacing: 0.3px;
+}
+.op-tr-formats-hint {
+  font-size: 12.5px; color: #6B7280; margin: 0 0 12px;
+}
+.op-tr-formats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 700px) { .op-tr-formats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 380px) { .op-tr-formats-grid { grid-template-columns: 1fr; } }
+
+.format-btn {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 12px 8px;
+  background: #fff; border: 2px solid #E5E7EB; border-radius: 10px;
+  font-family: inherit; cursor: pointer;
+  min-height: 80px; transition: transform .15s, border-color .15s, background .15s;
+}
+.format-btn:hover { border-color: #F39200; background: #FFF8EC; transform: translateY(-1px); }
+.format-btn.is-selected {
+  border-color: #F39200; background: #FFF8EC;
+  box-shadow: 0 0 0 3px rgba(243, 146, 0, 0.18);
+}
+.format-btn:focus-visible { outline: 3px solid #FFB800; outline-offset: 2px; }
+.format-btn .format-icon { font-size: 22px; line-height: 1; }
+.format-btn .format-label { font-size: 13px; font-weight: 700; color: #0E2A47; }
+.format-btn small { font-size: 11px; color: #6B7280; line-height: 1.3; }
+.format-btn-api {
+  grid-column: span 4;
+  flex-direction: row; justify-content: center; gap: 10px;
+  background: linear-gradient(180deg, #FFF8EC 0%, #FFFFFF 100%);
+  border-color: #FFAF00;
+}
+.format-btn-api small { color: #92571A; }
+@media (max-width: 700px) { .format-btn-api { grid-column: span 2; } }
+@media (max-width: 380px) { .format-btn-api { grid-column: span 1; } }
+
+.op-tr-note {
+  font-size: 12.5px; color: #6B7280;
+  background: #FEF3C7; border-left: 3px solid #F59E0B;
+  padding: 10px 14px; border-radius: 8px;
+  margin: 12px 0 14px; line-height: 1.55;
+}
+.op-tr-note strong { color: #92400E; }
+
+.op-tr-actions {
+  display: flex; gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap; margin-top: 18px;
+}
+@media (max-width: 540px) {
+  .op-tr-actions { flex-direction: column-reverse; }
+  .op-tr-actions .btn { width: 100%; justify-content: center; }
+}
+
+/* Confirmation */
+.op-tr-confirmation { text-align: center; padding: 22px 8px 8px; }
+.op-tr-check {
+  width: 64px; height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 36px; font-weight: 700;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+.op-tr-confirmation h3 { color: #065F46; font-size: 19px; margin: 0 0 8px; }
+.op-tr-confirmation > p {
+  font-size: 14px; color: #4B5563; line-height: 1.55; margin: 0 0 14px;
+}
+.op-tr-recap {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 6px 14px;
+  text-align: left;
+  background: #F9FAFB;
+  padding: 14px;
+  border-radius: 10px;
+  margin: 0 0 14px;
+}
+.op-tr-recap dt {
+  font-size: 12px; color: #6B7280;
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.op-tr-recap dd { margin: 0; font-size: 14px; color: #0E2A47; font-weight: 500; }
+.op-tr-badge-success {
+  display: inline-block; padding: 4px 12px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #065F46; font-weight: 700; font-size: 13px;
+  border-radius: 999px;
+}
+@media (max-width: 540px) {
+  .op-tr-recap { grid-template-columns: 1fr; gap: 4px 0; }
+  .op-tr-recap dd { margin-bottom: 8px; }
+}
+
+body.a11y-contrast .op-tr-modal h2,
+body.a11y-contrast .op-tr-resume h3,
+body.a11y-contrast .op-tr-confirmation h3 { color: #FFD800 !important; }
+body.a11y-contrast .op-tr-field input,
+body.a11y-contrast .op-tr-field select,
+body.a11y-contrast .format-btn { background: #000 !important; color: #fff !important; border-color: #FFD800 !important; }
+body.a11y-contrast .op-tr-resume,
+body.a11y-contrast .op-tr-recap,
+body.a11y-contrast .op-tr-checkbox label { background: #1a1a1a !important; }
+
+/* ============================================================
+   #13 — Z-INDEX HIÉRARCHIE STRICTE
+   chat-fab 80 < chat-panel 95 < banner 60 < legal-modal 200
+   ============================================================ */
+.op-chat-fab { z-index: 80 !important; }
+.op-chat-panel { z-index: 95 !important; }
+.legal-modal { z-index: 200 !important; }
+.op-mvp-banner { z-index: 60 !important; }
+
+/* ============================================================
+   #11 — BOUTON "RETOUR AUX QUESTIONS" DE LÉA
+   ============================================================ */
+.op-chat-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F9FAFB;
+  border: 1.5px solid #E5E7EB;
+  color: #0E2A47;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  margin: 8px 0;
+  min-height: 36px;
+  transition: background .15s, border-color .15s, transform .15s;
+  align-self: flex-start;
+}
+.op-chat-back-btn:hover {
+  background: #fff;
+  border-color: #F39200;
+  color: #C67500;
+  transform: translateY(-1px);
+}
+.op-chat-back-btn:focus-visible {
+  outline: 3px solid #FFB800;
+  outline-offset: 2px;
+}
+body.a11y-contrast .op-chat-back-btn {
+  background: #000 !important;
+  color: #FFD800 !important;
+  border-color: #FFD800 !important;
+}
+
+/* ============================================================
    MODALE EXEMPLE DOSSIER (Fatou D.)
    ============================================================ */
 .op-exemple-modal { max-width: 760px !important; padding: 22px 26px 22px !important; }

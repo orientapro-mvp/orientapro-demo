@@ -562,12 +562,27 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
 <body>
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
-<!-- Bandeau MVP fictif — supprimable par l'utilisateur, réapparaît au reload -->
+<!-- Bandeau MVP fictif — UNIQUE mention visible (wording verrouillé), dismissable session -->
 <div class="op-mvp-banner" id="op-mvp-banner" role="status" aria-live="polite">
   <span class="op-mvp-banner-icon" aria-hidden="true">🧪</span>
-  <span><strong>MVP de démonstration</strong> · les données, structures, événements et partenaires affichés sont fictifs. Aucun partenariat réel n'a été conclu.</span>
+  <span><strong>MVP de démonstration</strong> — données, structures, événements et partenaires fictifs. Aucun partenariat réel n'a été conclu et aucune donnée n'est transmise.</span>
   <button type="button" class="op-mvp-banner-close" id="op-mvp-banner-close" aria-label="Masquer ce bandeau d'information">×</button>
 </div>
+<script>
+(function(){
+  try {
+    var banner = document.getElementById('op-mvp-banner');
+    var btn = document.getElementById('op-mvp-banner-close');
+    if (!banner || !btn) return;
+    // Si l'utilisateur a fermé le bandeau dans cette session, on ne l'affiche pas
+    if (sessionStorage.getItem('op-mvp-banner-dismissed') === '1') { banner.hidden = true; return; }
+    btn.addEventListener('click', function(){
+      banner.hidden = true;
+      try { sessionStorage.setItem('op-mvp-banner-dismissed', '1'); } catch(e){}
+    });
+  } catch(e){}
+})();
+</script>
 
 <div class="a11y-panel" id="a11y-panel" role="dialog" aria-labelledby="a11y-title" aria-modal="false">
   <h3 id="a11y-title">♿ Accessibilité <button class="close" id="a11y-close" aria-label="Fermer le panneau d'accessibilité">×</button></h3>
@@ -611,7 +626,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
   </div>
   <p style="font-size:10px;color:var(--muted);margin:10px 0 0;text-align:center;">Conforme WCAG 2.1 AA · RGAA</p>
 </div>
-<div class="demo-banner">Démo interactive — données fictives à but de démonstration. Aucune donnée n'est transmise.</div>
+<!-- (Bandeau "demo-banner" retiré : redondant avec #op-mvp-banner — wording unique appliqué) -->
 <header class="topbar">
   <div class="brand"><span class="dot"></span><span class="brand-name">OrientaPro</span><span class="brand-sub">MVP démo</span></div>
   <button class="a11y-btn-header" id="a11y-fab" aria-label="Ouvrir les options d'accessibilité : taille du texte, contraste, animations, lecture vocale" aria-expanded="false" aria-controls="a11y-panel" title="Options d'accessibilité">
@@ -836,7 +851,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
         <span class="logo-placeholder">h'up</span>
         <span class="logo-placeholder">CitésLab</span>
       </div>
-      <p class="hero-trust">🇫🇷 Hébergé en France · 🔒 RGPD &amp; DPA · ♿ RGAA 4.1 / FALC · 🧪 MVP de démonstration · données et partenaires fictifs</p>
+      <p class="hero-trust">🇫🇷 Hébergé en France · 🔒 RGPD &amp; DPA · ♿ RGAA 4.1 / FALC</p>
     </div>
     <!-- 8 avantages structures -->
     <h2 class="section-title-h2">8 raisons pour lesquelles BGE, ADIE et France Active testent OrientaPro</h2>
@@ -1116,6 +1131,109 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <button class="cookie-accept" id="cookie-accept" aria-label="Accepter les cookies techniques">Accepter</button>
     <button class="cookie-refuse" id="cookie-refuse" aria-label="Refuser et continuer sans cookies">Refuser</button>
     <button class="cookie-config" data-open-legal="cookies" aria-label="En savoir plus sur les cookies">En savoir plus</button>
+  </div>
+</div>
+
+<!-- ===== MODALE : Transférer le dossier à la structure ===== -->
+<div class="legal-modal" id="modal-transferer" role="dialog" aria-labelledby="transferer-title" aria-modal="true">
+  <div class="legal-modal-content op-tr-modal">
+    <button type="button" class="close-modal" data-close-transferer aria-label="Fermer la fenêtre de transfert">×</button>
+    <h2 id="transferer-title">Transférer le dossier à la structure</h2>
+    <p class="op-tr-intro">Choisissez la structure destinataire et le format d'export. La structure pourra récupérer ce dossier fictif et <strong>l'injecter dans son CRM</strong> selon les formats compatibles. Cette fonctionnalité sert uniquement à démontrer le démarrage d'un accompagnement.</p>
+
+    <form id="transfert-form" novalidate>
+      <!-- Résumé du dossier -->
+      <section class="op-tr-resume" aria-label="Résumé du dossier à transférer">
+        <h3>Résumé du dossier</h3>
+        <dl>
+          <dt>Bénéficiaire</dt><dd id="tr-resume-nom">—</dd>
+          <dt>Profil</dt><dd id="tr-resume-profil">—</dd>
+          <dt>Projet</dt><dd id="tr-resume-projet">—</dd>
+          <dt>Programmes recommandés</dt><dd><ul id="tr-resume-programmes"></ul></dd>
+        </dl>
+      </section>
+
+      <!-- Choix structure -->
+      <div class="op-tr-field">
+        <label for="tr-structure">Structure destinataire *</label>
+        <select id="tr-structure" name="structure" required>
+          <option value="">— Choisir une structure —</option>
+        </select>
+        <p class="op-tr-error" role="alert" hidden></p>
+      </div>
+
+      <!-- Email obligatoire -->
+      <div class="op-tr-field">
+        <label for="tr-email">Adresse e-mail *</label>
+        <input type="email" id="tr-email" name="email" required maxlength="120" autocomplete="email" placeholder="referent@structure.fr">
+        <p class="op-tr-help">Une copie du dossier sera transmise à cette adresse (démonstration fictive, aucun e-mail réel n'est envoyé).</p>
+        <p class="op-tr-error" role="alert" hidden></p>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="op-tr-field op-tr-checkbox">
+        <label>
+          <input type="checkbox" id="tr-newsletter" name="newsletter">
+          <span>Je souhaite recevoir la newsletter OrientaPro (1 envoi/mois, désinscription en 1 clic).</span>
+        </label>
+      </div>
+
+      <!-- Formats d'export -->
+      <fieldset class="op-tr-formats">
+        <legend>Formats d'export disponibles</legend>
+        <p class="op-tr-formats-hint">Choisissez le format pour le CRM ou les outils métier de la structure.</p>
+        <div class="op-tr-formats-grid">
+          <button type="button" class="format-btn" data-format="pdf" aria-pressed="false">
+            <span class="format-icon" aria-hidden="true">📄</span><span class="format-label">PDF</span><small>Synthèse lisible</small>
+          </button>
+          <button type="button" class="format-btn" data-format="csv" aria-pressed="false">
+            <span class="format-icon" aria-hidden="true">📊</span><span class="format-label">CSV</span><small>Données tabulaires</small>
+          </button>
+          <button type="button" class="format-btn" data-format="xlsx" aria-pressed="false">
+            <span class="format-icon" aria-hidden="true">📈</span><span class="format-label">XLSX</span><small>Tableau de suivi</small>
+          </button>
+          <button type="button" class="format-btn" data-format="json" aria-pressed="false">
+            <span class="format-icon" aria-hidden="true">{ }</span><span class="format-label">JSON</span><small>API / technique</small>
+          </button>
+          <button type="button" class="format-btn" data-format="xml" aria-pressed="false">
+            <span class="format-icon" aria-hidden="true">&lt;/&gt;</span><span class="format-label">XML</span><small>Outils métier</small>
+          </button>
+          <button type="button" class="format-btn" data-format="vcard" aria-pressed="false">
+            <span class="format-icon" aria-hidden="true">👤</span><span class="format-label">vCard</span><small>Fiche contact</small>
+          </button>
+          <button type="button" class="format-btn format-btn-api" data-format="webhook" aria-pressed="false">
+            <span class="format-icon" aria-hidden="true">🔗</span><span class="format-label">Webhook API</span><small>Envoi auto CRM</small>
+          </button>
+        </div>
+        <p class="op-tr-error" id="tr-format-error" role="alert" hidden></p>
+      </fieldset>
+
+      <p class="op-tr-note">🧪 <strong>MVP de démonstration</strong> — données, structures, événements et partenaires fictifs. Aucun partenariat réel n'a été conclu et aucune donnée n'est transmise.</p>
+
+      <div class="op-tr-actions">
+        <button type="button" class="btn btn-ghost" data-close-transferer>Annuler</button>
+        <button type="submit" class="btn btn-primary">Confirmer le transfert</button>
+      </div>
+    </form>
+
+    <!-- Confirmation -->
+    <div id="transfert-confirmation" class="op-tr-confirmation" hidden role="status" aria-live="polite">
+      <div class="op-tr-check" aria-hidden="true">✓</div>
+      <h3>Transmission fictive confirmée</h3>
+      <p>Le dossier fictif a été transféré à la structure sélectionnée pour démonstration.</p>
+      <dl class="op-tr-recap">
+        <dt>Structure</dt><dd id="tr-conf-structure">—</dd>
+        <dt>Format</dt><dd id="tr-conf-format">—</dd>
+        <dt>E-mail destinataire</dt><dd id="tr-conf-email">—</dd>
+        <dt>Newsletter acceptée</dt><dd id="tr-conf-newsletter">Non</dd>
+        <dt>Statut</dt><dd><span class="op-tr-badge-success">Transféré à la structure</span></dd>
+      </dl>
+      <p class="op-tr-note">Transmission fictive confirmée. Aucune donnée réelle n'a été envoyée.</p>
+      <div class="op-tr-actions">
+        <button type="button" class="btn btn-outline" data-close-transferer>Fermer</button>
+        <button type="button" class="btn btn-primary" onclick="closeTransfererModal(); document.querySelector('[data-go=&quot;diagnostic&quot;]')?.click();">Refaire un diagnostic →</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2642,6 +2760,7 @@ function toast(msg) {
 <script src="assets/back-to-top.js" defer></script>
 <script src="assets/pilote-modal.js" defer></script>
 <script src="assets/exemple-dossier.js" defer></script>
+<script src="assets/transfert-modal.js" defer></script>
 <script src="assets/persona-faq.js" defer></script>
 
 <!-- Branchement tracking sur les boutons data-track="..." (délégué) -->

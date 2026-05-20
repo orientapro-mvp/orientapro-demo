@@ -52,11 +52,11 @@
     },
     {
       patterns: [/partenaire/, /partenariat/, /collaboration/, /reel/],
-      answer: "MVP de démonstration : tous les partenaires, événements et chiffres affichés sont illustratifs. Aucun partenariat réel n'a été conclu à ce stade. L'objectif est uniquement de présenter le fonctionnement du projet.",
+      answer: "MVP de démonstration — données, structures, événements et partenaires fictifs. Aucun partenariat réel n'a été conclu et aucune donnée n'est transmise.",
     },
     {
       patterns: [/fictif/, /vrai|reel/, /vraiment/, /demo|demonstr/, /test/],
-      answer: "Oui, c'est un MVP de démonstration : données, structures, événements et partenaires affichés sont fictifs. Le parcours fonctionnel est réel et présentable, mais aucune donnée n'est transmise à un serveur externe.",
+      answer: "Oui : MVP de démonstration — données, structures, événements et partenaires fictifs. Aucun partenariat réel n'a été conclu et aucune donnée n'est transmise. Le parcours fonctionnel est néanmoins entièrement utilisable.",
     },
     {
       patterns: [/combien.{0,15}(temps|minutes)/, /duree.{0,10}diagnostic/, /diagnostic\s+(prend|dure)/],
@@ -401,7 +401,32 @@
       wrap.appendChild(sNode);
     }
     body.appendChild(wrap);
+    appendBackToQuestions();
     body.scrollTop = body.scrollHeight;
+  }
+
+  // === #11 — Bouton "Retour aux questions" : ré-affiche les suggestions ===
+  function appendBackToQuestions() {
+    // Purge le bouton précédent pour éviter l'accumulation
+    body.querySelectorAll(".op-chat-back-btn").forEach(b => b.remove());
+    const btn = el("button", {
+      class: "op-chat-back-btn",
+      type: "button",
+      "aria-label": "Revenir à la liste des questions disponibles",
+    }, ["← Choisir une autre question"]);
+    btn.addEventListener("click", () => {
+      // Ré-affiche l'intro avec les suggestions (le bouton est conservé en historique)
+      if (intro.hidden) {
+        intro.hidden = false;
+        body.appendChild(intro);
+      }
+      intro.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Focus accessible sur le 1er bouton de suggestion
+      const firstSug = intro.querySelector(".op-chat-suggestion");
+      if (firstSug) setTimeout(() => firstSug.focus(), 350);
+      if (window.trackEvent) window.trackEvent("chat_back_to_questions");
+    });
+    body.appendChild(btn);
   }
 
   // Rendu enrichi : greeting court + mini-cards par programme avec boutons d'action
@@ -469,6 +494,7 @@
     ]);
     wrap.appendChild(closing);
     body.appendChild(wrap);
+    appendBackToQuestions();
     body.scrollTop = body.scrollHeight;
   }
 
