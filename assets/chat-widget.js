@@ -3,9 +3,91 @@
 
 (function () {
   const rag = window.OrientaProRAG;
-  if (!rag || !rag.available()) {
-    console.info("[Chat Widget] désactivé");
+  const cfg = window.ORIENTAPRO_CONFIG || {};
+  // Le widget reste actif même sans API : bascule sur un mode local fictif.
+  if (cfg.ENABLED === false) {
+    console.info("[Chat Widget] désactivé via config");
     return;
+  }
+  if (!rag || !rag.available()) {
+    console.info("[Chat Widget] API absente — mode local activé");
+  }
+
+  // === Mode local — réponses déterministes à partir du catalogue ===========
+  function normalize(s) {
+    return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  }
+  function detectIntent(text) {
+    const t = normalize(text);
+    return {
+      rqth: /\b(rqth|handicap|tih|invalidite|agefiph)\b/.test(t),
+      qpv: /\b(qpv|quartier|garges|sarcelles|villiers|gonesse|goussainville|carpf|val.?d.?oise)\b/.test(t),
+      financement: /\b(finan|argent|pret|microcredit|subvention|aide|euros?|nacre|arce|acre)\b/.test(t),
+      formation: /\b(formation|coaching|atelier|bootcamp|mentor|cours)\b/.test(t),
+      reseau: /\b(reseau|club|communaute|mentor)\b/.test(t),
+      test: /\b(test|couveuse|coopera|essai)\b/.test(t),
+      femme: /\b(femme|creatrice|entrepreneure)\b/.test(t),
+      jeune: /\b(jeune|moins de 32|25 ans|26 ans|moins de 30)\b/.test(t),
+      demandeurEmploi: /\b(demandeur|chomeur|chomage|france travail|pole emploi)\b/.test(t),
+    };
+  }
+  function scoreProgramme(prog, intent) {
+    let score = 0;
+    const publics = (prog.publicsCibles || []).map(normalize).join(" ") + " " + normalize(prog.ciblePublic || "");
+    const desc = normalize((prog.description || "") + " " + (prog.nom || "") + " " + ((prog.tags || []).join(" ")));
+    if (intent.rqth && publics.includes("rqth")) score += 30;
+    if (intent.qpv && publics.includes("qpv")) score += 25;
+    if (intent.femme && publics.includes("femme")) score += 20;
+    if (intent.jeune && publics.includes("jeune")) score += 15;
+    if (intent.demandeurEmploi && publics.includes("demandeur")) score += 15;
+    if (intent.financement && /finan|pret|microcredit|subvention|garantie|nacre|arce|acre/.test(desc)) score += 18;
+    if (intent.formation && /formation|atelier|parcours|bootcamp|mentor|coaching/.test(desc)) score += 15;
+    if (intent.reseau && /reseau|mentor|club|communaute/.test(desc)) score += 12;
+    if (intent.test && /test|couveuse|coopera/.test(desc)) score += 12;
+    if (score === 0 && publics.includes("tous")) score = 3;
+    return score;
+  }
+  function buildLocalAnswer(message) {
+    if (!window.PROGRAMMES || !window.STRUCTURES) {
+      return {
+        answer_falc: "Je n'ai pas encore chargé le catalogue. Réessayez dans quelques secondes ou contactez Initiactive 95 au 01 39 88 11 99.",
+        sources: [],
+      };
+    }
+    const intent = detectIntent(message);
+    const scored = window.PROGRAMMES.map(p => ({ p, s: scoreProgramme(p, intent) }))
+      .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3);
+    if (scored.length === 0) {
+      return {
+        answer_falc: "Je n'ai pas trouvé d'aide précise pour votre question. Voici 2 contacts gratuits qui peuvent vous aider :\n\n• Initiactive 95 (prêts d'honneur Val-d'Oise) : 01 39 88 11 99\n• CCI Val-d'Oise (accompagnement création) : 01 30 75 35 35\n\nVous pouvez aussi remplir le diagnostic complet pour des recommandations personnalisées.",
+        sources: [
+          { nom: "Initiactive 95", lien: "https://www.initiactive95.com/" },
+          { nom: "CCI Val-d'Oise", lien: "https://www.cci-paris-idf.fr/fr/cci-val-doise" },
+        ],
+      };
+    }
+    const lignes = ["Voici ce que je trouve dans notre catalogue pour votre question :"];
+    scored.forEach((x, i) => {
+      const p = x.p;
+      const s = window.STRUCTURES.find(st => st.id === p.structureId) || {};
+      const orga = p.organisme || s.nom || "";
+      lignes.push("");
+      lignes.push(`${i + 1}. ${p.nom}${orga ? " (" + orga + ")" : ""}`);
+      lignes.push(`   Pour qui ? ${(p.publicsCibles || []).join(", ") || p.ciblePublic || "Tous publics"}.`);
+      lignes.push(`   Montant : ${p.montant || p.cout || "À voir avec la structure"}.`);
+      if (p.contactLabel || p.contact) lignes.push(`   Contact : ${p.contactLabel || p.contact}.`);
+    });
+    lignes.push("");
+    lignes.push("Pour une orientation complète, faites le diagnostic gratuit ci-dessus. Cela génère un dossier prêt à présenter.");
+    const sources = scored.map(x => {
+      const p = x.p;
+      const s = window.STRUCTURES.find(st => st.id === p.structureId) || {};
+      return {
+        nom: p.nom + (s.nom ? " — " + s.nom : ""),
+        lien: p.contactUrl || (s.email ? "mailto:" + s.email : "#"),
+      };
+    });
+    return { answer_falc: lignes.join("\n"), sources };
   }
 
   const SUGGESTIONS = [
@@ -210,18 +292,33 @@
     intro.hidden = true;
     appendUser(text);
     const busyNode = appendBotBusy();
-    try {
-      const res = await window.OrientaProRAG.chat({ message: text });
-      busyNode.remove();
-      appendBot(res.answer_falc || "Je n'ai pas trouvé d'information précise.", res.sources || []);
-    } catch (err) {
-      busyNode.remove();
-      appendError(err && err.message);
-    } finally {
-      busy = false;
-      sendBtn.disabled = false;
-      input.focus();
+    let res = null;
+    // 1) Tente l'API souveraine Mistral si configurée
+    if (rag && rag.available()) {
+      try {
+        res = await rag.chat({ message: text });
+      } catch (_) {
+        res = null;
+      }
     }
+    // 2) Fallback local : 100 % déterministe à partir du catalogue
+    if (!res) {
+      try {
+        res = buildLocalAnswer(text);
+      } catch (e) {
+        res = null;
+      }
+    }
+    busyNode.remove();
+    if (res) {
+      appendBot(res.answer_falc || "Je n'ai pas trouvé d'information précise.", res.sources || []);
+      if (window.trackEvent) window.trackEvent("chat_question_asked", { hasSources: (res.sources || []).length > 0 });
+    } else {
+      appendError("Service temporairement indisponible.");
+    }
+    busy = false;
+    sendBtn.disabled = false;
+    input.focus();
   }
 
   if (document.readyState === "loading") {
