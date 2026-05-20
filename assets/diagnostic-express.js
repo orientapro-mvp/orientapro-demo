@@ -5,7 +5,100 @@
 (function () {
   const rag = window.OrientaProRAG;
   if (!rag || !rag.available()) {
-    console.info("[Diagnostic Express] désactivé (config manquante)");
+    console.info("[Diagnostic Express] backend indisponible — fonctionne en mode 100 % local");
+  }
+
+  // === Mode local — utilise matchV2() + le catalogue PROGRAMMES en mémoire =====
+  // Si l'API HF Spaces n'est pas joignable, on utilise un fallback déterministe.
+  function parseProfilToDiag(profilStr, projetStr, besoinsStr) {
+    const p = String(profilStr || "");
+    const pn = p.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+    // Tranche d'âge
+    let trancheAge = "36-45";
+    const ageMatch = p.match(/(\d{2})\s*(?:ans?)?/i);
+    if (ageMatch) {
+      const a = parseInt(ageMatch[1], 10);
+      if (a < 26) trancheAge = "18-25";
+      else if (a < 36) trancheAge = "26-35";
+      else if (a < 46) trancheAge = "36-45";
+      else if (a < 56) trancheAge = "46-55";
+      else trancheAge = "56+";
+    }
+
+    // RQTH
+    const rqth = /\b(rqth|tih|handicap|invalidit)\b/i.test(p);
+    // QPV / communes CARPF
+    const villes = ["garges-les-gonesse", "garges", "sarcelles", "villiers-le-bel", "gonesse", "goussainville", "fosses", "louvres", "roissy", "dame blanche"];
+    let villeFound = "";
+    for (const v of villes) { if (pn.includes(v)) { villeFound = v; break; } }
+    const qpv = /\bqpv\b/i.test(p) || villeFound !== "";
+
+    // Statut
+    let statutActuel = "Autre";
+    if (/demandeur.{0,8}emploi|chomeur|chomage/i.test(p)) statutActuel = "Demandeur emploi";
+    else if (/salari/i.test(p)) statutActuel = "Salarié";
+    else if (/etudi/i.test(p)) statutActuel = "Étudiant";
+    else if (/independant|free.?lance/i.test(p)) statutActuel = "Indépendant";
+
+    // Région — déduction simple
+    let region = "Île-de-France";
+    if (/\b(garges|sarcelles|villiers-le-bel|gonesse|val.?d.?oise|95|carpf|roissy)\b/i.test(p)) region = "Île-de-France";
+
+    // Secteur projet — heuristique simple
+    const pjn = String(projetStr || "").toLowerCase();
+    let secteurProjet = "Autre";
+    if (/coiffure|esthetique|institut|barbier/i.test(pjn)) secteurProjet = "Service";
+    else if (/restau|food.?truck|traiteur|snack/i.test(pjn)) secteurProjet = "Restauration";
+    else if (/commerce|boutique|vente/i.test(pjn)) secteurProjet = "Commerce";
+    else if (/artisanat|menuis|plombier|electricien|peintre/i.test(pjn)) secteurProjet = "Artisanat";
+    else if (/app|web|numerique|tech|digital|site/i.test(pjn)) secteurProjet = "Tech / Numérique";
+
+    return {
+      trancheAge,
+      statutActuel,
+      region,
+      ville: villeFound ? villeFound.charAt(0).toUpperCase() + villeFound.slice(1) : "",
+      rqth,
+      qpv,
+      secteurProjet,
+      maturiteProjet: "Idée",
+      besoinPrincipal: besoinsStr || "Financement",
+      blocagePrincipal: "",
+      echeance: "",
+      descriptionProjet: projetStr || "",
+    };
+  }
+
+  function generateLocalDiagnostic(profilStr, projetStr, besoinsStr) {
+    if (!window.matchV2 || !window.PROGRAMMES || !window.STRUCTURES) {
+      throw new Error("Matching local indisponible. Réessayez dans quelques secondes.");
+    }
+    const diag = parseProfilToDiag(profilStr, projetStr, besoinsStr);
+    const matches = window.matchV2(diag);
+    const dispositifs = matches.slice(0, 3).map((m) => {
+      const p = window.PROGRAMMES.find((x) => x.id === m.id) || {};
+      const s = window.STRUCTURES.find((x) => x.id === p.structureId) || {};
+      return {
+        id: p.id,
+        nom: (s.nom ? s.nom + " — " : "") + (p.nom || "Programme"),
+        qui: "Pour qui ? " + ((p.publicsCibles && p.publicsCibles.join(", ")) || p.ciblePublic || "Tous publics") + ".",
+        combien: "Combien ? " + (p.montant || p.cout || "À étudier avec la structure") + ".",
+        comment: "Comment ? " + (p.description ? p.description.slice(0, 180) + (p.description.length > 180 ? "…" : "") : "Contactez la structure pour démarrer.") ,
+        contact: p.contactLabel || p.contact || (s.nom || ""),
+        lien: p.contactUrl || (s.email ? "mailto:" + s.email : "#"),
+        source: p.organisme || (s.nom || ""),
+        public_cible: p.publicsCibles || (p.ciblePublic ? [p.ciblePublic] : []),
+        score: m.score,
+      };
+    });
+    return {
+      dispositifs,
+      message_falc: dispositifs.length ? "Voici " + dispositifs.length + " aide" + (dispositifs.length > 1 ? "s" : "") + " pour vous." : "Aucune aide précise. Contactez une structure généraliste.",
+      fallback: dispositifs.length === 0,
+      fallback_message: "Pour avancer dès cette semaine, contactez Initiactive 95 (01 39 88 11 99) ou la CCI Val-d'Oise (01 30 75 35 35). Ils vous accueillent gratuitement.",
+      trace_id: "local-" + Date.now(),
+    };
   }
 
   // ============================================================
@@ -198,14 +291,35 @@
       results.classList.remove("visible");
       results.innerHTML = "";
 
+      let data = null;
+      // 1) Tente l'API (mode souverain Mistral) — seulement si configurée et joignable
+      if (window.OrientaProRAG && window.OrientaProRAG.available()) {
+        try {
+          data = await window.OrientaProRAG.diagnostic({ profil, projet, besoins });
+        } catch (_) {
+          data = null; // bascule sur le local
+        }
+      }
+      // 2) Fallback local : 100 % déterministe, sans backend
+      if (!data) {
+        try {
+          data = generateLocalDiagnostic(profil, projet, besoins);
+        } catch (err) {
+          results.innerHTML = renderError((err && err.message) || "Erreur inconnue.");
+          results.classList.add("visible");
+          loader.classList.remove("visible");
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = "<span>Voir mes 3 aides</span>";
+          return;
+        }
+      }
       try {
-        const data = await window.OrientaProRAG.diagnostic({ profil, projet, besoins });
         results.innerHTML = renderDispositifs(data);
         results.classList.add("visible");
-        // Annoncer au lecteur d'écran que les résultats sont arrivés
         results.setAttribute("tabindex", "-1");
         results.focus({ preventScroll: false });
         results.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (window.trackEvent) window.trackEvent("diagnostic_express_completed", { fallback: !!data.fallback, trace: data.trace_id });
       } catch (err) {
         results.innerHTML = renderError((err && err.message) || "Erreur inconnue.");
         results.classList.add("visible");

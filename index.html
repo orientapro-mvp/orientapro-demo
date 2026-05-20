@@ -617,24 +617,38 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     </svg>
     <span>Accessibilité</span>
   </button>
-  <nav class="tabs">
-    <button data-go="landing" class="active">Accueil</button>
-    <button data-go="diagnostic">Diagnostic</button>
-    <button data-go="resultats" class="lock" id="tab-resultats">Résultats</button>
-    <button onclick="goEspaceStructures()" class="nav-pro-cta" title="Voir l'offre dédiée aux structures">🏛️ Espace Structures</button>
-    <button data-go="login" class="nav-login">Connexion</button>
-    <button data-go="dashboard" class="lock" id="tab-dashboard">Dashboard</button>
-    <button data-go="catalogue" class="lock" id="tab-catalogue">Catalogue</button>
+  <nav class="tabs" aria-label="Navigation principale">
+    <!-- Onglets visibles pour les PORTEURS -->
+    <button data-go="landing" class="active" data-nav-persona="porteur">Accueil</button>
+    <button data-go="diagnostic" data-nav-persona="porteur">Diagnostic</button>
+    <button data-go="resultats" class="lock" id="tab-resultats" data-nav-persona="porteur">Résultats</button>
+    <button onclick="switchPersona('structure')" class="nav-pro-cta" data-nav-persona="porteur" title="Voir l'offre dédiée aux structures">🏛️ Côté Structures</button>
+
+    <!-- Onglets visibles pour les STRUCTURES -->
+    <button data-go="landing" data-nav-persona="structure" hidden>Accueil</button>
+    <button onclick="switchPersona('porteur')" data-nav-persona="structure" hidden title="Voir le parcours porteur">👤 Côté Porteurs</button>
+    <button data-go="login" class="nav-login" data-nav-persona="structure" hidden>Connexion</button>
+    <button data-go="dashboard" class="lock" id="tab-dashboard" data-nav-persona="structure" hidden>Dashboard</button>
+    <button data-go="catalogue" class="lock" id="tab-catalogue" data-nav-persona="structure" hidden>Catalogue</button>
   </nav>
 </header>
+
+<!-- Sticky banner — rappel persona en cours -->
+<div class="op-persona-banner" id="op-persona-banner" role="status" aria-live="polite">
+  <span id="op-persona-banner-label">Vous êtes : Porteur de projet</span>
+  <button type="button" class="op-persona-banner-switch" id="op-persona-banner-switch" aria-label="Basculer vers l'autre profil">Basculer →</button>
+</div>
 <div class="app" id="main-content" role="main">
 <section class="screen active" data-screen="landing">
-  <!-- Pill toggle dual-persona (recommandation panel UX senior) -->
+  <!-- Persona switch — sélection de profil renforcée visuellement -->
+  <p class="op-persona-intro">Choisissez votre profil pour personnaliser le parcours</p>
   <div class="persona-switch" role="tablist" aria-label="Choisir votre profil">
     <button class="persona-pill is-active" role="tab" aria-selected="true" data-persona="porteur" onclick="switchPersona('porteur')">
+      <span class="persona-icon" aria-hidden="true">👤</span>
       <span class="persona-label">Je suis porteur de projet</span>
     </button>
     <button class="persona-pill" role="tab" aria-selected="false" data-persona="structure" onclick="switchPersona('structure')">
+      <span class="persona-icon" aria-hidden="true">🏛️</span>
       <span class="persona-label">Je suis une structure d'accompagnement</span>
     </button>
   </div>
@@ -644,9 +658,8 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
   <!-- ============================================ -->
   <div data-persona-block="porteur">
     <div class="hero">
-      <p class="hero-v2-eyebrow">Spécial QPV &amp; handicap · 100 % gratuit</p>
+      <p class="hero-v2-eyebrow">OrientaPro vous aide à passer de « je ne sais pas par où commencer » à « je sais qui contacter »</p>
       <h1 class="h1">Vous avez un projet d'entreprise ?<br><span class="accent">Préparez votre premier rendez-vous avec la bonne structure.</span></h1>
-      <p class="lead">En 15 minutes, <strong>OrientaPro</strong> identifie les programmes d'accompagnement adaptés à votre profil et génère un <strong>dossier clair</strong> pour démarrer votre parcours entrepreneurial.</p>
       <div class="hero-cta">
         <button class="btn btn-primary" data-go="diagnostic" data-track="cta_primary_clicked" aria-label="Préparer mon dossier gratuit en 15 minutes">Préparer mon dossier gratuit →</button>
         <button class="btn btn-ghost" data-go="exemple" data-track="cta_secondary_clicked" aria-label="Voir un exemple de Dossier Passerelle">Voir un exemple de dossier</button>
@@ -660,6 +673,20 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
       </div>
       <p class="hero-proof" aria-live="polite" style="margin-top:14px;"><span class="dot-live" aria-hidden="true"></span><strong id="liveCount">1 247</strong> porteurs orientés ce mois · <strong>94 %</strong> repartent avec un dossier prêt à présenter</p>
     </div>
+
+    <!-- Section "Fonctionnalités à venir" — bloc porteur -->
+    <section class="op-coming-soon" aria-labelledby="coming-porteur-title" style="margin: 22px 0 8px;">
+      <h2 id="coming-porteur-title">Fonctionnalités à venir</h2>
+      <p class="op-coming-soon-sub">On ne s'arrête pas là — voici ce qui arrive prochainement (si nécessaire pour le MVP).</p>
+      <div class="op-coming-grid">
+        <article class="op-coming-card"><span class="op-coming-card-badge">Bientôt</span><h3>Suivi parcours 12 mois</h3><p>Alertes et rebonds automatiques pour vous accompagner après votre premier rendez-vous, et lutter contre l'abandon.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Bientôt</span><h3>Assistant IA souverain (Mistral)</h3><p>Posez vos questions en langage naturel sur les aides, les démarches, les démarches MDPH. Réponses sourcées.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>Mode FALC renforcé</h3><p>Toutes les réponses adaptées au Facile à Lire et à Comprendre, validées avec des personnes en situation de handicap cognitif.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>Connexion France Connect</h3><p>Pré-remplissage automatique de votre profil pour gagner du temps, en gardant le contrôle de vos données.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>Notifications par SMS</h3><p>Recevez vos prochaines étapes et un rappel avant chaque rendez-vous.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>Audit RGAA niveau AA certifié</h3><p>Conformité accessibilité numérique validée par un cabinet certifié, avec tests utilisateurs réels.</p></article>
+      </div>
+    </section>
 
     <!-- Comment ça marche — 4 étapes -->
     <section class="op-howitworks" aria-labelledby="howitworks-title">
@@ -721,45 +748,33 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
       </div>
     </div>
 
-    <!-- Tarifs ESS transparents -->
-    <div class="pricing-pro">
-      <h2 class="section-title-h2">Tarifs ESS transparents</h2>
-      <div class="pricing-grid">
-        <div class="pricing-card pricing-free">
-          <p class="pricing-eyebrow">Pilote &amp; structures conventionnées</p>
-          <div class="pricing-amount">Gratuit</div>
-          <p class="pricing-sub">jusqu'à <strong>50 porteurs/an</strong></p>
-          <ul class="pricing-features">
-            <li>Structures conventionnées QPV / DLA</li>
-            <li>Dashboard complet + reporting</li>
-            <li>Exports CSV/JSON CRM-ready</li>
-            <li>Setup en 48 h</li>
-          </ul>
-        </div>
-        <div class="pricing-card pricing-pro-tier">
-          <p class="pricing-eyebrow">Au-delà · structures actives</p>
-          <div class="pricing-amount">99 € <span class="pricing-period">/ mois</span></div>
-          <p class="pricing-sub">jusqu'à <strong>500 porteurs/an</strong></p>
-          <ul class="pricing-features">
-            <li>Tout l'offre gratuite +</li>
-            <li>Marque blanche partielle</li>
-            <li>Insights IA (Mistral)</li>
-            <li>Support prioritaire</li>
-          </ul>
-        </div>
-        <div class="pricing-card">
-          <p class="pricing-eyebrow">Régions, EPCI, têtes de réseau</p>
-          <div class="pricing-amount">Sur devis</div>
-          <p class="pricing-sub">volume illimité</p>
-          <ul class="pricing-features">
-            <li>Marque blanche complète</li>
-            <li>API d'intégration CRM</li>
-            <li>Conventions ANCT / AGEFIPH</li>
-            <li>SLA dédié</li>
-          </ul>
-        </div>
+    <!-- Section "Fonctionnalités à venir" — bloc structure -->
+    <section class="op-coming-soon" aria-labelledby="coming-structure-title">
+      <h2 id="coming-structure-title">Fonctionnalités à venir</h2>
+      <p class="op-coming-soon-sub">On ne s'arrête pas là — voici ce qui arrive prochainement (si nécessaire pour le MVP).</p>
+      <div class="op-coming-grid">
+        <article class="op-coming-card"><span class="op-coming-card-badge">Bientôt</span><h3>Dashboard territorial agrégé</h3><p>KPI anonymisés par QPV / EPCI pour piloter les politiques publiques d'accompagnement.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Bientôt</span><h3>Intégration ITI Roissy Pays de France</h3><p>Reporting natif FSE+, AGEFIPH, ANCT et synchronisation avec votre CRM métier.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>Marque blanche complète</h3><p>Logo, couleurs et sous-domaine dédiés à votre structure (ex. diagnostic.votre-structure.fr).</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>API REST + webhooks</h3><p>Synchronisation Eudonet, Cogilog, Salesforce. Notifications en temps réel.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>Suivi parcours 12 mois</h3><p>Relances automatiques aux porteurs, alertes aux conseillers, lutte contre l'abandon.</p></article>
+        <article class="op-coming-card"><span class="op-coming-card-badge">Roadmap</span><h3>Audit RGAA niveau AA certifié</h3><p>Conformité accessibilité numérique validée par un cabinet certifié.</p></article>
       </div>
-    </div>
+    </section>
+
+    <!-- FAQ structures -->
+    <section class="op-faq" id="faq-structures" aria-labelledby="faq-structures-title">
+      <h2 id="faq-structures-title">Questions fréquentes — structures</h2>
+      <p class="op-faq-lead">Pour les conseillers BGE, ADIE, h'up, France Active et structures partenaires.</p>
+      <div class="op-faq-list">
+        <details class="op-faq-item"><summary>Comment OrientaPro s'intègre-t-il à notre workflow de conseillers ?</summary><div class="op-faq-answer"><p>OrientaPro est accessible via navigateur, sans installation. Vos conseillers utilisent le diagnostic pendant l'entretien (15 min) ou l'envoient au porteur en amont. Les résultats sont exportables PDF et s'archivent dans votre CRM via copier-coller ou API REST (roadmap Q3 2026).</p></div></details>
+        <details class="op-faq-item"><summary>Quel est le coût pour notre structure ?</summary><div class="op-faq-answer"><p>Pour le MVP CARPF, l'accès est gratuit pour les structures partenaires du territoire pilote. Un modèle freemium est envisagé post-pilote : usage individuel gratuit, fonctionnalités avancées (dashboard, marque blanche, API) facturées au volume.</p></div></details>
+        <details class="op-faq-item"><summary>Qui est responsable du traitement RGPD des données porteurs ?</summary><div class="op-faq-answer"><p>OrientaPro est responsable de traitement pour les données saisies via la plateforme. La structure reste responsable des données qu'elle collecte hors plateforme. Une convention de traitement conjoint est signée à l'onboarding. Aucune donnée n'est partagée avec des tiers commerciaux.</p></div></details>
+        <details class="op-faq-item"><summary>Une API ou un export est-il disponible ?</summary><div class="op-faq-answer"><p>L'export PDF et CSV des diagnostics est disponible dès le MVP. Une API REST arrivera Q3 2026 pour synchronisation avec vos outils métier (Eudonet, Cogilog, Salesforce). Des webhooks de notification sont possibles sur demande.</p></div></details>
+        <details class="op-faq-item"><summary>La marque blanche est-elle envisageable ?</summary><div class="op-faq-answer"><p>Oui, prévue Q4 2026. Personnalisation logo, couleurs, sous-domaine dédié (diagnostic.votre-structure.fr) et signature email. Tarification au forfait annuel selon volume.</p></div></details>
+        <details class="op-faq-item"><summary>Quelle est l'exhaustivité du catalogue de programmes ?</summary><div class="op-faq-answer"><p>15 dispositifs au MVP (AGEFIPH, Cap Emploi, h'up, Bpifrance, NACRE, ACRE, ARCE, Quartiers 2030, Initiactive 95, La Ruche, BGE PaRIF, ADIE, France Active, CCI 95, Réseau Entreprendre). Mise à jour trimestrielle avec votre contribution. Cible 50 programmes fin 2026.</p></div></details>
+      </div>
+    </section>
 
     <!-- CTA bandeau bas avec réassurance et chiffres concrets -->
     <div class="cta-banner-pro">
@@ -961,9 +976,11 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <h2 id="mentions-title">Mentions légales</h2>
     <p class="updated">Mise à jour : mai 2026</p>
     <h3>Éditeur</h3>
-    <p>OrientaPro — projet en phase pré-bêta. Forme juridique : en cours de constitution. Contact éditorial : <a href="mailto:contact@orientapro.fr">contact@orientapro.fr</a>. Directeur de la publication : à confirmer lors de la constitution juridique.</p>
+    <p>OrientaPro — projet porté par <strong>Badr EL HAFED</strong>, solo founder, lauréat Talent des Cités 2012, résident à Garges-lès-Gonesse. Forme juridique : <strong>en cours de constitution (micro-entreprise → SAS prévue Q3 2026)</strong>. Contact éditorial : <a href="mailto:elhafed.badr@gmail.com">elhafed.badr@gmail.com</a>. Directeur de la publication : Badr EL HAFED.</p>
     <h3>Hébergeur</h3>
-    <p>GitHub Pages — GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis. <a href="https://github.com" target="_blank" rel="noopener">github.com</a></p>
+    <p>GitHub Pages — GitHub, Inc., 88 Colin P Kelly Jr St, San Francisco, CA 94107, États-Unis. <a href="https://github.com" target="_blank" rel="noopener">github.com</a>. Migration prévue vers <strong>OVHcloud</strong> (2 rue Kellermann, 59100 Roubaix, France) en V2 pour souveraineté complète.</p>
+    <h3>Délégué à la Protection des Données (DPO)</h3>
+    <p>Badr EL HAFED, joignable à <a href="mailto:dpo@orientapro.fr">dpo@orientapro.fr</a>. Délai de réponse : 30 jours maximum.</p>
     <h3>Propriété intellectuelle</h3>
     <p>L'ensemble des contenus (textes, images, code, logo, design) présents sur ce site sont la propriété d'OrientaPro ou de leurs auteurs respectifs. Toute reproduction, totale ou partielle, sans autorisation écrite préalable est interdite (Code de la Propriété Intellectuelle).</p>
     <h3>Crédits</h3>
@@ -987,9 +1004,11 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <h3>Finalités</h3>
     <p>Orientation vers les structures d'accompagnement et identification des aides mobilisables. Transmission de votre dossier <strong>uniquement avec votre consentement explicite</strong>.</p>
     <h3>Base légale</h3>
-    <p>Article 6.1.a du RGPD — consentement de la personne concernée.</p>
+    <p><strong>Article 6.1.a du RGPD</strong> — consentement explicite de la personne concernée pour les données du diagnostic.<br>
+    <strong>Article 6.1.e du RGPD</strong> — mission d'intérêt public pour l'orientation entrepreneuriale des publics fragiles (alignement contrat de ville Engagement Quartiers 2030).<br>
+    <strong>Article 9.2.a du RGPD</strong> — consentement explicite pour les données de santé (statut RQTH), toujours facultatives.</p>
     <h3>Durée de conservation</h3>
-    <p>12 mois maximum pour les diagnostics. Préférences d'accessibilité : tant que vous ne les supprimez pas.</p>
+    <p><strong>24 mois</strong> maximum pour les diagnostics depuis votre dernière connexion, puis anonymisation automatique. Préférences d'accessibilité (localStorage) : tant que vous ne les supprimez pas via votre navigateur. Aucune donnée n'est conservée si vous quittez le site sans valider le diagnostic.</p>
     <h3>Destinataires</h3>
     <p>Structures d'accompagnement sélectionnées par vous-même, exclusivement. Aucune transmission à des tiers commerciaux.</p>
     <h3>Transferts hors UE</h3>
@@ -1260,12 +1279,33 @@ function switchPersona(persona){
     btn.classList.toggle('is-active', active);
     btn.setAttribute('aria-selected', active ? 'true' : 'false');
   });
-  // Show/hide blocks
+  // Show/hide content blocks
   document.querySelectorAll('[data-persona-block]').forEach(el => {
     el.hidden = el.dataset.personaBlock !== persona;
   });
-  // Persist choice
+  // Show/hide nav tabs according to persona
+  document.querySelectorAll('[data-nav-persona]').forEach(btn => {
+    btn.hidden = btn.dataset.navPersona !== persona;
+  });
+  // Update sticky persona banner
+  const banner = document.getElementById('op-persona-banner');
+  const label = document.getElementById('op-persona-banner-label');
+  const switchBtn = document.getElementById('op-persona-banner-switch');
+  if (banner && label && switchBtn) {
+    banner.classList.toggle('is-structure', persona === 'structure');
+    if (persona === 'structure') {
+      label.textContent = '🏛️ Vous êtes : Structure d\'accompagnement';
+      switchBtn.textContent = '👤 Basculer côté porteur';
+      switchBtn.onclick = () => switchPersona('porteur');
+    } else {
+      label.textContent = '👤 Vous êtes : Porteur de projet';
+      switchBtn.textContent = '🏛️ Basculer côté structure';
+      switchBtn.onclick = () => switchPersona('structure');
+    }
+  }
+  // Persist + track
   try { localStorage.setItem('orientapro_persona', persona); } catch(e){}
+  if (window.trackEvent) window.trackEvent('persona_switched', { persona });
   // Scroll vers le haut de la landing pour montrer le nouveau hero
   if (document.querySelector('[data-screen="landing"]').classList.contains('active')) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1275,6 +1315,14 @@ function switchPersona(persona){
 document.addEventListener('DOMContentLoaded', () => {
   const saved = (function(){ try { return localStorage.getItem('orientapro_persona'); } catch(e){ return null; }})() || 'porteur';
   switchPersona(saved);
+  // Sticky banner — bouton bascule
+  const bswitch = document.getElementById('op-persona-banner-switch');
+  if (bswitch) {
+    bswitch.addEventListener('click', () => {
+      const current = localStorage.getItem('orientapro_persona') || 'porteur';
+      switchPersona(current === 'porteur' ? 'structure' : 'porteur');
+    });
+  }
 });
 // Bouton top-nav "Espace Structures" → bascule en mode structure + retourne à la landing si on est ailleurs
 function goEspaceStructures(){
@@ -2258,7 +2306,8 @@ function toast(msg) {
 <script src="assets/config.js"></script>
 <script src="assets/rag-client.js" defer></script>
 <script src="assets/diagnostic-express.js" defer></script>
-<script src="assets/chat-widget.js" defer></script>
+<!-- Widget chatbot supprimé du MVP (passait par une API non déployée). À réactiver post-pitch via assets/chat-widget.js -->
+<script src="assets/back-to-top.js" defer></script>
 
 <!-- Branchement tracking sur les boutons data-track="..." (délégué) -->
 <script>
