@@ -1,0 +1,361 @@
+/* assets/mvp-v2.css
+   Styles additifs pour le MVP v2 OrientaPro (brief J-1) :
+   - Hero override
+   - Section "Comment ça marche" en 4 étapes
+   - Section FAQ accordéon
+   - Screen "Dossier Passerelle"
+   Tous les styles sont compatibles body.easy-read et body.a11y-contrast existants.
+*/
+
+/* ============================================================
+   HERO V2 — nouveaux titre / sous-titre / CTA
+   ============================================================ */
+.hero-v2-eyebrow {
+  display: inline-block;
+  padding: 4px 14px;
+  background: rgba(243, 146, 0, 0.12);
+  color: #C67500;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.hero-v2-reassure {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  justify-content: center;
+  font-size: 13px;
+  color: #4B5563;
+}
+.hero-v2-reassure span { display: inline-flex; align-items: center; gap: 6px; }
+.hero-v2-reassure span::before { content: "✓"; color: #16a34a; font-weight: 800; }
+
+/* ============================================================
+   SECTION "COMMENT ÇA MARCHE" — 4 étapes ordonnées
+   ============================================================ */
+.op-howitworks {
+  padding: 32px 0;
+  margin: 28px 0;
+}
+.op-howitworks h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0E2A47;
+  margin: 0 0 28px;
+}
+.op-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+@media (max-width: 900px) { .op-steps { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .op-steps { grid-template-columns: 1fr; } }
+
+.op-step {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-top: 4px solid #F39200;
+  border-radius: 12px;
+  padding: 22px 20px;
+  position: relative;
+}
+.op-step-num {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  background: #0E2A47;
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.op-step h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0E2A47;
+  margin: 0 0 8px;
+  line-height: 1.35;
+}
+.op-step p {
+  font-size: 13.5px;
+  color: #4B5563;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ============================================================
+   SECTION FAQ — details/summary natifs (accessible)
+   ============================================================ */
+.op-faq {
+  margin: 36px 0;
+  padding: 32px 0;
+  border-top: 1px solid #E5E7EB;
+}
+.op-faq h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0E2A47;
+  margin: 0 0 8px;
+}
+.op-faq-lead {
+  text-align: center;
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0 0 24px;
+}
+.op-faq-list { display: grid; gap: 10px; max-width: 780px; margin: 0 auto; }
+.op-faq-item {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.op-faq-item[open] { border-color: #F39200; }
+.op-faq-item summary {
+  padding: 16px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #0E2A47;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+}
+.op-faq-item summary::-webkit-details-marker { display: none; }
+.op-faq-item summary::after {
+  content: "+";
+  font-size: 22px;
+  color: #F39200;
+  font-weight: 700;
+  transition: transform .2s ease;
+}
+.op-faq-item[open] summary::after { content: "−"; }
+.op-faq-item summary:focus-visible {
+  outline: 3px solid #FFB800;
+  outline-offset: -3px;
+}
+.op-faq-item summary:hover { background: #F9FAFB; }
+.op-faq-answer {
+  padding: 0 18px 18px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #4B5563;
+}
+
+/* ============================================================
+   SCREEN DOSSIER PASSERELLE
+   ============================================================ */
+.op-dossier {
+  max-width: 820px;
+  margin: 0 auto;
+  background: #fff;
+}
+.op-dossier-header {
+  background: linear-gradient(180deg, #FFF8EC 0%, #FFFFFF 100%);
+  border: 2px solid #FFAF00;
+  border-radius: 16px;
+  padding: 26px 28px;
+  margin-bottom: 22px;
+}
+.op-dossier-header .eyebrow { color: #C67500; }
+.op-dossier-sub {
+  font-size: 14.5px;
+  color: #4B5563;
+  line-height: 1.6;
+  margin: 8px 0 18px;
+}
+.op-dossier-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.op-dossier-actions .btn { min-height: 44px; }
+.op-dossier-copy-feedback {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: #15803d;
+  font-weight: 600;
+  min-height: 18px;
+}
+
+.op-dossier-section {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin-bottom: 14px;
+}
+.op-dossier-section h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0E2A47;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(243, 146, 0, 0.18);
+}
+.op-dossier-ul, .op-dossier-ol {
+  margin: 0;
+  padding-left: 20px;
+  color: #111827;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.op-dossier-ul li, .op-dossier-ol li { margin-bottom: 6px; }
+
+.op-dossier-prog {
+  background: #F9FAFB;
+  border-left: 4px solid #F39200;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.op-dossier-prog-head {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.op-dossier-prog-rank {
+  background: #0E2A47;
+  color: #fff;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.op-dossier-prog-name {
+  font-size: 13.5px;
+  color: #4B5563;
+  margin-top: 2px;
+}
+.op-dossier-prog-score {
+  margin-left: auto;
+  font-size: 22px;
+  font-weight: 700;
+  color: #F39200;
+  line-height: 1;
+}
+.op-dossier-prog-score small { font-size: 11px; color: #6B7280; font-weight: 500; }
+.op-dossier-prog-desc {
+  font-size: 13.5px;
+  color: #4B5563;
+  line-height: 1.55;
+  margin: 6px 0 10px;
+}
+.op-dossier-prog-why {
+  background: rgba(243, 146, 0, 0.06);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #0E2A47;
+}
+.op-dossier-prog-why ul { margin: 6px 0 0; padding-left: 18px; }
+.op-dossier-prog-why li { margin-bottom: 3px; }
+
+.op-dossier-message {
+  background: #F9FAFB;
+  border: 1px dashed #E5E7EB;
+  border-radius: 8px;
+  padding: 16px 18px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13.5px;
+  color: #111827;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.65;
+}
+
+.op-dossier-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #6B7280;
+  padding: 18px 0 6px;
+}
+
+.op-dossier-empty {
+  text-align: center;
+  padding: 48px 28px;
+}
+.op-dossier-empty h2 { color: #0E2A47; margin: 0 0 10px; }
+.op-dossier-empty p { color: #6B7280; margin: 0 0 22px; }
+
+/* ============================================================
+   CTA "Voir mon Dossier Passerelle" — visible depuis l'écran résultats
+   ============================================================ */
+.op-dossier-bridge {
+  background: linear-gradient(135deg, #FFF8EC 0%, #FFE7C2 100%);
+  border: 2px solid #FFAF00;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin: 18px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+}
+.op-dossier-bridge-text { flex: 1 1 320px; min-width: 0; }
+.op-dossier-bridge h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  color: #6B3300;
+}
+.op-dossier-bridge p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #92571A;
+  line-height: 1.55;
+}
+
+/* ============================================================
+   Modes a11y
+   ============================================================ */
+body.easy-read .op-step h3 { font-size: 17px !important; }
+body.easy-read .op-step p { font-size: 15px !important; line-height: 1.75 !important; }
+body.easy-read .op-faq-item summary { font-size: 17px !important; }
+body.easy-read .op-faq-answer { font-size: 16px !important; line-height: 1.8 !important; }
+body.easy-read .op-dossier-section { font-size: 16px; }
+body.easy-read .op-dossier-section h3 { font-size: 19px !important; }
+body.easy-read .op-dossier-ul, body.easy-read .op-dossier-ol { font-size: 16px !important; line-height: 1.85 !important; }
+
+body.a11y-contrast .op-step,
+body.a11y-contrast .op-faq-item,
+body.a11y-contrast .op-dossier-section,
+body.a11y-contrast .op-dossier-prog,
+body.a11y-contrast .op-dossier-message,
+body.a11y-contrast .op-dossier-bridge,
+body.a11y-contrast .op-dossier-header { background: #000 !important; border-color: #FFD800 !important; color: #fff !important; }
+body.a11y-contrast .op-step h3,
+body.a11y-contrast .op-faq-item summary,
+body.a11y-contrast .op-dossier-section h3,
+body.a11y-contrast .op-dossier-bridge h3 { color: #FFD800 !important; }
+body.a11y-contrast .op-step p,
+body.a11y-contrast .op-faq-answer,
+body.a11y-contrast .op-dossier-ul,
+body.a11y-contrast .op-dossier-ol,
+body.a11y-contrast .op-dossier-sub,
+body.a11y-contrast .op-dossier-bridge p { color: #fff !important; }
+
+/* ============================================================
+   IMPRESSION (window.print() + PDF natifs)
+   ============================================================ */
+@media print {
+  body * { visibility: hidden; }
+  #dossier-content, #dossier-content * { visibility: visible; }
+  #dossier-content { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
+  .op-dossier-actions, .op-dossier-copy-feedback { display: none !important; }
+  .op-dossier-section { page-break-inside: avoid; border: 1px solid #ccc !important; }
+}

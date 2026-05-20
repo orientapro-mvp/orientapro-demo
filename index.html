@@ -557,6 +557,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
 
 </style>
 <link rel="stylesheet" href="assets/orientapro-rag.css">
+<link rel="stylesheet" href="assets/mvp-v2.css">
 </head>
 <body>
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -643,25 +644,33 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
   <!-- ============================================ -->
   <div data-persona-block="porteur">
     <div class="hero">
-      <p class="eyebrow">Orientation entrepreneuriale inclusive · 100% gratuit</p>
-      <h1 class="h1">Vous portez un projet.<br><span class="accent">En 15 min, on vous dit qui peut vous aider et combien d'aides vous pouvez toucher.</span></h1>
-      <p class="lead"><strong>2 800 € à 35 000 € d'aides</strong> existent pour les porteurs <strong>QPV, RQTH</strong> et ruraux — <strong>7 sur 10 les ignorent</strong>. On vous évite 3 semaines de recherche entre BGE, ADIE, AGEFIPH, NACRE et Quartiers 2030.</p>
+      <p class="hero-v2-eyebrow">Spécial QPV &amp; handicap · 100 % gratuit</p>
+      <h1 class="h1">Vous avez un projet d'entreprise ?<br><span class="accent">Préparez votre premier rendez-vous avec la bonne structure.</span></h1>
+      <p class="lead">En 15 minutes, <strong>OrientaPro</strong> identifie les programmes d'accompagnement adaptés à votre profil et génère un <strong>dossier clair</strong> pour démarrer votre parcours entrepreneurial.</p>
       <div class="hero-cta">
-        <button class="btn btn-primary" data-go="diagnostic" aria-label="Voir mes aides en 15 minutes, c'est gratuit">Voir mes aides en 15 min — c'est gratuit →</button>
-        <button class="btn btn-ghost" data-go="exemple" aria-label="Voir un exemple de résultat de diagnostic">Voir un exemple de résultat</button>
+        <button class="btn btn-primary" data-go="diagnostic" data-track="cta_primary_clicked" aria-label="Préparer mon dossier gratuit en 15 minutes">Préparer mon dossier gratuit →</button>
+        <button class="btn btn-ghost" data-go="exemple" data-track="cta_secondary_clicked" aria-label="Voir un exemple de Dossier Passerelle">Voir un exemple de dossier</button>
       </div>
-      <p class="hero-proof" aria-live="polite"><span class="dot-live" aria-hidden="true"></span><strong id="liveCount">1 247</strong> porteurs orientés ce mois · <strong>94%</strong> repartent avec au moins 2 structures pertinentes</p>
-      <p class="hero-trust">Sans inscription · Données protégées (RGPD) · Compatible lecteur d'écran</p>
+      <div class="hero-v2-reassure" role="list" aria-label="Garanties OrientaPro">
+        <span role="listitem">Gratuit</span>
+        <span role="listitem">Sans inscription</span>
+        <span role="listitem">Spécial QPV &amp; handicap</span>
+        <span role="listitem">Données protégées</span>
+        <span role="listitem">Accessible</span>
+      </div>
+      <p class="hero-proof" aria-live="polite" style="margin-top:14px;"><span class="dot-live" aria-hidden="true"></span><strong id="liveCount">1 247</strong> porteurs orientés ce mois · <strong>94 %</strong> repartent avec un dossier prêt à présenter</p>
     </div>
-    <!-- Avantages porteur -->
-    <div class="adv-grid" id="how-it-works">
-      <div class="adv-card"><div class="adv-ico">⏱️</div><h3>15 min, pas 3 semaines</h3><p>Un diagnostic guidé qui remplace les tours infinis entre CCI, BGE, ADIE et France Travail.</p></div>
-      <div class="adv-card"><div class="adv-ico">💰</div><h3>Aides chiffrées, pas génériques</h3><p>Estimation cumulée en € selon votre profil (AGEFIPH, Quartiers 2030, NACRE, ARCE…) avec sources publiques.</p></div>
-      <div class="adv-card"><div class="adv-ico">🎯</div><h3>3 structures sur-mesure</h3><p>Top 3 structures recommandées avec score de matching expliqué et contact direct.</p></div>
-      <div class="adv-card"><div class="adv-ico">♿</div><h3>Accessibilité inclusive</h3><p>Mode Lecture facile (FALC), contraste élevé, dyslexie, lecture vocale — WCAG 2.1 AA.</p></div>
-      <div class="adv-card"><div class="adv-ico">📄</div><h3>Synthèse PDF + transmission</h3><p>Recevez votre dossier complet par PDF ou transmettez-le directement à une structure choisie.</p></div>
-      <div class="adv-card"><div class="adv-ico">🔒</div><h3>Données protégées (RGPD)</h3><p>Anonyme par défaut, alias en lieu et place du nom, transmission seulement avec votre accord explicite.</p></div>
-    </div>
+
+    <!-- Comment ça marche — 4 étapes -->
+    <section class="op-howitworks" aria-labelledby="howitworks-title">
+      <h2 id="howitworks-title">Comment ça marche</h2>
+      <ol class="op-steps" role="list">
+        <li class="op-step"><div class="op-step-num" aria-hidden="true">1</div><h3>Vous répondez à quelques questions</h3><p>Sur votre profil, votre projet et vos besoins. 15 minutes maximum, sans inscription.</p></li>
+        <li class="op-step"><div class="op-step-num" aria-hidden="true">2</div><h3>OrientaPro analyse votre situation</h3><p>Notre outil identifie les programmes adaptés à votre territoire, votre stade et vos besoins.</p></li>
+        <li class="op-step"><div class="op-step-num" aria-hidden="true">3</div><h3>Vous recevez votre Dossier Passerelle</h3><p>Programmes recommandés, documents à préparer, message prêt à envoyer à la structure.</p></li>
+        <li class="op-step"><div class="op-step-num" aria-hidden="true">4</div><h3>Vous contactez la bonne structure</h3><p>Avec un dossier clair, vous gagnez du temps lors du premier rendez-vous d'accompagnement.</p></li>
+      </ol>
+    </section>
     <div class="impact-strip">
       <div><div class="impact-num">89</div><div class="impact-lbl">Porteurs orientés</div></div>
       <div><div class="impact-num">14 200 €</div><div class="impact-lbl">d'aides moyennes identifiées</div></div>
@@ -881,6 +890,28 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
 
 <section class="screen" data-screen="dashboard"><div id="dashboard-container"></div></section>
 <section class="screen" data-screen="catalogue"><div id="catalogue-container"></div></section>
+<section class="screen" data-screen="dossier" aria-labelledby="dossier-title"><div id="dossier-container"></div></section>
+
+<!-- FAQ accordéon -->
+<section class="op-faq" id="faq" aria-labelledby="faq-title">
+  <h2 id="faq-title">Questions fréquentes</h2>
+  <p class="op-faq-lead">Tout ce que vous voulez savoir avant de commencer.</p>
+  <div class="op-faq-list">
+    <details class="op-faq-item"><summary>À qui s'adresse OrientaPro ?</summary><div class="op-faq-answer"><p>OrientaPro s'adresse aux personnes qui ont une idée ou un projet d'entreprise et qui ne savent pas encore vers quelle structure se tourner. L'outil est particulièrement pensé pour les personnes en situation de handicap, les habitants des QPV et les porteurs éloignés des réseaux d'accompagnement.</p></div></details>
+    <details class="op-faq-item"><summary>Est-ce que je peux utiliser OrientaPro si mon projet n'est pas encore clair&nbsp;?</summary><div class="op-faq-answer"><p>Oui. Vous pouvez utiliser OrientaPro même si votre idée est encore au début. Le questionnaire aide à clarifier votre situation, votre projet, vos besoins et les prochaines étapes possibles.</p></div></details>
+    <details class="op-faq-item"><summary>Qu'est-ce que je reçois à la fin ?</summary><div class="op-faq-answer"><p>Vous recevez une orientation vers les programmes ou structures les plus adaptés à votre profil, ainsi qu'un dossier prêt à présenter lors d'un premier rendez-vous d'accompagnement.</p></div></details>
+    <details class="op-faq-item"><summary>Qu'est-ce que le Dossier Passerelle OrientaPro ?</summary><div class="op-faq-answer"><p>C'est un document qui résume votre profil, votre projet, vos besoins, votre niveau d'avancement, les programmes recommandés et les prochaines étapes. Il peut être transmis à une BGE, un incubateur, une couveuse, l'ADIE, une structure handicap, une association QPV ou un organisme d'accompagnement.</p></div></details>
+    <details class="op-faq-item"><summary>Est-ce qu'OrientaPro remplace une BGE, un incubateur ou un conseiller ?</summary><div class="op-faq-answer"><p>Non. OrientaPro ne remplace pas les structures d'accompagnement. L'outil vous aide à identifier les bons interlocuteurs et à préparer un dossier clair pour démarrer plus facilement avec eux.</p></div></details>
+    <details class="op-faq-item"><summary>Comment fonctionne le matching ?</summary><div class="op-faq-answer"><p>OrientaPro analyse votre profil, votre territoire, votre stade d'avancement, vos besoins et les critères des programmes disponibles. L'outil recommande ensuite les structures et programmes les plus adaptés, avec une explication simple pour chaque recommandation.</p></div></details>
+    <details class="op-faq-item"><summary>Est-ce gratuit ?</summary><div class="op-faq-answer"><p>Oui, l'utilisation du MVP OrientaPro est gratuite. L'objectif est de faciliter le premier pas vers l'accompagnement entrepreneurial.</p></div></details>
+    <details class="op-faq-item"><summary>Est-ce que je dois créer un compte ?</summary><div class="op-faq-answer"><p>Non. Pour le MVP, l'usage reste possible sans création de compte afin de permettre un accès rapide au diagnostic et au dossier.</p></div></details>
+    <details class="op-faq-item"><summary>Mes données sont-elles protégées ?</summary><div class="op-faq-answer"><p>Les informations saisies servent uniquement à générer l'orientation et le dossier. Elles ne sont pas revendues ni utilisées sans accord. Aucune donnée personnelle n'est partagée avec une structure sans votre consentement explicite.</p></div></details>
+    <details class="op-faq-item"><summary>Est-ce adapté aux personnes en situation de handicap ?</summary><div class="op-faq-answer"><p>Oui. OrientaPro est conçu pour être simple, lisible et accessible&nbsp;: langage clair, étapes courtes, compatibilité lecteur d'écran, contrastes suffisants, mode FALC (Facile À Lire et à Comprendre) et possibilité de remplir le questionnaire à son rythme.</p></div></details>
+    <details class="op-faq-item"><summary>Est-ce réservé aux personnes en QPV ou en situation de handicap ?</summary><div class="op-faq-answer"><p>Non. L'outil peut aider tout porteur de projet qui ne sait pas par où commencer. Cependant, OrientaPro est spécialisé pour mieux orienter les profils QPV, RQTH et les personnes éloignées des réseaux classiques.</p></div></details>
+    <details class="op-faq-item"><summary>Est-ce que les aides financières sont garanties ?</summary><div class="op-faq-answer"><p>Non. OrientaPro ne garantit pas l'accès à une aide financière. L'outil identifie les aides ou dispositifs possibles et oriente vers les structures capables de vérifier l'éligibilité et d'accompagner les démarches.</p></div></details>
+    <details class="op-faq-item"><summary>Que dois-je faire après avoir reçu mon dossier ?</summary><div class="op-faq-answer"><p>Vous pouvez contacter la structure recommandée en priorité, envoyer votre dossier et demander un premier rendez-vous. OrientaPro génère aussi un message prêt à copier pour faciliter votre prise de contact.</p></div></details>
+  </div>
+</section>
 
 <footer class="footer">
   <div class="footer-grid">
@@ -1751,6 +1782,16 @@ function renderResultats(diag){
       `).join('')}
     </div>
     <p class="aides-disclaimer">Estimations indicatives. L'éligibilité et les montants définitifs sont confirmés sous réserve de l'étude complète de votre dossier par la structure d'accompagnement. OrientaPro ne se substitue pas à un conseil personnalisé.</p>
+
+    <!-- CTA passerelle : génération du Dossier Passerelle OrientaPro -->
+    <div class="op-dossier-bridge" role="region" aria-labelledby="bridge-title">
+      <div class="op-dossier-bridge-text">
+        <h3 id="bridge-title">📄 Préparez votre Dossier Passerelle</h3>
+        <p>Un document clair qui résume votre profil, votre projet, vos besoins, les programmes recommandés et un message prêt à envoyer à la structure. À présenter lors de votre premier rendez-vous.</p>
+      </div>
+      <button class="btn btn-primary" onclick="window.OrientaProDossier && window.OrientaProDossier.open()" data-track="dossier_generated">Voir mon dossier →</button>
+    </div>
+
     <div class="cta-end">
       <h3>Et maintenant ?</h3>
       <p>${diag.consentementTransmission ? "Vous avez consenti à la transmission de votre dossier. Les structures recommandées peuvent y accéder via leur espace dédié." : "Vous n'avez pas activé la transmission automatique. Vos données restent confidentielles."}</p>
@@ -2201,6 +2242,15 @@ function toast(msg) {
 </script>
 
 <!-- ============================================================
+     OrientaPro MVP v2 — Catalogue étendu, scoring 6 axes, Dossier
+     Passerelle, tracking interne. Scripts non-bloquants.
+     ============================================================ -->
+<script src="assets/tracking.js" defer></script>
+<script src="assets/programmes-extended.js" defer></script>
+<script src="assets/scoring-v2.js" defer></script>
+<script src="assets/dossier-passerelle.js" defer></script>
+
+<!-- ============================================================
      OrientaPro RAG — diagnostic FALC (Marie) + chatbot Q&A
      Backend Python FastAPI sur Hugging Face Spaces (Mistral AI).
      Tout est non-bloquant : si l'API est down, l'app reste utilisable.
@@ -2209,5 +2259,17 @@ function toast(msg) {
 <script src="assets/rag-client.js" defer></script>
 <script src="assets/diagnostic-express.js" defer></script>
 <script src="assets/chat-widget.js" defer></script>
+
+<!-- Branchement tracking sur les boutons data-track="..." (délégué) -->
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-track]');
+    if (!el) return;
+    var name = el.getAttribute('data-track');
+    if (window.trackEvent) window.trackEvent(name);
+  }, true);
+})();
+</script>
 </body>
 </html>
