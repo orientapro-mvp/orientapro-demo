@@ -25,6 +25,251 @@
 }
 
 /* ============================================================
+   MODALE EXEMPLE DOSSIER (Fatou D.)
+   ============================================================ */
+.op-exemple-modal { max-width: 760px !important; padding: 22px 26px 22px !important; }
+.op-exemple-eyebrow {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #C67500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+.op-exemple-modal h2 { color: #0E2A47; margin: 0 0 10px; font-size: 22px; line-height: 1.25; }
+.op-exemple-banner {
+  background: #FEF3C7;
+  border: 1px solid #F59E0B;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #92400E;
+  margin: 0 0 18px;
+  line-height: 1.55;
+}
+.op-exemple-banner strong { color: #6B3300; }
+
+.op-exemple-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 14px;
+  background: #F9FAFB;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+@media (max-width: 540px) { .op-exemple-meta { grid-template-columns: 1fr; } }
+.op-exemple-meta-item { display: flex; flex-direction: column; }
+.op-exemple-meta-lbl {
+  font-size: 11px;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 2px;
+}
+.op-exemple-meta-item strong { color: #0E2A47; font-size: 13.5px; }
+
+.op-exemple-section {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.op-exemple-section h3 {
+  font-size: 14.5px;
+  color: #0E2A47;
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid rgba(243, 146, 0, 0.18);
+}
+.op-exemple-section p,
+.op-exemple-section li {
+  font-size: 13.5px;
+  color: #111827;
+  line-height: 1.6;
+  margin: 0 0 4px;
+}
+.op-exemple-progs {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+.op-exemple-progs li { margin-bottom: 6px; }
+.op-exemple-progs strong { color: #C67500; }
+.op-exemple-quote {
+  background: #F0F9F4;
+  border-left: 4px solid #10B981;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 14px;
+  margin: 0;
+  font-size: 13px;
+  color: #065F46;
+  line-height: 1.6;
+}
+.op-exemple-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+@media (max-width: 540px) {
+  .op-exemple-actions { flex-direction: column-reverse; }
+  .op-exemple-actions .btn { width: 100%; justify-content: center; }
+  .op-exemple-modal { padding: 18px !important; }
+  .op-exemple-modal h2 { font-size: 19px; }
+}
+body.a11y-contrast .op-exemple-section { background: #000 !important; border-color: #FFD800 !important; }
+body.a11y-contrast .op-exemple-section h3,
+body.a11y-contrast .op-exemple-modal h2 { color: #FFD800 !important; }
+body.a11y-contrast .op-exemple-section p,
+body.a11y-contrast .op-exemple-section li { color: #fff !important; }
+body.a11y-contrast .op-exemple-meta { background: #1a1a1a !important; }
+
+/* ============================================================
+   MODALE PILOTE — formulaire de réservation
+   ============================================================ */
+.op-pilote-modal { max-width: 600px !important; }
+.op-pilote-modal h2 { color: #0E2A47; }
+.op-pilote-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 540px) { .op-pilote-row { grid-template-columns: 1fr; gap: 10px; } }
+.op-pilote-field { display: flex; flex-direction: column; margin-bottom: 14px; }
+.op-pilote-field label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0E2A47;
+  margin-bottom: 6px;
+}
+.op-pilote-field input,
+.op-pilote-field select,
+.op-pilote-field textarea {
+  font-family: inherit;
+  font-size: 16px; /* anti-zoom iOS */
+  padding: 11px 14px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 10px;
+  background: #fff;
+  color: #111827;
+  min-height: 44px;
+}
+.op-pilote-field input:focus,
+.op-pilote-field select:focus,
+.op-pilote-field textarea:focus {
+  outline: none;
+  border-color: #F39200;
+  box-shadow: 0 0 0 3px rgba(243, 146, 0, 0.18);
+}
+.op-pilote-field [aria-invalid="true"] {
+  border-color: #DC2626;
+  background: #FEF2F2;
+}
+.op-pilote-error {
+  font-size: 12.5px;
+  color: #B91C1C;
+  margin: 6px 0 0;
+  display: block;
+}
+.op-pilote-note {
+  font-size: 12.5px;
+  color: #6B7280;
+  background: #F9FAFB;
+  border-left: 3px solid #F39200;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin: 8px 0 14px;
+}
+.op-pilote-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+@media (max-width: 540px) {
+  .op-pilote-actions { flex-direction: column-reverse; }
+  .op-pilote-actions .btn { width: 100%; justify-content: center; }
+}
+
+.op-pilote-confirmation {
+  text-align: center;
+  padding: 24px 8px 8px;
+}
+.op-pilote-check {
+  width: 64px; height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; font-weight: 700;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+.op-pilote-confirmation h3 {
+  color: #065F46;
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+.op-pilote-confirmation p {
+  color: #4B5563;
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+
+body.a11y-contrast .op-pilote-field input,
+body.a11y-contrast .op-pilote-field select,
+body.a11y-contrast .op-pilote-field textarea {
+  background: #000 !important; color: #fff !important; border-color: #FFD800 !important;
+}
+body.a11y-contrast .op-pilote-field label,
+body.a11y-contrast .op-pilote-modal h2,
+body.a11y-contrast .op-pilote-confirmation h3 { color: #FFD800 !important; }
+
+/* ============================================================
+   BANDEAU MVP FICTIF — disclaimer en haut de page
+   ============================================================ */
+.op-mvp-banner {
+  position: relative;
+  z-index: 60;
+  background: #FEF3C7;
+  color: #92400E;
+  border-bottom: 1px solid #F59E0B;
+  padding: 10px 18px;
+  font-size: 13px;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  text-align: center;
+  flex-wrap: wrap;
+}
+.op-mvp-banner strong { color: #6B3300; }
+.op-mvp-banner-icon { font-size: 16px; }
+.op-mvp-banner-close {
+  background: rgba(146, 64, 14, 0.1);
+  border: 0;
+  color: #6B3300;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px; line-height: 1;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+.op-mvp-banner-close:hover { background: rgba(146, 64, 14, 0.2); }
+.op-mvp-banner-close:focus-visible { outline: 2px solid #92400E; outline-offset: 2px; }
+.op-mvp-banner[hidden] { display: none; }
+@media (max-width: 540px) {
+  .op-mvp-banner { font-size: 12px; padding: 8px 12px; gap: 6px; }
+}
+body.a11y-contrast .op-mvp-banner { background: #000 !important; color: #FFD800 !important; border-color: #FFD800 !important; }
+
+/* ============================================================
    BANDEAU RÉASSURANCE OFFICIELLE (inspiration dossierfacile.fr)
    ============================================================ */
 .op-trust-bar {

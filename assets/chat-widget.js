@@ -17,6 +17,84 @@
   function normalize(s) {
     return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
   }
+
+  // === FAQ MVP — répond AVANT le matching catalogue =========================
+  // Réponses courtes, claires, ton professionnel.
+  // Pas de "appelez X" sauf si l'utilisateur demande explicitement un contact humain.
+  const FAQ_MVP = [
+    {
+      patterns: [/comment\s+(ca|cela)\s+marche/, /comment\s+fonctionne/, /c.est\s+quoi\s+orientapro/, /a\s+quoi\s+sert/, /presentation/],
+      answer: "OrientaPro vous accompagne en 3 étapes : un diagnostic gratuit en quelques minutes, des recommandations de programmes d'accompagnement adaptés à votre profil, et un dossier prêt à transmettre. C'est un MVP de démonstration : cliquez sur « Préparer mon dossier gratuit » pour voir le parcours.",
+    },
+    {
+      patterns: [/c.est\s+gratuit/, /combien.{0,15}cout/, /payant/, /prix/, /tarif/],
+      answer: "Le diagnostic et la recommandation sont 100 % gratuits. L'accompagnement passe ensuite par des structures publiques (BGE, ADIE, Cap Emploi). Aucune création de compte n'est requise.",
+    },
+    {
+      patterns: [/qui\s+(est|etes).{0,20}derriere/, /qui\s+a\s+fait/, /qui\s+porte/, /equipe/],
+      answer: "OrientaPro est un projet d'orientation entrepreneuriale inclusive pour les publics RQTH et QPV. Le présent site est un MVP de démonstration en cours de validation.",
+    },
+    {
+      patterns: [/je\s+suis\s+porteur/, /pour\s+les\s+porteurs/, /profil\s+porteur/],
+      answer: "Oui, OrientaPro est fait pour vous. Cliquez sur « Préparer mon dossier gratuit » en haut de page pour démarrer votre diagnostic en 15 minutes.",
+    },
+    {
+      patterns: [/je\s+suis\s+(une\s+)?structure/, /pour\s+les\s+structures/, /pour\s+les\s+(bge|adie|conseillers)/, /accompagnant/],
+      answer: "Basculez en mode « Côté Structures » via le sélecteur tout en haut. Vous accédez à un espace dédié aux conseillers : suivi de dossiers, KPIs, catalogue de programmes.",
+    },
+    {
+      patterns: [/reserver.{0,20}pilote/, /place\s+pilote/, /pilote\s+2026/, /inscription\s+pilote/, /comment.{0,10}m.inscrire/],
+      answer: "Cliquez sur « Réserver ma place pilote » : un formulaire en 30 secondes (nom, e-mail, rôle). MVP de démonstration : la demande est enregistrée localement dans votre navigateur. Aucune transmission externe.",
+    },
+    {
+      patterns: [/exemple.{0,15}dossier/, /voir.{0,10}exemple/, /demo.{0,10}dossier/, /apercu\s+dossier/],
+      answer: "Cliquez sur « Voir un exemple de dossier » dans le hero. Vous découvrirez un Dossier Passerelle fictif (Fatou D., projet salon de coiffure) avec les 10 sections types qu'une structure d'accompagnement reçoit.",
+    },
+    {
+      patterns: [/partenaire/, /partenariat/, /collaboration/, /reel/],
+      answer: "MVP de démonstration : tous les partenaires, événements et chiffres affichés sont illustratifs. Aucun partenariat réel n'a été conclu à ce stade. L'objectif est uniquement de présenter le fonctionnement du projet.",
+    },
+    {
+      patterns: [/fictif/, /vrai|reel/, /vraiment/, /demo|demonstr/, /test/],
+      answer: "Oui, c'est un MVP de démonstration : données, structures, événements et partenaires affichés sont fictifs. Le parcours fonctionnel est réel et présentable, mais aucune donnée n'est transmise à un serveur externe.",
+    },
+    {
+      patterns: [/combien.{0,15}(temps|minutes)/, /duree.{0,10}diagnostic/, /diagnostic\s+(prend|dure)/],
+      answer: "Le diagnostic prend environ 15 minutes (5 étapes, une douzaine de questions sur votre profil, votre projet, vos besoins). Vous pouvez le passer plus rapidement si vous connaissez déjà vos réponses.",
+    },
+    {
+      patterns: [/apres\s+(le\s+)?diagnostic/, /que.{0,10}passe.{0,10}apres/, /ensuite/, /prochaine.{0,5}etape/],
+      answer: "À la fin du diagnostic, vous recevez 3 programmes recommandés (avec score et raisons), une liste de documents à préparer, et un Dossier Passerelle prêt à transmettre à la structure de votre choix.",
+    },
+    {
+      patterns: [/(mes\s+)?donnees\s+(sont|sont.{0,10}elles).{0,15}(securis|protege)/, /rgpd/, /confidentialite/, /vie\s+privee/, /stockage/],
+      answer: "Vos réponses restent uniquement dans votre navigateur (localStorage). Aucune transmission à un serveur externe. Aucune création de compte. Détails complets dans la « Politique de confidentialité » en bas de page.",
+    },
+    {
+      patterns: [/handicap|rqth|tih|oeth/],
+      answer: "OrientaPro est spécialement conçu pour les personnes en situation de handicap (RQTH). Vous pouvez utiliser le mode FALC (Facile À Lire), le contraste élevé ou la lecture vocale via le bouton Accessibilité en haut à droite. Le diagnostic prend en compte votre situation pour identifier les aides AGEFIPH et les structures adaptées.",
+    },
+    {
+      patterns: [/qpv|quartier|garges|sarcelles|villiers-le-bel|gonesse|carpf/],
+      answer: "OrientaPro priorise les habitants des Quartiers Prioritaires de la Ville (QPV). Le diagnostic identifie automatiquement les dispositifs dédiés (Quartiers 2030, prêts d'honneur Initiative, accompagnement renforcé). Indiquez votre commune lors du diagnostic.",
+    },
+  ];
+
+  function detectExplicitContactRequest(text) {
+    const t = normalize(text);
+    return /\b(numero|telephone|appeler|joindre|parler.{0,10}humain|contact\s+humain|conseiller|rendez.?vous|rdv)\b/.test(t);
+  }
+
+  function findFaqAnswer(query) {
+    const t = normalize(query);
+    if (!t || t.length < 3) return null;
+    for (const item of FAQ_MVP) {
+      for (const re of item.patterns) {
+        if (re.test(t)) return item.answer;
+      }
+    }
+    return null;
+  }
   function detectIntent(text) {
     const t = normalize(text);
     return {
@@ -48,9 +126,15 @@
     return score;
   }
   function buildLocalAnswer(message) {
+    // 1) D'abord la FAQ MVP — réponses directes aux questions fréquentes
+    const faqAnswer = findFaqAnswer(message);
+    if (faqAnswer) {
+      return { answer_falc: faqAnswer, sources: [] };
+    }
+
     if (!window.PROGRAMMES || !window.STRUCTURES) {
       return {
-        answer_falc: "Je n'ai pas encore chargé le catalogue. Réessayez dans quelques secondes ou contactez Initiactive 95 au 01 39 88 11 99.",
+        answer_falc: "Le catalogue n'est pas encore chargé. Réessayez dans quelques secondes — ou faites le diagnostic gratuit pour découvrir le parcours complet.",
         sources: [],
       };
     }
@@ -58,13 +142,13 @@
     const scored = window.PROGRAMMES.map(p => ({ p, s: scoreProgramme(p, intent) }))
       .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3);
     if (scored.length === 0) {
-      return {
-        answer_falc: "Je n'ai pas trouvé d'aide précise pour votre question. Voici 2 contacts gratuits qui peuvent vous aider :\n\n• Initiactive 95 (prêts d'honneur Val-d'Oise) : 01 39 88 11 99\n• CCI Val-d'Oise (accompagnement création) : 01 30 75 35 35\n\nVous pouvez aussi remplir le diagnostic complet pour des recommandations personnalisées.",
-        sources: [
-          { nom: "Initiactive 95", lien: "https://www.initiactive95.com/" },
-          { nom: "CCI Val-d'Oise", lien: "https://www.cci-paris-idf.fr/fr/cci-val-doise" },
-        ],
-      };
+      // Si l'utilisateur demande explicitement un humain, on propose la réservation pilote
+      // au lieu d'un numéro de téléphone.
+      const wantsHuman = detectExplicitContactRequest(message);
+      const baseMsg = wantsHuman
+        ? "Pour échanger avec un humain dans le cadre du programme pilote, cliquez sur « Réserver ma place pilote » en haut de page (formulaire 30 secondes). MVP de démonstration : enregistrement local uniquement."
+        : "Je n'ai pas trouvé d'aide précise pour votre question. Voici 3 actions utiles dans l'application :\n\n• Cliquez sur « Préparer mon dossier gratuit » pour un diagnostic personnalisé (15 min).\n• Cliquez sur « Voir un exemple de dossier » pour découvrir le format de livrable.\n• Réservez votre place pilote si vous souhaitez participer à la phase de test.";
+      return { answer_falc: baseMsg, sources: [] };
     }
     // Réponse structurée — cards riches + texte fallback
     const cards = scored.map(x => {
@@ -101,10 +185,10 @@
   }
 
   const SUGGESTIONS = [
-    "Je suis RQTH à Garges. Quelles aides puis-je toucher ?",
-    "Comment obtenir l'ARCE quand on est demandeur d'emploi ?",
-    "Qu'est-ce que le prêt d'honneur Initiactive 95 ?",
-    "Quartiers 2030, c'est pour qui exactement ?",
+    "Comment ça marche, OrientaPro ?",
+    "Comment réserver ma place pilote ?",
+    "C'est un MVP de démonstration ?",
+    "Je suis RQTH à Garges, quelles aides ?",
   ];
 
   function escapeHtml(s) {
@@ -218,6 +302,50 @@
   function mount() {
     document.body.appendChild(fab);
     document.body.appendChild(panel);
+    setupAutoHideFab();
+  }
+
+  // === Auto-hide du FAB : approche footer, focus form, modale ouverte ======
+  function setupAutoHideFab() {
+    function hideFab() { fab.classList.add("is-hidden"); }
+    function showFab() {
+      // Ne ré-affiche pas si le panel est ouvert ou une modale est ouverte
+      if (!panel.hidden) return;
+      if (document.querySelector(".legal-modal.open")) return;
+      fab.classList.remove("is-hidden");
+    }
+    // 1) Cache le FAB quand le footer entre dans le viewport
+    const footer = document.querySelector("footer.footer");
+    if (footer && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0] && entries[0].isIntersecting) hideFab();
+        else showFab();
+      }, { threshold: 0.05 });
+      io.observe(footer);
+    }
+    // 2) Cache le FAB pendant la saisie dans un formulaire
+    document.addEventListener("focusin", (e) => {
+      if (e.target && e.target.matches && e.target.matches("input, textarea, select")) {
+        hideFab();
+      }
+    });
+    document.addEventListener("focusout", (e) => {
+      // Si plus aucun input n'est focus, on ré-affiche après un court délai
+      setTimeout(() => {
+        const active = document.activeElement;
+        if (!active || !active.matches || !active.matches("input, textarea, select")) {
+          showFab();
+        }
+      }, 100);
+    });
+    // 3) Cache le FAB quand une modale est ouverte
+    const modalObserver = new MutationObserver(() => {
+      const anyOpen = !!document.querySelector(".legal-modal.open");
+      if (anyOpen) hideFab(); else showFab();
+    });
+    document.querySelectorAll(".legal-modal").forEach((m) => {
+      modalObserver.observe(m, { attributes: true, attributeFilter: ["class"] });
+    });
   }
 
   // ============================================================
@@ -361,7 +489,7 @@
     const node = el("div", { class: "op-msg op-msg-bot is-error" }, [
       "Désolé, je ne peux pas répondre pour l'instant : ",
       message || "service indisponible.",
-      " Vous pouvez contacter Initiactive 95 au 01 39 88 11 99 ou la CCI Val-d'Oise au 01 30 75 35 35.",
+      " Vous pouvez réessayer dans quelques secondes ou cliquer sur « Préparer mon dossier gratuit » pour découvrir le parcours en autonomie.",
     ]);
     body.appendChild(node);
     body.scrollTop = body.scrollHeight;

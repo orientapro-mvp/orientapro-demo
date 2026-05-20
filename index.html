@@ -562,6 +562,13 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
 <body>
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 
+<!-- Bandeau MVP fictif — supprimable par l'utilisateur, réapparaît au reload -->
+<div class="op-mvp-banner" id="op-mvp-banner" role="status" aria-live="polite">
+  <span class="op-mvp-banner-icon" aria-hidden="true">🧪</span>
+  <span><strong>MVP de démonstration</strong> · les données, structures, événements et partenaires affichés sont fictifs. Aucun partenariat réel n'a été conclu.</span>
+  <button type="button" class="op-mvp-banner-close" id="op-mvp-banner-close" aria-label="Masquer ce bandeau d'information">×</button>
+</div>
+
 <div class="a11y-panel" id="a11y-panel" role="dialog" aria-labelledby="a11y-title" aria-modal="false">
   <h3 id="a11y-title">♿ Accessibilité <button class="close" id="a11y-close" aria-label="Fermer le panneau d'accessibilité">×</button></h3>
   <div class="a11y-row">
@@ -829,7 +836,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
         <span class="logo-placeholder">h'up</span>
         <span class="logo-placeholder">CitésLab</span>
       </div>
-      <p class="hero-trust">🇫🇷 Hébergé en France · 🔒 RGPD & DPA · ♿ RGAA 4.1 / FALC · 🌱 Soutenu Plug&Start &amp; Station Numix 2026</p>
+      <p class="hero-trust">🇫🇷 Hébergé en France · 🔒 RGPD &amp; DPA · ♿ RGAA 4.1 / FALC · 🧪 MVP de démonstration · données et partenaires fictifs</p>
     </div>
     <!-- 8 avantages structures -->
     <h2 class="section-title-h2">8 raisons pour lesquelles BGE, ADIE et France Active testent OrientaPro</h2>
@@ -841,7 +848,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
       <div class="adv-card adv-card-pro"><div class="adv-ico">⚡</div><h3>Zéro installation, zéro IT</h3><p>Vos conseillers reçoivent un lien, créent leur compte en 90 secondes — pas de déploiement, pas de DSI à mobiliser.</p><p class="adv-proof">Compatible Chrome, Firefox, Safari, Edge</p></div>
       <div class="adv-card adv-card-pro"><div class="adv-ico">🎯</div><h3>Tableau de bord conseiller + équipe</h3><p>Suivez la cohorte, repérez les décrochages, mesurez la conversion idée → immatriculation par antenne et par conseiller.</p><p class="adv-proof">KPIs alignés sur référentiel BGE Réseau et NACRE</p></div>
       <div class="adv-card adv-card-pro"><div class="adv-ico">🗺️</div><h3>Catalogue d'aides connecté à votre territoire</h3><p>Le porteur voit les dispositifs locaux mobilisables — Région, EPCI, France Active, ADIE microcrédit — pas de re-saisie.</p><p class="adv-proof">Base mise à jour mensuellement, sources publiques Bpifrance + AidesEntreprises.fr</p></div>
-      <div class="adv-card adv-card-pro"><div class="adv-ico">💚</div><h3>Tarif ESS : gratuit jusqu'à 50 porteurs/an</h3><p>Gratuit jusqu'à 50 diagnostics par an pour les structures conventionnées QPV/DLA, puis pricing à l'usage transparent.</p><p class="adv-proof">Modèle solidaire validé Plug&Start + Station Numix 2026</p></div>
+      <div class="adv-card adv-card-pro"><div class="adv-ico">💚</div><h3>Modèle solidaire envisagé</h3><p>Gratuit jusqu'à 50 diagnostics par an pour les structures conventionnées QPV / DLA, puis pricing à l'usage transparent.</p><p class="adv-proof">Modèle illustratif · MVP de démonstration</p></div>
     </div>
     <!-- Témoignage terrain (réassurance) -->
     <div class="testimonial-pro">
@@ -886,7 +893,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
         <h3>Démarrez votre pilote — 48 h, sans engagement, 5 porteurs offerts</h3>
         <p>Aucune intégration CRM · Setup en 48 h · 5 places pilote mai-juin 2026 · Reporting Région / DREETS / Bpifrance inclus</p>
       </div>
-      <button class="btn btn-primary" data-go="login">Réserver ma place pilote →</button>
+      <button type="button" class="btn btn-primary" data-open="pilote" data-track="cta_pilote_clicked">Réserver ma place pilote →</button>
     </div>
   </div>
 </section>
@@ -1112,6 +1119,168 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
   </div>
 </div>
 
+<!-- ===== MODALE : Voir un exemple de dossier (Fatou D.) ===== -->
+<div class="legal-modal" id="modal-exemple" role="dialog" aria-labelledby="exemple-title" aria-modal="true">
+  <div class="legal-modal-content op-exemple-modal">
+    <button type="button" class="close-modal" data-close-exemple aria-label="Fermer la fenêtre d'exemple">×</button>
+    <p class="op-exemple-eyebrow">📄 Dossier Passerelle — Exemple anonymisé</p>
+    <h2 id="exemple-title">Fatou D., 38 ans · Salon de coiffure</h2>
+    <p class="op-exemple-banner">🧪 <strong>MVP de démonstration</strong> : profil et projet fictifs, conçus pour illustrer le livrable type qu'une structure d'accompagnement reçoit.</p>
+
+    <div class="op-exemple-grid">
+      <div class="op-exemple-meta">
+        <div class="op-exemple-meta-item"><span class="op-exemple-meta-lbl">Profil</span><strong>RQTH · Demandeuse d'emploi</strong></div>
+        <div class="op-exemple-meta-item"><span class="op-exemple-meta-lbl">Territoire</span><strong>Garges-lès-Gonesse (QPV)</strong></div>
+        <div class="op-exemple-meta-item"><span class="op-exemple-meta-lbl">Stade</span><strong>Projet à structurer</strong></div>
+        <div class="op-exemple-meta-item"><span class="op-exemple-meta-lbl">Besoin n°1</span><strong>Financement et formation</strong></div>
+      </div>
+
+      <section class="op-exemple-section">
+        <h3>1. Identité porteur</h3>
+        <p>Femme, 38 ans, Garges-lès-Gonesse (Val-d'Oise). Reconnaissance RQTH depuis 2022. Demandeuse d'emploi indemnisée par France Travail.</p>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>2. Projet</h3>
+        <p>Ouverture d'un salon de coiffure mixte spécialisé cheveux texturés et accessibilité aux personnes à mobilité réduite, dans le quartier prioritaire Dame Blanche.</p>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>3. Situation actuelle</h3>
+        <p>12 ans d'expérience salariée en salon (Paris, Saint-Denis). CAP coiffure (2008) + BP esthétique-cosmétique (2012). Aucune expérience de gestion préalable.</p>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>4. Motivation et différenciation</h3>
+        <p>Autonomie financière, valorisation d'une expertise sur cheveux texturés sous-représentée localement, création de 2 emplois locaux à 24 mois. Local pressenti rue Henri Barbusse.</p>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>5. Étude de marché préliminaire</h3>
+        <p>Quartier de 13 000 habitants. 1 seul concurrent direct à 3 km. Pré-enquête terrain auprès de 30 femmes du quartier : 87 % se déplacent à plus de 5 km pour ce type de prestation.</p>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>6. Besoin de financement total</h3>
+        <p><strong>28 000 €</strong> · Local (caution + travaux PMR) 8 000 € · Matériel pro 14 000 € · Trésorerie 6 000 €. Apport personnel constitué : 4 000 €.</p>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>7. Programmes recommandés par OrientaPro</h3>
+        <ol class="op-exemple-progs">
+          <li><strong>AGEFIPH — Coup de pouce création</strong> · Jusqu'à 6 300 € · 0&nbsp;800&nbsp;11&nbsp;10&nbsp;09</li>
+          <li><strong>Initiactive 95 — Prêt d'honneur</strong> · 3 000 à 30 000 € à taux zéro · agrément CARPF</li>
+          <li><strong>BGE PaRIF — Parcours Créa</strong> · Accompagnement 6 mois (business plan, prévisionnel) · gratuit</li>
+        </ol>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>8. Documents à préparer</h3>
+        <ul>
+          <li>Notification RQTH (Maison Départementale des Personnes Handicapées)</li>
+          <li>Justificatif d'adresse QPV (consultable sur sig.ville.gouv.fr)</li>
+          <li>CV + diplômes CAP / BP</li>
+          <li>Ébauche de business plan (modèle BGE fourni)</li>
+          <li>Attestation France Travail récente</li>
+        </ul>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>9. Prochaines étapes</h3>
+        <ol>
+          <li>Prendre RDV avec un conseiller BGE PaRIF (étude de marché, business plan)</li>
+          <li>Demander l'aide AGEFIPH (formulaire en ligne, 3 semaines de délai)</li>
+          <li>Présenter le dossier consolidé à Initiactive 95 (comité d'agrément mensuel)</li>
+          <li>Finaliser la recherche de local avec l'agglo CARPF (aide à l'implantation QPV)</li>
+        </ol>
+      </section>
+
+      <section class="op-exemple-section">
+        <h3>10. Message d'introduction prêt à envoyer à la structure</h3>
+        <blockquote class="op-exemple-quote">
+          <p>« Bonjour,<br><br>Je souhaite démarrer un accompagnement pour un projet de salon de coiffure spécialisé. J'ai préparé un Dossier Passerelle OrientaPro qui résume mon profil RQTH, mon projet et mes besoins.<br><br>Serait-il possible de convenir d'un premier échange afin d'identifier le programme d'accompagnement le plus adapté ?<br><br>Vous trouverez le dossier complet en pièce jointe.<br><br>Merci par avance,<br>Fatou D. »</p>
+        </blockquote>
+      </section>
+    </div>
+
+    <div class="op-exemple-actions">
+      <button type="button" class="btn btn-outline" data-close-exemple>Fermer</button>
+      <button type="button" class="btn btn-primary" onclick="closeExempleModal(); var b = document.querySelector('[data-go=&quot;diagnostic&quot;]'); if (b) b.click();">Préparer mon propre dossier →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODALE : Réserver ma place pilote ===== -->
+<div class="legal-modal" id="modal-pilote" role="dialog" aria-labelledby="pilote-title" aria-modal="true">
+  <div class="legal-modal-content op-pilote-modal">
+    <button type="button" class="close-modal" data-close-pilote aria-label="Fermer la fenêtre de réservation">×</button>
+    <h2 id="pilote-title">Réserver ma place pilote</h2>
+    <p class="updated">Programme pilote 2026 · 5 places — <strong>MVP de démonstration : enregistrement local uniquement.</strong></p>
+
+    <form id="pilote-form" novalidate>
+      <div class="op-pilote-row">
+        <div class="op-pilote-field">
+          <label for="pilote-prenom">Prénom *</label>
+          <input type="text" id="pilote-prenom" name="prenom" required maxlength="50" autocomplete="given-name">
+          <p class="op-pilote-error" role="alert" hidden></p>
+        </div>
+        <div class="op-pilote-field">
+          <label for="pilote-nom">Nom *</label>
+          <input type="text" id="pilote-nom" name="nom" required maxlength="50" autocomplete="family-name">
+          <p class="op-pilote-error" role="alert" hidden></p>
+        </div>
+      </div>
+
+      <div class="op-pilote-field">
+        <label for="pilote-email">Adresse e-mail *</label>
+        <input type="email" id="pilote-email" name="email" required maxlength="120" autocomplete="email" placeholder="vous@exemple.fr">
+        <p class="op-pilote-error" role="alert" hidden></p>
+      </div>
+
+      <div class="op-pilote-row">
+        <div class="op-pilote-field">
+          <label for="pilote-role">Vous êtes *</label>
+          <select id="pilote-role" name="role" required>
+            <option value="">— Choisir —</option>
+            <option value="porteur">Porteur de projet</option>
+            <option value="structure">Structure d'accompagnement</option>
+            <option value="financeur">Financeur / institutionnel</option>
+            <option value="autre">Autre</option>
+          </select>
+          <p class="op-pilote-error" role="alert" hidden></p>
+        </div>
+        <div class="op-pilote-field">
+          <label for="pilote-organisation">Organisation</label>
+          <input type="text" id="pilote-organisation" name="organisation" maxlength="100" autocomplete="organization" placeholder="Facultatif">
+        </div>
+      </div>
+
+      <div class="op-pilote-field">
+        <label for="pilote-message">Votre besoin ou question</label>
+        <textarea id="pilote-message" name="message" rows="3" maxlength="500" placeholder="Décrivez en quelques mots votre besoin (facultatif)"></textarea>
+      </div>
+
+      <p class="op-pilote-note">🧪 Aucune donnée n'est transmise à un serveur externe. Votre demande est enregistrée localement dans votre navigateur pour la durée de la démonstration.</p>
+
+      <div class="op-pilote-actions">
+        <button type="button" class="btn btn-ghost" data-close-pilote>Annuler</button>
+        <button type="submit" class="btn btn-primary">Envoyer ma demande</button>
+      </div>
+    </form>
+
+    <div id="pilote-confirmation" class="op-pilote-confirmation" hidden role="status" aria-live="polite">
+      <div class="op-pilote-check" aria-hidden="true">✓</div>
+      <h3>Merci <span id="pilote-confirmation-name">!</span> — votre demande est enregistrée.</h3>
+      <p>Dans une vraie utilisation, nous reviendrions vers vous sous 5 jours ouvrés avec les modalités du programme pilote 2026.</p>
+      <p class="op-pilote-note">🧪 MVP de démonstration · enregistrement local uniquement, aucun e-mail envoyé.</p>
+      <div class="op-pilote-actions">
+        <button type="button" class="btn btn-outline" data-close-pilote>Fermer</button>
+        <button type="button" class="btn btn-primary" onclick="closePiloteModal(); document.querySelector('[data-go=&quot;diagnostic&quot;]')?.click();">Découvrir le diagnostic →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODALES LÉGALES -->
 <div class="legal-modal" id="modal-mentions" role="dialog" aria-labelledby="mentions-title" aria-modal="true">
   <div class="legal-modal-content">
@@ -1195,7 +1364,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
     <h2 id="cgu-title">Conditions Générales d'Utilisation</h2>
     <p class="updated">Mise à jour : mai 2026</p>
     <h3>1. Objet</h3>
-    <p>OrientaPro propose un service gratuit d'orientation vers des structures d'accompagnement entrepreneurial. La présente version est une démonstration à des fins de présentation (notamment Plug&Start, Station Numix).</p>
+    <p>OrientaPro propose un service gratuit d'orientation vers des structures d'accompagnement entrepreneurial. <strong>La présente version est un MVP de démonstration</strong> : les données, structures, événements et partenaires affichés sont fictifs. Aucun partenariat réel n'a été conclu. L'objectif est uniquement de présenter le fonctionnement du projet.</p>
     <h3>2. Engagements de l'utilisateur</h3>
     <p>L'utilisateur s'engage à fournir des informations sincères. Le service est destiné à des personnes physiques majeures résidant en France.</p>
     <h3>3. Disponibilité</h3>
@@ -1268,7 +1437,7 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
           <div><div class="demo-kpi-num">100%</div><div class="demo-kpi-lbl">RGAA conforme</div></div>
         </div>
         <div class="demo-slide-cta">
-          <button class="btn btn-primary" onclick="closeDemoStructure(); go('login');">Réserver ma place pilote →</button>
+          <button type="button" class="btn btn-primary" onclick="closeDemoStructure(); window.openPiloteModal && window.openPiloteModal();" data-track="cta_pilote_demo_clicked">Réserver ma place pilote →</button>
           <button class="btn btn-ghost" onclick="closeDemoStructure()">Revenir plus tard</button>
         </div>
         <div class="demo-slide-reassure">Sans engagement · Setup 48 h · 5 places pilote disponibles</div>
@@ -2471,6 +2640,8 @@ function toast(msg) {
 <!-- diagnostic-express.js désactivé pour le pitch : remplacé par la mini-démo "Dossier de Marie" en HTML statique -->
 <script src="assets/chat-widget.js" defer></script>
 <script src="assets/back-to-top.js" defer></script>
+<script src="assets/pilote-modal.js" defer></script>
+<script src="assets/exemple-dossier.js" defer></script>
 <script src="assets/persona-faq.js" defer></script>
 
 <!-- Branchement tracking sur les boutons data-track="..." (délégué) -->

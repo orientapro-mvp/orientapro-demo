@@ -287,6 +287,30 @@
 .op-chat-fab[aria-expanded="true"] { display: none; }
 .op-chat-fab svg { width: 22px; height: 22px; flex-shrink: 0; }
 
+/* Auto-hide FAB sur scroll bas / approche footer / focus form (mobile-friendly) */
+.op-chat-fab.is-hidden {
+  transform: translateY(120px);
+  opacity: 0;
+  pointer-events: none;
+}
+.op-chat-fab { transition: transform .25s ease, box-shadow .15s, background .15s; }
+
+/* Plein écran sur mobile pour le panneau chat (UX standard Intercom/Crisp) */
+@media (max-width: 540px) {
+  .op-chat-panel {
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+  }
+  .op-chat-fab { width: 56px; height: 56px; padding: 0; }
+  .op-chat-fab span { display: none; }
+  .op-chat-fab svg { width: 26px; height: 26px; }
+}
+
 .op-chat-panel {
   position: fixed;
   right: 20px;
