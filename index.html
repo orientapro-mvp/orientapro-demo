@@ -674,6 +674,25 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
       <p class="hero-proof" aria-live="polite" style="margin-top:14px;"><span class="dot-live" aria-hidden="true"></span><strong id="liveCount">1 247</strong> porteurs orientés ce mois · <strong>94 %</strong> repartent avec un dossier prêt à présenter</p>
     </div>
 
+    <!-- Stats hero — chiffres clés (style Leadfox) -->
+    <div class="op-stats" role="region" aria-label="Chiffres clés OrientaPro">
+      <div><div class="op-stat-num">15 min</div><div class="op-stat-lbl">pour identifier vos aides</div></div>
+      <div><div class="op-stat-num">15 +</div><div class="op-stat-lbl">programmes d'accompagnement référencés</div></div>
+      <div><div class="op-stat-num">100 % gratuit</div><div class="op-stat-lbl">sans inscription, données protégées</div></div>
+    </div>
+
+    <!-- Section "Pourquoi choisir OrientaPro" — 4 piliers -->
+    <section class="op-whyus" aria-labelledby="whyus-title">
+      <h2 id="whyus-title">Pourquoi choisir OrientaPro&nbsp;?</h2>
+      <p class="op-whyus-sub">Un outil pensé pour les porteurs RQTH, QPV et les personnes éloignées des réseaux classiques d'accompagnement.</p>
+      <div class="op-whyus-grid">
+        <article class="op-whyus-card"><div class="op-whyus-icon" aria-hidden="true">🎯</div><h3>Matching personnalisé</h3><p>Un scoring sur 100 selon 6 critères (profil, stade, besoins, territoire, accompagnement, accessibilité).</p></article>
+        <article class="op-whyus-card"><div class="op-whyus-icon" aria-hidden="true">📄</div><h3>Dossier prêt à présenter</h3><p>Un document clair en 10 sections, téléchargeable en PDF, à transmettre à votre structure.</p></article>
+        <article class="op-whyus-card"><div class="op-whyus-icon" aria-hidden="true">♿</div><h3>Inclusion native</h3><p>Mode FALC, contraste élevé, dyslexie, lecture vocale, navigation clavier. Conçu pour Marie.</p></article>
+        <article class="op-whyus-card"><div class="op-whyus-icon" aria-hidden="true">🇫🇷</div><h3>Souveraineté française</h3><p>Aucune donnée hors UE. Sources publiques officielles (AGEFIPH, ANCT, Bpifrance, France Travail).</p></article>
+      </div>
+    </section>
+
     <!-- Section "Fonctionnalités à venir" — bloc porteur -->
     <section class="op-coming-soon" aria-labelledby="coming-porteur-title" style="margin: 22px 0 8px;">
       <h2 id="coming-porteur-title">Fonctionnalités à venir</h2>
@@ -907,6 +926,23 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
 <section class="screen" data-screen="catalogue"><div id="catalogue-container"></div></section>
 <section class="screen" data-screen="dossier" aria-labelledby="dossier-title"><div id="dossier-container"></div></section>
 
+<!-- Section "Sources officielles" — façon "Tel que vu" Leadfox, en grayscale -->
+<section class="op-sources" aria-labelledby="sources-title">
+  <p class="op-sources-eyebrow" id="sources-title">Nos sources officielles · données publiques</p>
+  <div class="op-sources-row">
+    <span class="op-sources-logo">AGEFIPH</span>
+    <span class="op-sources-logo">ANCT</span>
+    <span class="op-sources-logo">Bpifrance</span>
+    <span class="op-sources-logo">France Travail</span>
+    <span class="op-sources-logo">ADIE</span>
+    <span class="op-sources-logo">BGE</span>
+    <span class="op-sources-logo">Initiactive 95</span>
+    <span class="op-sources-logo">CCI Val-d'Oise</span>
+    <span class="op-sources-logo">h'up entrepreneurs</span>
+    <span class="op-sources-logo">France Active</span>
+  </div>
+</section>
+
 <!-- FAQ accordéon -->
 <section class="op-faq" id="faq" aria-labelledby="faq-title">
   <h2 id="faq-title">Questions fréquentes</h2>
@@ -930,14 +966,36 @@ body.a11y-dyslexia .input { letter-spacing:0.05em !important; }
 
 <footer class="footer">
   <div class="footer-grid">
+    <!-- Colonne 1 : marque + pitch + badges -->
     <div>
       <h4>OrientaPro</h4>
-      <p style="font-size:13px; color:rgba(255,255,255,.8);">L'orientation entrepreneuriale, augmentée par l'IA souveraine et les APIs publiques.</p>
-      <div class="badges"><span>RGPD</span><span>RGAA WCAG 2.1 AA</span><span>IA souveraine FR</span></div>
+      <p style="font-size:13px; color:rgba(255,255,255,.85); line-height:1.6;">Le GPS inclusif et souverain de l'orientation entrepreneuriale. Pour les porteurs en situation de handicap et des quartiers prioritaires.</p>
+      <div class="badges" style="margin-top:14px;"><span>RGPD</span><span>RGAA WCAG 2.1 AA</span><span>FR / UE</span></div>
     </div>
+    <!-- Colonne 2 : navigation -->
     <div>
-      <h4>Partenaires &amp; structures pilotes</h4>
-      <div class="partners"><span class="partner">BGE</span><span class="partner">ADIE</span><span class="partner">France Active</span><span class="partner">h'up entrepreneurs</span><span class="partner">Bpifrance</span><span class="partner">Agefiph</span></div>
+      <h4>Parcours</h4>
+      <ul class="op-footer-links">
+        <li><button type="button" onclick="document.querySelector('[data-go=&quot;diagnostic&quot;]').click()">Diagnostic</button></li>
+        <li><button type="button" onclick="document.querySelector('[data-go=&quot;exemple&quot;]').click()">Voir un exemple</button></li>
+        <li><a href="#faq">Questions fréquentes</a></li>
+        <li><a href="#how-it-works">Comment ça marche</a></li>
+      </ul>
+    </div>
+    <!-- Colonne 3 : pour les structures -->
+    <div>
+      <h4>Structures</h4>
+      <ul class="op-footer-links">
+        <li><button type="button" onclick="switchPersona('structure')">Espace structures</button></li>
+        <li><button type="button" onclick="document.querySelector('[data-go=&quot;login&quot;]').click()">Connexion</button></li>
+        <li><a href="#faq-structures">FAQ structures</a></li>
+        <li><a href="mailto:contact@orientapro.fr?subject=Partenariat OrientaPro">Devenir partenaire</a></li>
+      </ul>
+    </div>
+    <!-- Colonne 4 : sources et partenaires -->
+    <div>
+      <h4>Sources publiques</h4>
+      <div class="partners"><span class="partner">AGEFIPH</span><span class="partner">ANCT</span><span class="partner">Bpifrance</span><span class="partner">France Travail</span><span class="partner">ADIE</span><span class="partner">BGE</span><span class="partner">h'up</span></div>
     </div>
   </div>
   <div class="footer-mistral">

@@ -515,6 +515,212 @@ body.a11y-contrast .op-dossier-bridge p { color: #fff !important; }
 }
 
 /* ============================================================
+   INSPIRATION LEADFOX (en gardant les couleurs OrientaPro)
+   ============================================================ */
+
+/* CTA boutons primaires plus impactants (style SaaS moderne) */
+.btn-primary,
+.btn.btn-primary {
+  box-shadow: 0 2px 6px rgba(243, 146, 0, 0.18), 0 1px 2px rgba(243, 146, 0, 0.12);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.btn-primary:hover,
+.btn.btn-primary:hover {
+  box-shadow: 0 8px 18px rgba(243, 146, 0, 0.32), 0 3px 6px rgba(243, 146, 0, 0.18);
+  transform: translateY(-2px);
+}
+
+/* Section "Pourquoi choisir OrientaPro" — 4 piliers façon Leadfox */
+.op-whyus {
+  margin: 64px 0;
+  padding: 0 8px;
+}
+.op-whyus h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0E2A47;
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+.op-whyus-sub {
+  text-align: center;
+  font-size: 15.5px;
+  color: #6B7280;
+  margin: 0 auto 36px;
+  max-width: 640px;
+  line-height: 1.55;
+}
+.op-whyus-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+@media (max-width: 1000px) { .op-whyus-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .op-whyus-grid { grid-template-columns: 1fr; } }
+
+.op-whyus-card {
+  background: #fff;
+  padding: 28px 22px;
+  border-radius: 14px;
+  text-align: center;
+  border: 1px solid #F1F5F9;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s;
+}
+.op-whyus-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(14, 42, 71, 0.10);
+  border-color: rgba(243, 146, 0, 0.25);
+}
+.op-whyus-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(243, 146, 0, 0.12), rgba(243, 146, 0, 0.06));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  color: #C67500;
+}
+.op-whyus-card h3 {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #0E2A47;
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+.op-whyus-card p {
+  font-size: 13.5px;
+  color: #4B5563;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Section "Sources officielles" — logos en grayscale */
+.op-sources {
+  margin: 56px 0;
+  padding: 36px 24px;
+  background: linear-gradient(180deg, #F7F8FA 0%, #FFFFFF 100%);
+  border-radius: 16px;
+  border: 1px solid #F1F5F9;
+}
+.op-sources-eyebrow {
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6B7280;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin: 0 0 18px;
+}
+.op-sources-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 18px 36px;
+}
+.op-sources-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #4B5563;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  filter: grayscale(1);
+  opacity: 0.75;
+  transition: filter .15s, opacity .15s, transform .15s;
+  min-width: 110px;
+  text-align: center;
+}
+.op-sources-logo:hover {
+  filter: grayscale(0);
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* Stats hero — chiffres clés grand format */
+.op-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin: 38px 0 20px;
+  padding: 24px 18px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+}
+@media (max-width: 600px) { .op-stats { grid-template-columns: 1fr; gap: 14px; padding: 18px 14px; } }
+.op-stat-num {
+  font-size: 30px;
+  font-weight: 800;
+  color: #F39200;
+  line-height: 1;
+}
+.op-stat-lbl {
+  font-size: 12.5px;
+  color: #6B7280;
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+/* Footer 4 colonnes façon Leadfox */
+.footer .footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 28px !important;
+}
+@media (max-width: 900px) { .footer .footer-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 540px) { .footer .footer-grid { grid-template-columns: 1fr; } }
+.footer h4 {
+  font-size: 13.5px !important;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+.op-footer-links { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.op-footer-links a, .op-footer-links button {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  text-decoration: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.op-footer-links a:hover, .op-footer-links button:hover { color: #fff; text-decoration: underline; }
+
+/* Mode contraste élevé pour les nouvelles sections */
+body.a11y-contrast .op-whyus-card,
+body.a11y-contrast .op-sources,
+body.a11y-contrast .op-sources-logo,
+body.a11y-contrast .op-stats { background: #000 !important; border-color: #FFD800 !important; }
+body.a11y-contrast .op-whyus-card h3,
+body.a11y-contrast .op-whyus h2,
+body.a11y-contrast .op-sources-eyebrow,
+body.a11y-contrast .op-stat-num { color: #FFD800 !important; }
+body.a11y-contrast .op-whyus-card p,
+body.a11y-contrast .op-whyus-sub,
+body.a11y-contrast .op-stat-lbl,
+body.a11y-contrast .op-sources-logo { color: #fff !important; }
+
+/* Mode FALC : agrandit les nouvelles sections */
+body.easy-read .op-whyus h2 { font-size: 32px !important; }
+body.easy-read .op-whyus-card h3 { font-size: 18px !important; }
+body.easy-read .op-whyus-card p { font-size: 15px !important; line-height: 1.8 !important; }
+body.easy-read .op-stat-num { font-size: 34px !important; }
+
+/* ============================================================
    IMPRESSION (window.print() + PDF natifs)
    ============================================================ */
 @media print {
