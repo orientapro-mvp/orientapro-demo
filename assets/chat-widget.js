@@ -498,6 +498,23 @@
     body.scrollTop = body.scrollHeight;
   }
 
+  // Bouton "Retour aux questions" — purge avant ajout pour éviter accumulation
+  function appendBackToQuestions() {
+    body.querySelectorAll(".op-chat-back").forEach((b) => b.remove());
+    const btn = el("button", {
+      class: "op-chat-back",
+      type: "button",
+      "aria-label": "Retour à la liste des questions",
+      onclick: () => {
+        intro.hidden = false;
+        body.appendChild(intro);
+        intro.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (window.trackEvent) window.trackEvent("chat_back_to_questions");
+      },
+    }, ["← Choisir une autre question"]);
+    body.appendChild(btn);
+  }
+
   function appendBotBusy() {
     const dots = el("div", { class: "op-chat-typing", "aria-hidden": "true" }, [
       el("span", { class: "op-chat-typing-dot" }),
@@ -560,8 +577,13 @@
         appendBot(res.answer_falc || "Je n'ai pas trouvé d'information précise.", res.sources || []);
       }
       if (window.trackEvent) window.trackEvent("chat_question_asked", { cards: (res.cards || []).length });
+      // Si la réponse n'est PAS des cards (texte simple), on ajoute aussi le bouton retour
+      if (!(Array.isArray(res.cards) && res.cards.length)) {
+        appendBackToQuestions();
+      }
     } else {
       appendError("Service temporairement indisponible.");
+      appendBackToQuestions();
     }
     busy = false;
     sendBtn.disabled = false;
