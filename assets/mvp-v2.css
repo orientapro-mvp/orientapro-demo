@@ -590,7 +590,11 @@ body.easy-read .op-trust-bar { font-size: 16px !important; line-height: 1.75 !im
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
 }
+.op-steps li::marker { content: ""; } /* fallback navigateurs anciens */
 @media (max-width: 900px) { .op-steps { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .op-steps { grid-template-columns: 1fr; } }
 
