@@ -1740,6 +1740,28 @@ body.a11y-contrast .op-tr-field textarea { background: #000 !important; color: #
 }
 
 /* ============================================================
+   FIX MOBILE — badges QPV / teaser / region éclatent en colonnes
+   Cause : display:flex sur conteneur avec contenu text + <strong> + <em>
+   ============================================================ */
+@media (max-width: 640px) {
+  .qpv-badge-detected,
+  .qpv-teaser,
+  .region-info {
+    display: block !important;
+    line-height: 1.55 !important;
+    padding: 12px 14px !important;
+  }
+  .qpv-badge-detected strong,
+  .qpv-badge-detected em,
+  .qpv-teaser strong,
+  .region-info strong {
+    display: inline !important;
+  }
+  /* Coche / icône en pseudo-element pour rester alignée */
+  .qpv-badge-detected::first-letter { font-weight: 700; }
+}
+
+/* ============================================================
    Bouton "Retour aux questions" Léa (#11)
    ============================================================ */
 .op-chat-back {
