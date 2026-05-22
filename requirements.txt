@@ -1,0 +1,6 @@
+# Dépendances OrientaPro MVP (Streamlit + OpenAI + ReportLab)
+# Versions épinglées avec ~= pour stabilité tout en autorisant les patches.
+
+streamlit~=1.39          # UI web (st.audio_input nécessite >=1.31)
+openai~=1.54             # Client OpenAI (Whisper + Chat Completions, JSON mode)
+reportlab~=4.2           # Génération PDF
